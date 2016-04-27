@@ -1,0 +1,312 @@
+body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    margin-top: 100px;
+}
+
+main {
+    flex: 1 0 auto;
+}
+
+ul.side-nav.fixed li {
+    line-height: 44px;
+}
+
+.brand-logo img{
+    text-align: center;
+}
+
+#logo-container{
+    height: 57px;
+    margin-bottom: 32px;
+}
+
+ul.side-nav.fixed li.logo {
+    text-align: center;
+    margin-top: 32px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #DDD;
+}
+
+a.page-title {
+    line-height: 122px;
+    font-size: 48px;
+}
+
+nav.top-nav {
+    height: 122px;
+    box-shadow: none;
+}
+
+.container .row {
+    margin-left: -0.75rem;
+    margin-right: -0.75rem;
+    display: block;
+}
+
+/*css dos menus do topo*/
+.nav-topo-sistema, .itens-barra-ferramentas, a.icone-barra-menu{
+    height: 45px;
+}
+
+#menu-botoes {
+    position: fixed;
+    top: 45px;
+}
+
+#menu-topo {
+    position: fixed;
+    top: 0px;
+}
+
+.barra-ferramentas-logo{
+    height: 45px;
+    line-height: 45px;
+}
+
+.titulo-sistema{
+    font-size: 30px;
+    padding: 10px;
+}
+
+.nav-wrapper{
+    margin: 0px auto;
+    max-width: 1170px;
+}
+
+#menu-transparente {
+    position: fixed;
+    background-color: green;
+    width: 100%;
+    height: 45px;
+    top: -45px;
+    left: 0;
+}
+
+nav{
+    z-index: 1;
+}
+
+#nav-pesquisa-scroll {   
+    display: none;
+    position: fixed;
+    top: 45px;
+    width: 100%;
+}
+
+#nav-pesquisa div.container {
+    max-width: 1150px;
+}
+
+.nav-barra-ferramentas {
+    margin: 0px auto;
+    max-width: 1170px;
+    /* line-height: 55px; */
+}
+
+.nav-sistema-transparente {
+    height: 45px;
+}
+
+.menu-nav {
+    height: 100%;
+}
+
+.menu-nav .item-barra-menu {
+    height: 100%;
+}
+
+.menu-scroll {
+    height: 45px;
+}
+#menu-transparente li{
+    
+}
+.menu-scroll .item-menu-scroll {
+    height: 45px;
+}
+
+.menu-scroll a{
+    /*    height: 45px;*/
+    bottom: 10px;
+}
+
+li.icones-menu-configuracao{
+    text-align: center;
+}
+
+.nav-pesquisa {
+    margin: 0px auto;
+    display: none;        
+}
+
+#slide-out1 li.search {
+    /*    padding-top: 5px;
+        padding-bottom: 5px;*/
+    padding: 5px;
+}
+
+#slide-out1 div.div-input-pesquisa {
+    height: 49px;
+}
+
+#slide-out1 li input {
+    padding-left: 1rem;
+}
+
+#slide-out1 i {
+    top: 10px;
+}
+
+#slide-out li.search {
+    /*    padding-top: 5px;
+        padding-bottom: 5px;*/
+    padding: 5px;
+}
+
+#slide-out div.div-input-pesquisa {
+    height: 49px;
+}
+
+#slide-out li input {
+    padding-left: 1rem;
+}
+
+#slide-out i {
+    top: -8px;
+    /*    color: #26A69A;*/
+}
+
+/*#sidenav-overlay {
+    z-index: 997 !important;
+}
+
+#menu-botoes {
+    z-index: 997;
+}
+
+#slide-out {
+    z-index: 999;
+}*/
+
+/*.nav-pesquisa-scroll {
+    margin: 0px auto;
+    display: none;
+    height: 45px;
+    top: -45px;
+    position: fixed;
+}*/
+
+/*fim css menus topo*/
+
+/*campo de busca barra menu*/
+/*.busca-barra-menu {
+    position: relative;
+    left: 547px;
+    right: 150px;
+    width: 300px;
+    bottom: 69px;
+    top: -67px;
+    height: 60px;
+}
+
+.busca-barra-menu label {
+    height: 60px;
+    padding-top: 0px;
+}*/
+/* fim campo de busca barra menu*/
+
+table tbody tr td div.acoes{
+    opacity: 0.15;
+    transition-property: opacity;
+    transition-duration: 0.5s;
+}
+
+table tbody tr:hover td div.acoes{
+    opacity: 1;
+}
+div.progress{
+    position: fixed;
+    top: 0px !important;
+    margin: 0;
+    width: 100%;
+    z-index: 12000;
+    left: 0;
+    display: none;
+}
+
+table {
+    max-width: 100%;
+}
+
+td {
+    width: 25%;
+}
+
+/* logo-svg Relator*/
+#logo-sistema-svg{
+    width: 140px;
+    height: 40px;
+    padding-left: 10px;
+}
+
+#logo-sistema-hu{
+    /*    fill: #03814a; verde*/
+    fill: #bdbdbd;
+    font-family: GeorgiaPro !important;
+    font-size: 38px;
+}
+
+#logo-sistema-nome{
+    fill : white;
+    font-size : 24px;
+    font-family :Ubuntu !important;
+    font-weight: bold;
+}
+#logo-sistema-circulo, #logo-sistema-arco{
+    /*    fill: #d9251d; vermelho*/
+    fill: #9e9e9e;
+}
+/* /logo-svg Relator*/
+
+
+@media only screen and (max-width : 992px) {
+    header, main, footer {
+        padding-left: 0;
+    }
+    a.page-title{
+        font-size: 10px;
+    }
+
+    #menu-responsivo{
+        display: inline-block;
+        top: 30px;
+        left: -27px;
+    }
+}
+
+@media (max-width: 379px){
+    a.page-title{
+        font-size: 25px !important;
+    }
+}
+
+.side-nav .collapsible-body li.active, .side-nav.fixed .collapsible-body li.active {
+    background-color: #263238;
+}
+
+.titulo-pagina{
+    --width: 30%;
+}
+
+.pesquisa{
+    --width: 60%;
+    float: right;
+    height: 122px;
+    margin-top: 28px;
+}
+div.fixed-action-btn{
+    bottom: 42px; 
+    right: 70px;
+}

@@ -1,0 +1,72 @@
+table{
+    width: 100%;
+}
+
+table.quebrar-pagina{
+     page-break-after: always !important;
+}
+
+table thead tr th{
+    font-family: Ubuntu;
+    background-color: #97bf29;
+    font-size: 12pt;
+    height: 36px;
+    color: white;
+    padding: 4px;
+}
+
+
+table tbody tr:nth-child(2n){
+    background-color: #eee;
+}
+
+table tbody tr td{
+    font-size: 10pt;
+    height: 24px;
+    padding: 6px 12px ;
+    font-family: Quivira;
+}
+
+table.header{
+    width: 100%;
+}
+
+.titulo-ebserh{
+    font-family: FrankGoth;
+    font-size: 15pt;
+    padding: 0 0 2px 0;
+    text-align: center;
+    color: #9c9e9f;
+}
+
+#hospitalares{
+    color: #97bf29 !important;
+}
+
+.nome-hospital{
+    font-size: 13pt;
+    padding: 0 0 3px 0;
+    text-align: center;
+    font-family: FrankGoth;
+    border-bottom: solid 2px #97bf29;    
+}
+.dados-relatorio{
+    font-family: Ubuntu;
+    font-size: 11pt;
+}
+
+table.footer{
+    border-top: solid 2px #97bf29;
+}
+
+td, th{
+    text-align: left;
+}
+
+.align-right{
+    text-align: right;
+}
+
+.align-left{
+    text-align: left;
+}
