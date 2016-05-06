@@ -1,7 +1,7 @@
 <?php
 
-
 $corSistema = " blue-grey darken-4 ";
+$corSistemaRGB = "#263238";
 $nomeSistema = 'Relator';
 $tituloSistema = 'Sistema de emissão de relatórios';
 $sisdir = "relator";

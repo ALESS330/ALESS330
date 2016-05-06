@@ -6,27 +6,27 @@ global $tituloSistema;
 $nomeUsuario = $_SESSION['username'] ? : "Acessar";
 $logado = $_SESSION['username'] ? TRUE : FALSE;
 $rodapeHuufgd = '2016 Hospital Universitário da UFGD';
-$linkAcesso = $logado ? "#" : "@{Acesso->login()}";
+//$linkAcesso = $logado ? "#" : "@{Acesso->login()}";
 
 $barra_menu = '';
-            //<li class="item-barra-menu"><a class="waves-effect dropdown-button" href="#" data-activates="dropdown3">' . $nomeSistema . '<i class="mdi-navigation-arrow-drop-down right"></i></a></li>'
-        ;
+//<li class="item-barra-menu"><a class="waves-effect dropdown-button" href="#" data-activates="dropdown3">' . $nomeSistema . '<i class="mdi-navigation-arrow-drop-down right"></i></a></li>'
+;
 if ($logado) {
-    $barra_menu .= '<li class="' . $corSistema . ' search">
-            <div class="nav-wrapper">
-                <div class="input-field">
-                  <input class="search-barra-menu" id="search" type="search" required>
-                  <label for="search"><i class="material-icons icone-pesquisa">search</i></label>
-                  <i class="material-icons">close</i>
+    $barra_menu .=
+            '<li class="' . $corSistema . ' search">
+                <div class="nav-wrapper">
+                    <div class="input-field">
+                      <input class="search-barra-menu" id="search" type="search">
+                      <label for="search"><i class="material-icons icone-pesquisa">search</i></label>
+                      <i class="material-icons">close</i>
+                    </div>
                 </div>
-            </div>
           </li> ';
-    $barra_menu .= '<li class="item-barra-menu"><a class="waves-effect dropdown-button" href="#" data-activates="dropdown5">Cadastros</a></li>';
-    $barra_menu .= '<li class="item-barra-menu"><a class="waves-effect dropdown-button" href="#" data-activates="dropdown1">' . $nomeUsuario . '</a></li>';
-}else{
+    $barra_menu .= '<li class="item-barra-menu"><a class="waves-effect dropdown-button" href="#" data-activates="dropdown5"><i class="material-icons right">arrow_drop_down</i>Cadastros</a></li>';
+    $barra_menu .= '<li class="item-barra-menu"><a class="waves-effect dropdown-button" href="#" data-activates="dropdown1">' . $nomeUsuario . '<i class="material-icons right">arrow_drop_down</i></a></li>';
+} else {
     $barra_menu .='<li class="item-barra-menu"><a class="waves-effect" href="@{Acesso->login()}">' . $nomeUsuario . '</a></li>';
 }
-
 
 $barra_menu_redimensionado = '<li class="search">
                 <div class="input-field card div-input-pesquisa">
@@ -34,19 +34,19 @@ $barra_menu_redimensionado = '<li class="search">
                         <div class="search-results"></div>
                 </div>
             </li>
-            <li><a class="waves-effect dropdown-button" href="#" data-activates="dropdown4">' . $nomeSistema . '</a></li>';
-if($logado){
-    $barra_menu_redimensionado .= '<li><a class="waves-effect dropdown-button" href="#" data-activates="dropdown6">Cadastros</a></li>';
+            <li><a class="waves-effect dropdown-button" href="#" data-activates="dropdown4">' . $nomeSistema . '<i class="material-icons right">arrow_drop_down</i></a></li>';
+if ($logado) {
+    $barra_menu_redimensionado .= '<li><a class="waves-effect dropdown-button" href="#" data-activates="dropdown6">Cadastros<i class="material-icons right">arrow_drop_down</i></a></li>';
 }
-$barra_menu_redimensionado .= '<li><a class="waves-effect dropdown-button" href="#" data-activates="dropdown2">' . $nomeUsuario . '</a></li>';
+$barra_menu_redimensionado .= '<li><a class="waves-effect dropdown-button" href="#" data-activates="dropdown2">' . substr($nomeUsuario, 0, strpos($nomeUsuario, '@')) . '<i class="material-icons right">arrow_drop_down</i></a></li>';
 
 $dropdown_barra_menu_interno = '';
-if ($logado){
-    $dropdown_barra_menu_interno = '<li><a href="'. $linkAcesso . '">' . $nomeUsuario . '</a></li><li><a href="@{Usuarios->ver('.$nomeUsuario.')}">Meus dados</a></li>
+if ($logado) {
+    $dropdown_barra_menu_interno = //'<li><a href="' . $linkAcesso . '">' . $nomeUsuario . '</a></li>.'
+        '<li><a href="@{Usuarios->ver(' . $nomeUsuario . ')}">Meus dados</a></li>
         <li class="divider"></li>
         <li><a href="@{Acesso->logout()}">Logout</a></li>';
 }
-        
 
 $dropdown_barra_menu_cadastros = $logado ? '
         <li><a href="@{Datasources->index()}">Datasources</a></li>

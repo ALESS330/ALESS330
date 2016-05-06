@@ -1,7 +1,7 @@
 <?php
 
 $_CONTROLE = "Application";
-$_ROTULO = "Sistema de Emissão de Relatórios";
+$_ROTULO = "Emissão de Relatórios";
 
 class Application extends Controller {
 
