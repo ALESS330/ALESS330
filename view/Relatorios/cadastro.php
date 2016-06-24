@@ -20,7 +20,6 @@
         $relatorio_pai = $relatorioAtual->relatorio_pai_id;
         $sql = $relatorioAtual->codigo_sql;
         $datasourceAtual = $relatorioAtual->datasource_id;
-        
         ?>
         <input type="hidden" name="relatorio[id]" value="<?php echo $relatorioAtual->id; ?>"/>
     <?php } ?>
@@ -31,7 +30,7 @@
                 <?php
                 foreach ($datasources as $datasource) {
                     $selected = "";
-                    if ($datasourceAtual == $datasource->id){
+                    if ($datasourceAtual == $datasource->id) {
                         $selected = "selected";
                     }
                     ?>
@@ -44,14 +43,14 @@
 
     <div class="row">
         <div class="input-field col s12">
-            <input type="text" required class="form-control data" id="data-relatorio" name="relatorio[nome]" value="<?php echo $nome;?>">
+            <input type="text" required class="form-control data" id="data-relatorio" name="relatorio[nome]" value="<?php echo $nome; ?>">
             <label for="nome-relatorio">Nome</label>
         </div>
     </div>
 
     <div class="row">
         <div class="input-field col s12">
-            <input type="text" required class="form-control data" id="descricao-relatorio" name="relatorio[descricao]" value="<?php echo $descricao;?>">
+            <input type="text" required class="form-control data" id="descricao-relatorio" name="relatorio[descricao]" value="<?php echo $descricao; ?>">
             <label for="nome-relatorio">Descrição</label>
         </div>
     </div>
@@ -60,9 +59,9 @@
         <div class="input-field col s12">
             <select name="relatorio[tipo]">
                 <option>Selecione o tipo do relatório</option>
-                <option value="simples" <?php echo $tipo == 'simples' ? "selected" : "";?>>Simples</option>
-                <option value="agrupado" <?php echo $tipo == 'agrupado' ? "selected" : "";?>>Agrupado</option>
-                <option value="titulo-relatorio" <?php echo $tipo == 'titulo-relatorio' ? "selected" : "";?>>Título de outro relatório</option>
+                <option value="simples" <?php echo $tipo == 'simples' ? "selected" : ""; ?>>Simples</option>
+                <option value="agrupado" <?php echo $tipo == 'agrupado' ? "selected" : ""; ?>>Agrupado</option>
+                <option value="titulo-relatorio" <?php echo $tipo == 'titulo-relatorio' ? "selected" : ""; ?>>Título de outro relatório</option>
             </select>
             <label>Tipo do relatorio</label>
         </div>

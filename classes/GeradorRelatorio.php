@@ -36,7 +36,7 @@ class GeradorRelatorio {
 
         $linha = $dados[0];
         if (isset($dados["titulo"])) {
-            $titulo = $this->getTituloRelatorio($dados["titulo"], "titulo-grupos-usuarios");
+            $titulo = $this->getTituloRelatorio($dados["titulo"], "titulo-internacoes-unidade");
             unset($dados["titulo"]);
         }
         if (func_num_args() == 2) {
