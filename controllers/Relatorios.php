@@ -6,8 +6,7 @@ $_ROTULO = 'Relatórios';
 class Relatorios extends Controller {
 
     function index() {
-        $dados = array();
-        parent::render($dados);
+        parent::render();
     }
 
     //TODO resolver de maneira que os parametros sejam definidos externamenta
@@ -58,6 +57,7 @@ class Relatorios extends Controller {
         $estrutura = $construtor->getEstruturaRelatorio($nomeRelatorio)[0];
         $data['nome'] = $estrutura['nome_relatorio'];
         $data['descricao'] = $estrutura['descricao'];
+        ini_set("max_execution_time", 90);
         parent::renderPdf($data);
     }
 

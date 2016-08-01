@@ -33,10 +33,9 @@ class GeradorRelatorio {
     }
 
     function geraCabecalho(&$dados) {
-
         $linha = $dados[0];
         if (isset($dados["titulo"])) {
-            $titulo = $this->getTituloRelatorio($dados["titulo"], "titulo-internacoes-unidade");
+            $titulo = $this->getTituloRelatorio($dados["titulo"], "titulo-grupos-usuarios");
             unset($dados["titulo"]);
         }
         if (func_num_args() == 2) {
@@ -101,7 +100,7 @@ class GeradorRelatorio {
         $tabelaAtual = array();
         $tabelas = array();
         foreach ($dados as $linha) {
-            if ($linha["grupo"] == $grupo) {
+            if ($linha["grupo"] === $grupo) {
                 unset($linha[$colunaGrupo]);
                 $tabelaAtual[] = $linha;
             } else {
