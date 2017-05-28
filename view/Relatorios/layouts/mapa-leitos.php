@@ -101,17 +101,38 @@
         height: 244px;
     }
 
+    nav{
+        z-index: 1000 !important;
+    }
     .container .row{
         margin-left: 0;
         margin-right: 0;
     }
+
+
+    #alerta-need-update{
+        position: absolute;
+        display: block;
+        right: 20px;
+        top: 110px;
+        background-color: #d50000;
+        color: white;
+        padding: 6px;
+        border-radius: 4px;
+        font-weight: bold;
+        display: none;
+    }
+    
+    li.search{
+        display: none;
+    }
 </style>
 <div class="titulo">
+    <span id="alerta-need-update">Atenção! Dados carregados a mais de 60 segundos!</span>
     <strong>Mapa de Leitos</strong>
 </div>
 <div class="cards">
     <div class="row">
-
         <div class="col s6">
             <fieldset>
                 <legend>Filtros</legend>
@@ -264,18 +285,21 @@ echo '        var situacoes = ' . json_encode($situacoes) . "; \n";
                 situacao: valSituacao
             };
             //esconde a tabela
-            $("table tbody tr").removeClass("par impar visivel").fadeOut();
             $("table").fadeOut();
+            $("table tbody tr").removeClass("par impar visivel").fadeOut();
             //adicionar classe 'visivel-{filtro}' para cada célula filtrada
             for (var filtro in filtros) {
+                console.log("Filtro... " + filtro);
                 for (var i in filtros[filtro]) {
+                    console.log("    - i: " + i);
                     valorFiltroAtual = filtros[filtro][i];
+                    console.log("    valorFiltroAtual: (" + filtro + ") => "+ valorFiltroAtual);
                     if (valorFiltroAtual === "todos") {
                         $("." + filtro).closest("tr").addClass("visivel-" + filtro);
                     } else {
                         $("." + filtro)
                                 .filter(function () {
-                                    return $(this).text().indexOf(valorFiltroAtual) >= 0;
+                                    return $(this).text().indexOf(valorFiltroAtual) === 0;
                                 })
                                 .closest("tr")
                                 .addClass("visivel-" + filtro);
@@ -286,7 +310,7 @@ echo '        var situacoes = ' . json_encode($situacoes) . "; \n";
             $totalLinhas = $(".visivel-uf.visivel-situacao").length;
             $("#total-linhas").text(
                     $totalLinhas = 0 ? " - Nenhum registro" : ($totalLinhas === 1 ? (" - 1 registro") : (" - " + $totalLinhas + " registros"))
-                );
+                    );
             $(".visivel-uf.visivel-situacao").addClass("visivel").removeClass("visivel-uf visivel-situacao");
 
             $filtrados = {};
@@ -302,7 +326,6 @@ echo '        var situacoes = ' . json_encode($situacoes) . "; \n";
                 });
             });
             for (var f in $filtrados) {
-                console.log(f);
                 $classe = ("serie-" + f).toLowerCase();
                 $series.push({
                     name: f,
@@ -324,10 +347,9 @@ echo '        var situacoes = ' . json_encode($situacoes) . "; \n";
                     $(this).addClass("impar");
                 }
             });
-            console.log($series);
             //constriur gráficos
             Highcharts.chart('grafico-leitos', {
-                
+
                 chart: {
                     plotBackgroundColor: null,
                     plotBorderWidth: null,
@@ -344,6 +366,7 @@ echo '        var situacoes = ' . json_encode($situacoes) . "; \n";
                     pie: {
                         allowPointSelect: true,
                         cursor: 'pointer',
+                        //showInLegend: true,
                         dataLabels: {
                             enabled: true,
                             format: '<b>{point.name}</b>: {point.percentage:.1f} %',
@@ -352,28 +375,6 @@ echo '        var situacoes = ' . json_encode($situacoes) . "; \n";
                             }
                         }
                     }
-    
-                
-//                chart: {
-//                    plotBackgroundColor: null,
-//                    plotBorderWidth: null,
-//                    plotShadow: false,
-//                    type: 'pie'
-//                },
-//                title: {
-//                    text: null
-//                },
-//                plotOptions: {
-//                    pie: {
-//                        cursor: 'pointer',
-//                        dataLabels: {
-//                            enabled: true,
-//                            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-//                            style: {
-//                                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-//                            }
-//                        }
-//                    }
                 },
                 series: [{
                         name: 'Situação',
@@ -392,6 +393,9 @@ echo '        var situacoes = ' . json_encode($situacoes) . "; \n";
             $("#botao-filtrar").click();
         });
 
+        window.setTimeout(function () {
+            $("#alerta-need-update").fadeIn();
+        }, 60000);
         $("#botao-limpar").click();
     });
 
