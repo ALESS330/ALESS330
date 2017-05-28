@@ -10,7 +10,7 @@ class Conector {
     private $conexoes;
 
     function __construct() {
-        $this->conexoes["relatorios"] = new PDO("pgsql:dbname=teste;user=teste;password=teste;host=200.129.232.47");
+        $this->conexoes["relatorios"] = new PDO("pgsql:dbname=teste;user=teste;password=teste;host=10.18.0.101");
         $t = $this->conexoes["relatorios"]->setAttribute(PDO::ATTR_PERSISTENT, true);
         $sqlDatasources = "SELECT id, nome, conexao FROM relatorios.datasources order by id desc";
         $r = $this->conexoes["relatorios"]->prepare($sqlDatasources);

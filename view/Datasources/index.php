@@ -20,7 +20,7 @@
                 <td> <?php echo $datasource->conexao; ?> </td>
                 <td>
                     <div class="acoes">
-                        <a href="@{Datasources->cadastro()}?id=<?= $datasource->id ?>" id=<?= $datasource->id ?>" class="btn indigo darken-3 waves-effect waves-light glyphicon glyphicon-edit" aria-hidden="true" >
+                        <a href="/relator/datasource/<?= $datasource->id?>" id=<?= $datasource->id ?>" class="btn indigo darken-3 waves-effect waves-light glyphicon glyphicon-edit" aria-hidden="true" >
                            <i class="material-icons">edit</i>
                         </a>
                         <a class="btn btn-excluir red darken-3 waves-effect waves-light glyphicon glyphicon-edit" alt="Excluir" href="<?= $datasource->id; ?>"> 

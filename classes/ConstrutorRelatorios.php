@@ -34,12 +34,19 @@ class ConstrutorRelatorios {
     }
 
     function getRelatorio($nome, $datasource) {
-
+        global $sisbase;
         $dadosRelatorio = $this->getEstruturaRelatorio($nome);
+        $layout = $sisbase . "/view/Relatorios/layouts/$nome.php";
         $colunaGrupo = $dadosRelatorio[0]["coluna_grupo"];
         $nomeFilho = $dadosRelatorio[0]["nome_filho"];
         $dados = $this->getDados($nome, $datasource);
-        return $this->relatorio($dados, $dadosRelatorio[0]['tipo'], $colunaGrupo, $nomeFilho);
+        if (file_exists($layout)) {
+            //$r significa relatório
+            $r = $this->layout($layout, $dados);
+        } else {
+            $r = $this->relatorio($dados, $dadosRelatorio[0]['tipo'], $colunaGrupo, $nomeFilho);
+        }
+        return $r;
     }
 
     public function getEstruturaRelatorio($nome) {
@@ -100,4 +107,10 @@ class ConstrutorRelatorios {
         die($sql);
     }
 
+    public function layout($layout, $dados){
+        ob_start();
+        require_once $layout;
+        $c = ob_get_clean();
+        return $c;
+    }
 }

@@ -12,4 +12,9 @@ class Datasources extends Controller {
         parent::render($dados);
     }
 
+    function cadastro($idDatasource){
+        $d = new Datasource();
+        $datasource = $d->get();
+        parent::render();
+    }
 }

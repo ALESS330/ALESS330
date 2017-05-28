@@ -14,4 +14,7 @@ class Application extends Controller {
         $this->render($dados);
     }
 
+    function espelha(){
+        print_r($_POST);
+    }
 }

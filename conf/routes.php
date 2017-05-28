@@ -14,13 +14,12 @@ $routes["/relatorio/{\w+:datasource}/{.+:nomeRelatorio}"] = "Relatorios->gerar";
 
 
 $routes["/datasources"] = "Datasources->index";
-$routes["/datasources/cadastro"] = "Datasources->cadastro";
+$routes["/datasource"] = "Datasources->cadastro";
+$routes["/datasource/{\d+:id}"] = "Datasources->cadastro";
+$routes["/datasource/salvar"] = "Datasources->salvar";
 
-$routes['/usuario/{.+:username}']             = "Usuarios->ver";
-//$routes["/usuarios/salvar"]     = "Usuarios->salvar";
-//$routes["/usuarios"]            = "Usuarios->listar";
-//$routes["/usuarios/cadastro"]   = "Usuarios->cadastro";
+$routes["/espelho"] = "Application->espelha";
 
-$routes["/login"] = "Acesso->login";
-$routes["/logout"] = "Acesso->logout";
-$routes["/login/"] = "Acesso->logar";
+$routes["/login"] = "Acessos->login";
+$routes["/logout"] = "Acessos->logout";
+$routes["/login/"] = "Acessos->logar";
