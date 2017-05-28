@@ -109,7 +109,6 @@
         margin-right: 0;
     }
 
-
     #alerta-need-update{
         position: absolute;
         display: block;
@@ -122,10 +121,19 @@
         font-weight: bold;
         display: none;
     }
-    
+
     li.search{
         display: none;
     }
+
+    .cards .row .col:first-child {
+        padding-left: 0;
+    }
+
+    .cards .row .col:last-child {
+        padding-right: 0;
+    }
+
 </style>
 <div class="titulo">
     <span id="alerta-need-update">Atenção! Dados carregados a mais de 60 segundos!</span>
@@ -133,7 +141,7 @@
 </div>
 <div class="cards">
     <div class="row">
-        <div class="col s6">
+        <div class="col s6 filtros">
             <fieldset>
                 <legend>Filtros</legend>
                 <div>
@@ -163,7 +171,7 @@
             </fieldset>
         </div>
 
-        <div class="col s6">
+        <div class="col s6 leitos">
             <fieldset>
                 <legend>Leitos <span id="total-linhas"></span></legend>
                 <div id="grafico-leitos">
@@ -293,7 +301,7 @@ echo '        var situacoes = ' . json_encode($situacoes) . "; \n";
                 for (var i in filtros[filtro]) {
                     console.log("    - i: " + i);
                     valorFiltroAtual = filtros[filtro][i];
-                    console.log("    valorFiltroAtual: (" + filtro + ") => "+ valorFiltroAtual);
+                    console.log("    valorFiltroAtual: (" + filtro + ") => " + valorFiltroAtual);
                     if (valorFiltroAtual === "todos") {
                         $("." + filtro).closest("tr").addClass("visivel-" + filtro);
                     } else {
