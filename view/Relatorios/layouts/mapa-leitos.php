@@ -122,7 +122,7 @@
         display: none;
     }
 
-    li.search{
+    li.search {
         display: none;
     }
 
@@ -141,7 +141,7 @@
 </div>
 <div class="cards">
     <div class="row">
-        <div class="col s6 filtros">
+        <div class="col s6">
             <fieldset>
                 <legend>Filtros</legend>
                 <div>
@@ -171,7 +171,7 @@
             </fieldset>
         </div>
 
-        <div class="col s6 leitos">
+        <div class="col s6">
             <fieldset>
                 <legend>Leitos <span id="total-linhas"></span></legend>
                 <div id="grafico-leitos">
