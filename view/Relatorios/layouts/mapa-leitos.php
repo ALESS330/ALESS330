@@ -2,15 +2,7 @@
 //$jsonDadosTabela = json_encode($dados);
 ?>
 <style>
-    table{
-        font-size: 10pt;
-        width: 100%;
-    }
-    table thead th {
-        padding: 1px  5px;
-        border: solid 1px silver;
-        text-align: center;
-    }
+
     .container{
         width: 98%;
         max-width: 100%;
@@ -18,10 +10,25 @@
     }
     .fixed-action-btn{
         display: none;
+        bottom: 64px !important;
     }
+
+    .fixed-action-btn a{
+        box-shadow: rgba(255,255,255,1) 0px 1px 3px !important;
+    }
+
     div.corpo{
         width: 100%;
         padding: 0;
+    }
+    table{
+        font-size: 9pt;
+        width: 100%;
+    }
+    table thead th {
+        padding: 1px  5px;
+        border: solid 1px silver;
+        text-align: center;
     }
 
     table tbody tr td{
@@ -46,9 +53,6 @@
         font-size: 24pt;
     }
 
-    .cards fieldset{
-        /* height: 200px; */
-    }
     fieldset > legend{
         font-size: 16pt;
     }
@@ -87,7 +91,16 @@
     table tbody tr td.situacao span.manutencao{
         background-color: black !important;
         color: yellow;
-    }         
+    }        
+
+    table td:not(.quebravel){
+        white-space: nowrap
+    }
+
+    .cards div fieldset{
+        opacity: 0;
+    }
+
     .serie-ocupado{ fill: red; }
     .serie-desocupado{ fill: green; }
     .serie-limpeza{ fill: lightblue }
@@ -120,9 +133,20 @@
         border-radius: 4px;
         font-weight: bold;
         display: none;
+        overflow: hidden;
+        height: 32px;
+        width: 75px;
+        transition-delay: 0.0s;
+        transition-duration: 0.25s;
+        transition-property: width;
+        transition-timing-function: ease-in;
     }
 
-    li.search {
+    #alerta-need-update:hover{
+        width: 372px;
+    }
+
+    li.search{
         display: none;
     }
 
@@ -134,9 +158,24 @@
         padding-right: 0;
     }
 
+    .header:after{
+        content: "swap_vert";
+        font-family: "Material Icons";
+    }
+    .headerSortUp:after{
+        content: "arrow_drop_down" !important;
+        font-family: "Material Icons";
+    }
+
+    .headerSortDown:after{
+        content: "arrow_drop_up" !important;
+        font-family: "Material Icons";
+    }    
+
+
 </style>
 <div class="titulo">
-    <span id="alerta-need-update">Atenção! Dados carregados a mais de 60 segundos!</span>
+    <span id="alerta-need-update" title="Pode ser necessário atualizar a página a fim de visualizar as informações mais recentes.">Atenção! Dados carregados a mais de 60 segundos!</span>
     <strong>Mapa de Leitos</strong>
 </div>
 <div class="cards">
@@ -200,7 +239,7 @@
                         <th rowspan="2">Dias Previstos</th>
                     </tr>
                     <tr>
-                        <th>Prontuário</th>
+                        <th><span class="icon"></span>Prontuário</th>
                         <th>Nome</th>
                         <th>Sexo</th>
                         <th>Idade</th>
@@ -226,20 +265,24 @@
                         foreach ($linha as $campo => $valor) {
                             $$campo = $valor == NULL ? " - " : $valor;
                         }
+                        $MAX_LETRAS = 30;
                         $unidadesFuncionais[$unidade_funcional] = is_numeric($unidadesFuncionais[$unidade_funcional]) ? $unidadesFuncionais[$unidade_funcional] + 1 : 1;
                         $situacoes[$situacao_leito] = is_numeric($situacoes[$situacao_leito]) ? $situacoes[$situacao_leito] + 1 : 1;
+                        $nome = strlen($nome_paciente) > $MAX_LETRAS ? substr($nome_paciente, 0, $MAX_LETRAS - 3) . "..." : $nome_paciente;
+                        $procedimento = strlen($procedimento_descricao) > $MAX_LETRAS ? substr($procedimento_descricao, 0, $MAX_LETRAS - 3) . "..." : $procedimento_descricao;
+                        $uf = strlen($unidade_funcional) > $MAX_LETRAS ? substr($unidade_funcional, 0, $MAX_LETRAS - 3) . "..." : $unidade_funcional;
                         echo "        <tr class=\"visivel $parImpar\">\n";
                         echo "            <td>$prontuario_paciente</td>\n";
-                        echo "            <td>$nome_paciente</td>\n";
+                        echo "            <td title=\"$nome_paciente\">$nome</td>\n";
                         echo "            <td>$sexo</td>\n";
                         echo "            <td>$idade</td>\n";
                         echo "            <td>$leito</td>\n";
                         echo "            <td class=\"situacao\"><span class=\"" . strtolower($situacao_leito) . "\">$situacao_leito</span></td>\n";
                         echo "            <td>$tipo_leito</td>\n";
                         echo "            <td>$clinica</td>\n";
-                        echo "            <td class=\"uf\">$unidade_funcional</td>\n";
+                        echo "            <td title=\"$unidade_funcional\"class=\"uf\">$uf</td>\n";
                         echo "            <td>$procedimento_codigo</td>\n";
-                        echo "            <td>$procedimento_descricao</td>\n";
+                        echo "            <td title=\"$procedimento_descricao\">$procedimento</td>\n";
                         echo "            <td>$data_internacao</td>";
                         echo "            <td>$dias_media_permanencia</td>\n";
                         echo "            <td>$dias_previstos_internacao</td>\n";
@@ -256,9 +299,18 @@
     </div>
 </div>
 
+<div id="botao-topo" class="fixed-action-btn">
+    <a class="btn-floating btn-large <?php global $corSistema;
+                    echo $corSistema
+                    ?>">
+        <i class="large material-icons">file_upload</i>
+    </a>
+</div>
+
 #{scriptPagina}
 <script type="text/javascript" src="/relator/view/Relatorios/layouts/mapa-leitos.js"></script>
 <script type="text/javascript" src="/static/highcharts/code/highcharts.js"></script>
+<script type="text/javascript" src="/static/tablesorter/jquery.tablesorter.min.js"></script>
 <script type="text/javascript">
 <?php
 echo '        var unidadesFuncionais = ' . json_encode($listaUnidadesFuncionais) . ";\n";
@@ -280,11 +332,10 @@ echo '        var situacoes = ' . json_encode($situacoes) . "; \n";
         $("#situacao-leitos").html($optionsSituacoesLeito);
         $("#unidades-funcionais").val("todos");
         $("#situacao-leitos").val("todos");
-
         $("select").material_select();
 
-
         $("#botao-filtrar").click(function () {
+            $("select").material_select();
             var $series = new Array();
             valUF = $("#unidades-funcionais").val();
             valSituacao = $("#situacao-leitos").val();
@@ -401,10 +452,30 @@ echo '        var situacoes = ' . json_encode($situacoes) . "; \n";
             $("#botao-filtrar").click();
         });
 
+        $("table").tablesorter({
+            headers: {
+                0: {sorter: false},
+                1: {sorter: false},
+                2: {sorter: false},
+                3: {sorter: false},
+                4: {sorter: false}
+            }
+        });
+        $("#botao-topo").click(function () {
+            $('html, body').animate({scrollTop: 0}, 1000);
+        });
+        $("fieldset").animate({"opacity": "1"});
         window.setTimeout(function () {
             $("#alerta-need-update").fadeIn();
         }, 60000);
         $("#botao-limpar").click();
+        $(window).scroll(function () {
+            if ($(this).scrollTop() > $("table").position().top) {
+                $("#botao-topo").fadeIn();
+            } else {
+                $("#botao-topo").fadeOut();
+            }
+        });
     });
 
 </script>
