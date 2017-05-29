@@ -263,7 +263,7 @@
                         }
                         $i++;
                         foreach ($linha as $campo => $valor) {
-                            $$campo = $valor == NULL ? " - " : $valor;
+                            $$campo = $valor == NULL ? "" : $valor;
                         }
                         $MAX_LETRAS = 30;
                         $unidadesFuncionais[$unidade_funcional] = is_numeric($unidadesFuncionais[$unidade_funcional]) ? $unidadesFuncionais[$unidade_funcional] + 1 : 1;
@@ -280,7 +280,7 @@
                         echo "            <td class=\"situacao\"><span class=\"" . strtolower($situacao_leito) . "\">$situacao_leito</span></td>\n";
                         echo "            <td>$tipo_leito</td>\n";
                         echo "            <td>$clinica</td>\n";
-                        echo "            <td title=\"$unidade_funcional\"class=\"uf\">$uf</td>\n";
+                        echo "            <td title=\"$unidade_funcional\" class=\"uf\">$uf</td>\n";
                         echo "            <td>$procedimento_codigo</td>\n";
                         echo "            <td title=\"$procedimento_descricao\">$procedimento</td>\n";
                         echo "            <td>$data_internacao</td>";
