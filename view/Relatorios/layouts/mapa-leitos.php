@@ -239,7 +239,7 @@
                         <th rowspan="2">Dias Previstos</th>
                     </tr>
                     <tr>
-                        <th><span class="icon"></span>Prontuário</th>
+                        <th>Prontuário</th>
                         <th>Nome</th>
                         <th>Sexo</th>
                         <th>Idade</th>

@@ -5,6 +5,11 @@ $_ROTULO = 'Relatório';
 
 class Relatorio extends Model {
 
+    public function __construct() {
+        parent::__construct();
+        $this->nomeTabela = "relatorios.relatorios";
+    }
+
     public function get($idRelatorio) {
         $sql = "SELECT * FROM relatorios.relatorios WHERE id = $idRelatorio";
         return $this->db->consulta($sql)[0];
@@ -72,4 +77,30 @@ class Relatorio extends Model {
         return $this->db->executa($sql);
     }
 
-}
+    public function checarAcesso($usuarioId, $relatorioId) {
+        $rg = new RelatorioGrupo();
+        $g = new Grupo();
+        $u = new Usuario();
+
+        $usuario = $u->selectByEquals("id", $usuarioId)[0];
+        $relatorioGrupo = $rg->selectByEquals("relatorio_id", $relatorioId);
+        if ($g->isUserInGroup($usuario->login_aghu, "developer-relator", 'relator')) { return TRUE ;}
+
+        $listaGrupos = array();
+        foreach ($relatorioGrupo as $i => $linhaRG) {
+            $listaGrupos[] = $g->selectByEquals("id", $linhaRG->grupo_id)[0];
+        }
+        $isInGroup = FALSE;
+
+        foreach ($listaGrupos as $grupo) {
+            $thisGroup = $g->isUserInGroup($usuario->login_aghu, $grupo->nome, 'relator');
+            if ($thisGroup == TRUE) {
+                $isInGroup = TRUE;
+                break;
+            }//if
+        }//foreach 
+        return $isInGroup;
+    } // function checarAcesso
+
+    
+}// classe

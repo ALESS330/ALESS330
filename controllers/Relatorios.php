@@ -43,6 +43,14 @@ class Relatorios extends Controller {
     }
 
     function gerar($datasource, $nomeRelatorio) {
+        $r = new Relatorio();
+        $relatorio = $r->selectByEquals("nome", $nomeRelatorio);
+        $usuario = $_SESSION['user'];
+        if ($r->checarAcesso($usuario->id_local, $relatorio[0]->id) !== TRUE) {
+            $_SESSION['mensagem']['erro'] = "Acesso não autorizado a este formulário.";
+            parent::go2("Application->index");
+            exit();
+        }
         $construtor = new ConstrutorRelatorios();
         $data['relatorio'] = $construtor->getRelatorio($nomeRelatorio, $datasource);
         $data['estrutura'] = $construtor->getEstruturaRelatorio($nomeRelatorio);
