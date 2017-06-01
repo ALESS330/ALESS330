@@ -94,7 +94,7 @@
     }        
 
     table td:not(.quebravel){
-        white-space: nowrap
+        white-space: nowrap /**/
     }
 
     .cards div fieldset{
@@ -171,7 +171,6 @@
         content: "arrow_drop_up" !important;
         font-family: "Material Icons";
     }    
-
 
 </style>
 <div class="titulo">
