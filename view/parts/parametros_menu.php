@@ -7,7 +7,7 @@ global $urlSistema;
 
 $nomeUsuario = $_SESSION['username'] ?: "Acessar";
 $logado = $_SESSION['username'] ? TRUE : FALSE;
-$rodapeHuufgd = '2016 Hospital Universitário da UFGD';
+$rodapeHuufgd = '© <?= date("Y") ?> Hospital Universitário da UFGD';
 //$linkAcesso = $logado ? "#" : "@{Acessos->login()}";
 $mostrarAcesso = true;
 
@@ -50,6 +50,7 @@ if ($logado) {
         } //itens de menu
     }//foreach $menus
 } //if logado
+
 $barra_menu = '';
 if ($logado) {
     if ($mostrarBusca) {
@@ -71,12 +72,13 @@ if ($logado) {
     }
 } else {//se não logado
     if ($mostrarAcesso) {
-        $barra_menu .= '<li><a class="waves-effect" href="@{Acessos->login()}">' . $nomeUsuario . '<i class="material-icons right">arrow_drop_down</i></a></li>';
+        $barra_menu .= '<li><a class="waves-effect" href="@{Acessos->login()}">' . $nomeUsuario . '</a></li>';
+    } else {
+        $barra_menu .= '';
     }
 }
 
 $barra_menu_redimensionado = '';
-
 if ($mostrarBusca) {
     $barra_menu_redimensionado = '<li class="search">
                 <div class="input-field card div-input-pesquisa">
@@ -90,6 +92,8 @@ if ($logado) {
     foreach ($menuResultante as $rotulo => $itens) {
         $barra_menu_redimensionado .= '<li><a class="waves-effect dropdown-button" href="#" data-activates="dropdown-' . $idDropDown++ . '">' . $rotulo . '<i class="material-icons right">arrow_drop_down</i></a></li>' . "\n";
     }
+} else {
+    $barra_menu_redimensionado .= '<li><a class="waves-effect" href="@{Acessos->login()}">' . $nomeUsuario . '</a></li>';
 }
 
 $dropdown_barra_menu_interno = '';
