@@ -20,7 +20,7 @@
                 <td> <?php echo $usuario->id; ?> </td>
                 <td> <?php echo $usuario->pessoa_nome; ?> </td>
                 <td> <?php echo $usuario->username; ?> </td>
-                <td><a class="btn btn-default indigo" href="@{Usuarios->cadastro()}" id=<?= $usuario->id ?>"aria-hidden="true" >
+                <td><a class="btn btn-default indigo" href="@{Usuarios->cadastro()}" id="<?= $usuario->id ?>"aria-hidden="true" >
                        <i class="mdi-editor-mode-edit glyphicon glyphicon-edit"></i></a>
                     <a class="btn btn-default btn-excluir red glyphicon glyphicon-remove btn-excluir" alt="excluir" href="<?= $usuario->id; ?>">
                         <i class="mdi-action-delete"></i></a></td>

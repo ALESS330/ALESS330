@@ -127,7 +127,7 @@ if (isset($usu[0]->id)) {
                 <tr>
                     <td> <?= $grupoUsuario->idgrupo; ?> </td>
                     <td> <?= $grupoUsuario->nome; ?> </td>
-                    <td><a href="@{usuarios->cadastro()}" id=<?= $usu[0]->id ?>&idRelGrupo=<?= $grupoUsuario->id ?>"aria-hidden="true" alt='excluir' ><i class="glyphicon glyphicon-remove btn-excluir"></i></a></td>
+                    <td><a href="@{usuarios->cadastro()}" id="<?= $usu[0]->id ?>&idRelGrupo=<?= $grupoUsuario->id ?>"aria-hidden="true" alt='excluir' ><i class="glyphicon glyphicon-remove btn-excluir"></i></a></td>
                 </tr> 
             <?php } ?>
 
@@ -173,7 +173,7 @@ if (isset($usu[0]->id)) {
                     <td> <?= $funcionalidade->id; ?> </td>
                     <td> <?= $funcionalidade->funcionalidade; ?> </td>
                     <td> <?= $funcionalidade->descricao; ?>
-                    <td><a href="@{usuarios->cadastro()}" id=<?= $usu[0]->id ?>&idRelFuncionalidade=<?= $funcionalidade->id_rel ?>"aria-hidden="true" alt='excluir' ><i class="glyphicon glyphicon-remove btn-excluir"></i></a></td>
+                    <td><a href="@{usuarios->cadastro()}" id="<?= $usu[0]->id ?>&idRelFuncionalidade=<?= $funcionalidade->id_rel ?>"aria-hidden="true" alt='excluir' ><i class="glyphicon glyphicon-remove btn-excluir"></i></a></td>
                 </tr> 
             <?php } ?>
 
