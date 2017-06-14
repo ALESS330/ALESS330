@@ -10,71 +10,66 @@ class Relatorio extends Model {
         $this->nomeTabela = "relatorios.relatorios";
     }
 
-    public function get($idRelatorio) {
-        $sql = "SELECT * FROM relatorios.relatorios WHERE id = $idRelatorio";
-        return $this->db->consulta($sql)[0];
+    public function getGrupos($relatorioId) {
+        $rg = new RelatorioGrupo();
+        $grupo = new Grupo();
+        $listaRG = $rg->selectBy(array("relatorio_id" => $relatorioId));
+        $grupos = array();
+        if ($listaRG) {
+            foreach ($listaRG as $relatorioGrupo) {
+                $grupos[] = $grupo->get($relatorioGrupo->grupo_id);
+            }//foreach
+        }//if
+        return $grupos;
     }
 
-    public function lista($pagina, $busca) {
-        if (!$busca) {
-            $busca = "";
-        }
-        $busca = urldecode($busca);
-        $busca = str_replace(" ", "%", $busca);
+    public function pagina($pagina, $busca) {
+        $busca = str_replace(" ", "%", urldecode($busca));
         $start = ($pagina - 1) * $this->NUMERO_LINHAS;
-        $sql = "SELECT \n"
-                . "    r.id, \n"
-                . "    r.nome, \n"
-                . "    r.descricao, \n"
-                . "    d.nome as datasource \n"
-                . "FROM \n"
-                . "    relatorios.relatorios r INNER JOIN \n"
-                . "    relatorios.datasources d ON r.datasource_id = d.id \n"
-                . "WHERE \n"
-                . "    r.nome ILIKE '%$busca%' OR \n"
-                . "    r.descricao ILIKE '%$busca%' OR \n"
-                . "    d.nome ILIKE '%$busca%' \n"
-                . "ORDER BY \n"
-                . "    r.nome \n"
-                . "OFFSET $start \n"
-                . "LIMIT $this->NUMERO_LINHAS\n";
+        $sql = "SELECT 
+    r.id, 
+    r.nome, 
+    r.descricao, 
+    d.nome as datasource 
+FROM 
+    relatorios.relatorios r INNER JOIN 
+    relatorios.datasources d ON r.datasource_id = d.id 
+WHERE 
+    r.nome ILIKE '%$busca%' OR 
+    r.descricao ILIKE '%$busca%' OR 
+    d.nome ILIKE '%$busca%' 
+ORDER BY 
+    r.nome 
+OFFSET $start 
+LIMIT $this->NUMERO_LINHAS";
         $lista = $this->db->consulta($sql);
-        return $lista;
+        $dados['linhas'] = $lista;
+        $dados['totalTabela'] = $this->totalTabela();
+        $dados['totalFiltro'] = $this->totalFiltro($busca);
+        return $dados;
     }
 
-    function salvar($relatorio) {
-        $nome = $relatorio['nome'];
-        $descricao = $relatorio['descricao'];
-        $codigo_sql = ($relatorio['sql']);
-        $tipo = $relatorio['tipo'];
-        $datasource_id = $relatorio['datasource'];
-        $coluna_grupo = $relatorio['coluna_grupo'] ?: "NULL";
-        $relatorio_pai_id = $relatorio['pai'] ?: "NULL";
-
-        $codigo_sql = preg_replace("[']", "''", $codigo_sql);
-        $sql = "";
-        if (isset($relatorio["id"])) {
-            $id = $relatorio["id"];
-            $sql = "UPDATE relatorios.relatorios SET\n"
-                    . "   nome = '$nome', \n"
-                    . "   codigo_sql = '$codigo_sql', \n"
-                    . "   descricao = '$descricao', \n"
-                    . "   tipo = '$tipo', \n"
-                    . "   datasource_id = $datasource_id, \n"
-                    . "   coluna_grupo = '$coluna_grupo', \n"
-                    . "   relatorio_pai_id = $relatorio_pai_id \n"
-                    . "WHERE \n"
-                    . "    id = $id";
+    function totalFiltro($busca) {
+        if (!$busca || $busca == "undefined") {
+            $busca = "%";
         } else {
-            $sql = "INSERT INTO relatorios.relatorios \n"
-                    . "    (nome, codigo_sql, descricao, \n"
-                    . "     tipo, datasource_id, coluna_grupo, \n"
-                    . "     relatorio_pai_id) VALUES ( \n"
-                    . "     '$nome', '$codigo_sql', '$descricao', \n"
-                    . "     '$tipo', $datasource_id, $coluna_grupo, \n"
-                    . "     $relatorio_pai_id)";
+            $busca = "%" . str_replace(" ", "%", urldecode($busca)) . "%";
         }
-        return $this->db->executa($sql);
+        $busca = str_replace(" ", "%", urldecode($busca));
+        $start = ($pagina - 1) * $this->NUMERO_LINHAS;
+        $sql = " 
+SELECT 
+    count(r.id)
+FROM 
+    relatorios.relatorios r INNER JOIN 
+    relatorios.datasources d ON r.datasource_id = d.id 
+WHERE 
+    r.nome ILIKE '%$busca%' OR 
+    r.descricao ILIKE '%$busca%' OR 
+    d.nome ILIKE '%$busca%'     
+";
+        $lista = $this->db->consulta($sql);
+        return $lista[0]->count;
     }
 
     public function checarAcesso($usuarioId, $relatorioId) {
@@ -84,7 +79,9 @@ class Relatorio extends Model {
 
         $usuario = $u->selectByEquals("id", $usuarioId)[0];
         $relatorioGrupo = $rg->selectByEquals("relatorio_id", $relatorioId);
-        if ($g->isUserInGroup($usuario->login_aghu, "developer-relator", 'relator')) { return TRUE ;}
+        if ($g->isUserInGroup($usuario->login_aghu, "developer-relator", 'relator')) {
+            return TRUE;
+        }
 
         $listaGrupos = array();
         foreach ($relatorioGrupo as $i => $linhaRG) {
@@ -100,7 +97,9 @@ class Relatorio extends Model {
             }//if
         }//foreach 
         return $isInGroup;
-    } // function checarAcesso
+    }
 
-    
-}// classe
+// function checarAcesso
+}
+
+// classe

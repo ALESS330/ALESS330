@@ -1,7 +1,7 @@
 <?php 
 
     $linkPdf = $_SERVER['REQUEST_URI'] . "/pdf"; 
-    $linkExcel = $_SERVER['REQUEST_URI'] . "/excel";
+    $linkCsv = $_SERVER['REQUEST_URI'] . "/csv";
 ?>
 #{botoes}
 
@@ -12,7 +12,7 @@
     <ul>
         <li><a href="#" class="btn-floating red"><i class="material-icons">file_upload</i></a></li>
         <li><a href="<?= $linkPdf; ?>" class="btn-floating red darken-1"><i class="fa fa-file-pdf-o "></i></a></li>
-        <li><a href="<?= $linkExcel; ?>" class="btn-floating greendarken-1"><i class="fa fa-file-excel-o "></i></a></li>
+        <li><a href="<?= $linkCsv; ?>" class="btn-floating greendarken-1"><i class="fa fa-file-excel-o "></i></a></li>
     </ul>
 </div>
 #{/botoes}

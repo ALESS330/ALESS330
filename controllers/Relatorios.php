@@ -5,26 +5,30 @@ $_ROTULO = 'Relatórios';
 
 class Relatorios extends Controller {
 
+    private $relatorio;
+
+    public function __construct() {
+        parent::__construct();
+        $this->relatorio = new Relatorio();
+    }
+    
     function index() {
         parent::render();
     }
 
-    //TODO resolver de maneira que os parametros sejam definidos externamenta
-    function lista() {
-        $pagina = $_SESSION["parametros"]["pagina"];
-        $busca = $_SESSION["parametros"]["busca"];
-        $relatorio = new Relatorio();
-        $relatorios = $relatorio->lista($pagina, $busca);
-        $dados['relatorios'] = $relatorios;
-        parent::json($dados);
+    function pagina($pagina = 1, $busca = " ") {
+        parent::json($this->relatorio->pagina($pagina, $busca));
     }
-
-    function cadastro() {
-        $id = isset($_SESSION["parametros"]["id"]) ? $_SESSION["parametros"]["id"] : NULL;
+    
+    function propriedades($idRelatorio){
+        $dados['relatorio'] = $this->relatorio->get($idRelatorio);
+        $dados['gruposRelatorio'] = $this->relatorio->getGrupos($idRelatorio);
+        parent::render($dados);
+    }
+    function cadastro($id = NULL) {
         $dados = array();
         if ($id) {
-            $relatorio = new Relatorio();
-            $dados['relatorioAtual'] = $relatorio->get($id);
+            $dados['relatorioAtual'] = $this->relatorio->get($id);
         }
         $datasource = new Datasource();
         $datasources = $datasource->lista();
@@ -33,20 +37,19 @@ class Relatorios extends Controller {
     }
 
     function salvar() {
-        $relatorio = new Relatorio();
         $dadosRelatorio = $_POST['relatorio'];
-        $sucesso = $relatorio->salvar($dadosRelatorio);
+        $dadosRelatorio['codigo_sql'] = str_replace("'", "''", $dadosRelatorio['codigo_sql']);
+        $sucesso = $this->relatorio->salvar($dadosRelatorio);
         if ($sucesso) {
-            $_SESSION['mensagem']['sucesso'] = "Relatório criado com sucesso.";
+            $_SESSION['mensagem']['sucesso'] = "Relatório salvo com sucesso.";
             parent::go2("Relatorios->index()");
         }
     }
 
     function gerar($datasource, $nomeRelatorio) {
-        $r = new Relatorio();
-        $relatorio = $r->selectByEquals("nome", $nomeRelatorio);
+        $relatorio = $this->relatorio->selectByEquals("nome", $nomeRelatorio);
         $usuario = $_SESSION['user'];
-        if ($r->checarAcesso($usuario->id_local, $relatorio[0]->id) !== TRUE) {
+        if ($this->relatorio->checarAcesso($usuario->id_local, $relatorio[0]->id) !== TRUE) {
             $_SESSION['mensagem']['erro'] = "Acesso não autorizado a este formulário.";
             parent::go2("Application->index");
             exit();
@@ -78,6 +81,17 @@ class Relatorios extends Controller {
         $data['coluna_grupo'] = $estrutura[0]['coluna_grupo'];
         $data['nome_relatorio'] = $nomeRelatorio;
         parent::renderExcel($data);
+    }
+
+    function gerarCsv($datasource, $nomeRelatorio) {
+        $data = array();
+        $construtor = new ConstrutorRelatorios();
+        $data['dados'] = $construtor->getDadosRaw($nomeRelatorio, $datasource);
+        $estrutura = $construtor->getEstruturaRelatorio($nomeRelatorio);
+        $data['tipo'] = $estrutura[0]['tipo'];
+        $data['coluna_grupo'] = $estrutura[0]['coluna_grupo'];
+        $data['nome_relatorio'] = $nomeRelatorio;
+        parent::renderCsv($data);
     }
 
 }

@@ -25,7 +25,7 @@
     <?php } ?>
     <div class="row">
         <div class="input-field col s12">
-            <select name="relatorio[datasource]" id="datasource-relatorio" required>
+            <select name="relatorio[datasource_id]" id="datasource-relatorio" required>
                 <option value="" >Selecione o Datasource</option>
                 <?php
                 foreach ($datasources as $datasource) {
@@ -76,14 +76,14 @@
 
     <div class="row">
         <div class="input-field col s12">
-            <input type="text" class="form-control" id="coluna-grupo-relatorio" name="relatorio[pai]" value="<?php echo $relatorio_pai; ?>">
+            <input type="text" class="form-control" id="coluna-grupo-relatorio" name="relatorio[relatorio_pai_id]" value="<?php echo $relatorio_pai; ?>">
             <label for="coluna-grupo-relatorio">Relatório Pai</label>
         </div>
     </div>
 
     <div class="row">
         <div class="input-field col s12">
-            <textarea required class="materialize-textarea" id="codigo-sql-relatorio" name="relatorio[sql]"><?php echo $sql; ?></textarea>
+            <textarea required class="materialize-textarea" id="codigo-sql-relatorio" name="relatorio[codigo_sql]"><?php echo $sql; ?></textarea>
             <label for="codigo-sql-relatorio">Código SQL</label>
         </div>
     </div>
