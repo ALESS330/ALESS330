@@ -17,6 +17,8 @@ $routes["/relatorio/{\w+:datasource}/{.+:nomeRelatorio}/excel"] = "Relatorios->g
 $routes["/relatorio/{\w+:datasource}/{.+:nomeRelatorio}/csv"] = "Relatorios->gerarCsv";
 $routes["/relatorio/{\w+:datasource}/{.+:nomeRelatorio}"] = "Relatorios->gerar";
 
+$routes["/parametro/{\d+:parametroId}"] = "Parametros->ver";
+$routes["/parametros/salvar"] = "Parametros->salvar";
 
 $routes["/datasources"] = "Datasources->index";
 $routes["/datasource"] = "Datasources->cadastro";

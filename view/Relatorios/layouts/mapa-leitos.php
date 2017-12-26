@@ -94,7 +94,7 @@
     }        
 
     table td:not(.quebravel){
-        white-space: nowrap /**/
+        /* white-space: nowrap /**/
     }
 
     .cards div fieldset{
@@ -109,7 +109,7 @@
     .serie-vaga{ fill: #FFC107; }
     .serie-manutencao { fill: black}
 
-    #grafico-leitos{
+    #grafico-leitos, #grafico-tipo-leitos{
         /* width: 50%; */
         height: 244px;
     }
@@ -209,10 +209,18 @@
             </fieldset>
         </div>
 
-        <div class="col s6">
+        <div class="col s3">
             <fieldset>
                 <legend>Leitos <span id="total-linhas"></span></legend>
                 <div id="grafico-leitos">
+
+                </div>
+            </fieldset>
+        </div>
+        <div class="col s3">
+            <fieldset>
+                <legend>Tipo</legend>
+                <div id="grafico-tipo-leitos">
 
                 </div>
             </fieldset>
@@ -235,7 +243,9 @@
                         <th colspan="2">Procedimento</th>
                         <th rowspan="2">Data</th>
                         <th rowspan="2">Média de Permanência</th>
-                        <th rowspan="2">Dias Previstos</th>
+                        <th rowspan="2">Dias Int.</th>
+                        <th rowspan="2">Dias à maior</th>
+                        <th rowspan="2">Previsão de Alta</th>                        
                     </tr>
                     <tr>
                         <th>Prontuário</th>
@@ -270,21 +280,24 @@
                         $nome = strlen($nome_paciente) > $MAX_LETRAS ? substr($nome_paciente, 0, $MAX_LETRAS - 3) . "..." : $nome_paciente;
                         $procedimento = strlen($procedimento_descricao) > $MAX_LETRAS ? substr($procedimento_descricao, 0, $MAX_LETRAS - 3) . "..." : $procedimento_descricao;
                         $uf = strlen($unidade_funcional) > $MAX_LETRAS ? substr($unidade_funcional, 0, $MAX_LETRAS - 3) . "..." : $unidade_funcional;
+                        $dias_a_maior = $dias_internados - $dias_media_permanencia;
                         echo "        <tr class=\"visivel $parImpar\">\n";
                         echo "            <td>$prontuario_paciente</td>\n";
-                        echo "            <td title=\"$nome_paciente\">$nome</td>\n";
+                        echo "            <td class=\"quebravel\" title=\"$nome_paciente\">$nome</td>\n";
                         echo "            <td>$sexo</td>\n";
                         echo "            <td>$idade</td>\n";
                         echo "            <td>$leito</td>\n";
                         echo "            <td class=\"situacao\"><span class=\"" . strtolower($situacao_leito) . "\">$situacao_leito</span></td>\n";
-                        echo "            <td>$tipo_leito</td>\n";
+                        echo "            <td class=\"tipo\">$tipo_leito</td>\n";
                         echo "            <td>$clinica</td>\n";
                         echo "            <td title=\"$unidade_funcional\" class=\"uf\">$uf</td>\n";
                         echo "            <td>$procedimento_codigo</td>\n";
                         echo "            <td title=\"$procedimento_descricao\">$procedimento</td>\n";
                         echo "            <td>$data_internacao</td>";
                         echo "            <td>$dias_media_permanencia</td>\n";
-                        echo "            <td>$dias_previstos_internacao</td>\n";
+                        echo "            <td>$dias_internados</td>\n";
+                        echo "            <td>$dias_a_maior</td>";
+                        echo "            <td>$data_prevista_alta</td>";
                         echo "        </tr>\n";
                     } //foreach ($dados)
                     $listaSituacoes = array_keys($situacoes);
@@ -299,9 +312,10 @@
 </div>
 
 <div id="botao-topo" class="fixed-action-btn">
-    <a class="btn-floating btn-large <?php global $corSistema;
-                    echo $corSistema
-                    ?>">
+    <a class="btn-floating btn-large <?php
+    global $corSistema;
+    echo $corSistema
+    ?>">
         <i class="large material-icons">file_upload</i>
     </a>
 </div>
@@ -336,6 +350,8 @@ echo '        var situacoes = ' . json_encode($situacoes) . "; \n";
         $("#botao-filtrar").click(function () {
             $("select").material_select();
             var $series = new Array();
+            var $seriesTipo = new Array();
+
             valUF = $("#unidades-funcionais").val();
             valSituacao = $("#situacao-leitos").val();
             filtros = {
@@ -372,17 +388,32 @@ echo '        var situacoes = ' . json_encode($situacoes) . "; \n";
             $(".visivel-uf.visivel-situacao").addClass("visivel").removeClass("visivel-uf visivel-situacao");
 
             $filtrados = {};
+            $tipos = {};
 
             $(".visivel").each(function (i, e) {
+                //faz a contagem do total de linhas em cada situação
                 $(this).find(".situacao").each(function (i, e) {
                     $nomeSituacao = $(this).text();
+                    //se for o primeiro encontrado para a situação atual
                     if (typeof $filtrados[$nomeSituacao] === "undefined") {
                         $filtrados[$nomeSituacao] = 1;
                     } else {
                         $filtrados[$nomeSituacao] = $filtrados[$nomeSituacao] + 1;
                     }
                 });
-            });
+
+                //faz a contagem de cada tipo de leito
+                $(this).find(".tipo").each(function (i, e) {
+                    $nomeTipo = $(this).text();
+                    //se for o primeiro tipo encontrado
+                    if (typeof $tipos[$nomeTipo] === "undefined") {
+                        $tipos[$nomeTipo] = 1;
+                    } else {
+                        $tipos[$nomeTipo] = $tipos[$nomeTipo] + 1;
+                    }
+                }); // final da contegem de tipos
+            }); // $(".visivel").each()
+
             for (var f in $filtrados) {
                 $classe = ("serie-" + f).toLowerCase();
                 $series.push({
@@ -392,6 +423,14 @@ echo '        var situacoes = ' . json_encode($situacoes) . "; \n";
                 })
             }
 
+            for (var t in $tipos){
+                $classe = ("tipo-" + t).toLowerCase();
+                $seriesTipo.push({
+                    name: t,
+                    y: $tipos[t],
+                    className: $classe
+                })
+            }
             $("table").fadeIn();
             if ($("table tbody tr.visivel").length === 0) {
                 $("table tbody").append("<tr><td colspan=\"14\"><span class=\"info-span\">Nenhum registro encontrado!</span></td></tr>");
@@ -439,10 +478,47 @@ echo '        var situacoes = ' . json_encode($situacoes) . "; \n";
                         colorByPoint: true,
                         data: $series //Dados
                     }]
+            }); // gráfico leitos
+
+            //gráfico tipo leitos
+            Highcharts.chart('grafico-tipo-leitos', {
+
+                chart: {
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false,
+                    type: 'pie'
+                },
+                title: {
+                    text: null
+                },
+                tooltip: {
+                    pointFormat: '{series.name}: <b>{point.y}</b>'
+                },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        //showInLegend: true,
+                        dataLabels: {
+                            enabled: true,
+                            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                            style: {
+                                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                            }
+                        }
+                    }
+                },
+                series: [{
+                        name: 'Tipo',
+                        colorByPoint: true,
+                        data: $seriesTipo //Dados
+                    }]
             });
 
+
             //fim gráficos
-        }); // #botao-aplicar.click()
+        }); // #botao-filtrar.click()
 
         $("#botao-limpar").click(function () {
             $("#unidades-funcionais").val("todos");

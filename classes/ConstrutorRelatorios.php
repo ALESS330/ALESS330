@@ -20,7 +20,7 @@ class ConstrutorRelatorios {
         $parametros = $_SESSION['parametros'];
         $sqlBanco = $dadosRelatorio[0]["codigo_sql"];
         $conexaoRelatorio = $this->conector->getConexao($datasource);
-        if ($dadosRelatorio[0]['tipo'] == "filtro") {
+        if ($dadosRelatorio[0]['parametrizado'] == true) {
             $sql = $this->processaParametros($parametros, $sqlBanco);
         } else {
             $sql = $sqlBanco;
@@ -50,21 +50,22 @@ class ConstrutorRelatorios {
     }
 
     public function getEstruturaRelatorio($nome) {
-        $sqlRelatorio = ""
-                . "SELECT \n"
-                . "    r.codigo_sql, \n"
-                . "    r.nome as nome_relatorio, \n"
-                . "    r.descricao, \n"
-                . "    r.tipo, \n"
-                . "    d.nome as nome_datasource, \n"
-                . "    d.id as id_datasource, \n"
-                . "    r.coluna_grupo, \n"
-                . "    rfilho.nome as nome_filho \n"
-                . "FROM \n"
-                . "    relatorios.relatorios r INNER JOIN \n"
-                . "    relatorios.datasources d ON r.datasource_id = d.id LEFT JOIN \n"
-                . "    relatorios.relatorios rfilho ON r.id = rfilho.relatorio_pai_id \n"
-                . "WHERE r.nome = '$nome'";
+        $sqlRelatorio = "
+SELECT 
+    r.codigo_sql
+    ,r.nome as nome_relatorio
+    ,r.descricao
+    ,r.tipo
+    ,d.nome nome_datasource
+    ,d.id as id_datasource
+    ,r.coluna_grupo
+    ,rfilho.nome as nome_filho
+    ,r.parametrizado
+FROM
+    relatorios.relatorios r INNER JOIN
+    relatorios.datasources d ON r.datasource_id = d.id LEFT JOIN
+    relatorios.relatorios rfilho ON r.id = rfilho.relatorio_pai_id
+WHERE r.nome = '$nome'";
         $dadosRelatorio = $this->conector->getDadosSistema($sqlRelatorio);
 
         if (count($dadosRelatorio) == 0) {
@@ -100,11 +101,12 @@ class ConstrutorRelatorios {
 
     public function processaParametros($parametros, $sql) {
 
-        return;
-        echo '<pre>';
-        print_r($parametros);
-        echo "\n-------------------------------\n-------------------------------\n";
-        die($sql);
+        unset($parametros['__ANONIMOS__']);
+        foreach ($parametros as $nome => $valor) {
+            $$nome = $valor;
+        }
+        eval('$s="' . $sql.'";');
+        return $s;
     }
 
     public function layout($layout, $dados){

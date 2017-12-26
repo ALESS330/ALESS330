@@ -11,7 +11,7 @@ class Relatorios extends Controller {
         parent::__construct();
         $this->relatorio = new Relatorio();
     }
-    
+
     function index() {
         parent::render();
     }
@@ -19,12 +19,14 @@ class Relatorios extends Controller {
     function pagina($pagina = 1, $busca = " ") {
         parent::json($this->relatorio->pagina($pagina, $busca));
     }
-    
-    function propriedades($idRelatorio){
+
+    function propriedades($idRelatorio) {
         $dados['relatorio'] = $this->relatorio->get($idRelatorio);
         $dados['gruposRelatorio'] = $this->relatorio->getGrupos($idRelatorio);
+        $dados['parametros'] = $this->relatorio->getParametros($idRelatorio);
         parent::render($dados);
     }
+
     function cadastro($id = NULL) {
         $dados = array();
         if ($id) {
@@ -39,6 +41,8 @@ class Relatorios extends Controller {
     function salvar() {
         $dadosRelatorio = $_POST['relatorio'];
         $dadosRelatorio['codigo_sql'] = str_replace("'", "''", $dadosRelatorio['codigo_sql']);
+        $dadosRelatorio['relatorio_pai_id'] = is_numeric($dadosRelatorio['relatorio_pai_id']) === TRUE ? $dadosRelatorio['relatorio_pai_id'] : null;
+        $dadosRelatorio['parametrizado'] = ($dadosRelatorio['parametrizado'] == true) ? true : false;
         $sucesso = $this->relatorio->salvar($dadosRelatorio);
         if ($sucesso) {
             $_SESSION['mensagem']['sucesso'] = "Relatório salvo com sucesso.";
@@ -50,7 +54,7 @@ class Relatorios extends Controller {
         $relatorio = $this->relatorio->selectByEquals("nome", $nomeRelatorio);
         $usuario = $_SESSION['user'];
         if ($this->relatorio->checarAcesso($usuario->id_local, $relatorio[0]->id) !== TRUE) {
-            $_SESSION['mensagem']['erro'] = "Acesso não autorizado a este formulário.";
+            $_SESSION['mensagem']['erro'] = "Acesso não autorizado a este relatório.";
             parent::go2("Application->index");
             exit();
         }

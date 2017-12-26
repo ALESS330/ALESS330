@@ -1,12 +1,16 @@
 #{scriptPagina}
+<script type="text/javascript" src="/relator/assets/js/ace/ace.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
+        var editor = ace.edit("codigo-sql-relatorio");
+        editor.setTheme("ace/theme/monokai");
+        editor.getSession().setMode("ace/mode/sql");
         $('select').material_select();
         //$("#data-relatorio").mask("99/99/9999");
     });
-
 </script>
 #{/scriptPagina}
+
 
 <form class="form-horizontal" rol="form" id="form-cadastro-relatorio" action="@{Relatorios->salvar()}" method="POST" >
 
@@ -20,6 +24,7 @@
         $relatorio_pai = $relatorioAtual->relatorio_pai_id;
         $sql = $relatorioAtual->codigo_sql;
         $datasourceAtual = $relatorioAtual->datasource_id;
+        $checked = $relatorioAtual->parametrizado ? "checked" : "";
         ?>
         <input type="hidden" name="relatorio[id]" value="<?php echo $relatorioAtual->id; ?>"/>
     <?php } ?>
@@ -83,17 +88,23 @@
 
     <div class="row">
         <div class="input-field col s12">
-            <textarea required class="materialize-textarea" id="codigo-sql-relatorio" name="relatorio[codigo_sql]"><?php echo $sql; ?></textarea>
+            <div id="codigo-sql-relatorio"><?php echo $sql; ?></div>
             <label for="codigo-sql-relatorio">Código SQL</label>
         </div>
     </div>
 
     <div class="row">
         <div class="input-field col s12">
+            <input type="checkbox" class="form-control" id="relatorio-parametrizado" name="relatorio[parametrizado]" value="true" <?php echo $checked ?> >
+            <label for="relatorio-parametrizado">Parametrizado</label>
+        </div>
+    </div>
+        
+    <div class="row">
+        <div class="input-field col s12">
             <!--problemas com waves-effect-->
             <button class="btn btn-primary" type="submit" value="Cadastrar">Salvar</button>
             <a href="@{Relatorios->index()}" class="btn btn-danger">Cancelar</a>
         </div>
-    </div>
-
+    </div>        
 </form>

@@ -22,6 +22,27 @@ class Relatorio extends Model {
         }//if
         return $grupos;
     }
+    
+    public function listaTodos(){
+        $sql = 
+"
+SELECT 
+    d.nome nome_datasource
+    ,r.*
+FROM
+    relatorios.relatorios r
+    INNER JOIN relatorios.datasources d ON r.datasource_id = d.id
+ORDER BY
+    d.nome,
+    r.nome    
+";
+        return $this->db->consulta($sql);
+    }
+    
+    public function getParametros($relatorioId){
+        $parametro = new Parametro();
+        return  $parametro->selectBy(array('relatorio_id'=> $relatorioId));
+    }
 
     public function pagina($pagina, $busca) {
         $busca = str_replace(" ", "%", urldecode($busca));
