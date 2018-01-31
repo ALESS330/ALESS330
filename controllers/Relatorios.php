@@ -3,6 +3,9 @@
 $_CONTROLE = 'Relatorios';
 $_ROTULO = 'Relatórios';
 
+require_once dirname(dirname(dirname(__FILE__))) . "/formularios/models/Formulario.php";
+require_once dirname(dirname(dirname(__FILE__))) . "/formularios/utils/GeradorFormulario.php";
+
 class Relatorios extends Controller {
 
     private $relatorio;
@@ -43,17 +46,35 @@ class Relatorios extends Controller {
         $dadosRelatorio['codigo_sql'] = str_replace("'", "''", $dadosRelatorio['codigo_sql']);
         $dadosRelatorio['relatorio_pai_id'] = is_numeric($dadosRelatorio['relatorio_pai_id']) === TRUE ? $dadosRelatorio['relatorio_pai_id'] : null;
         $dadosRelatorio['parametrizado'] = ($dadosRelatorio['parametrizado'] == true) ? true : false;
-        $sucesso = $this->relatorio->salvar($dadosRelatorio);
-        if ($sucesso) {
-            $_SESSION['mensagem']['sucesso'] = "Relatório salvo com sucesso.";
-            parent::go2("Relatorios->index()");
-        }
+        $this->relatorio->salvar($dadosRelatorio);
+        $_SESSION['mensagem']['sucesso'] = "Relatório salvo com sucesso.";
+        parent::go2("Relatorios->index()");
     }
 
     function gerar($datasource, $nomeRelatorio) {
         $relatorio = $this->relatorio->selectByEquals("nome", $nomeRelatorio);
-        $usuario = $_SESSION['user'];
-        if ($this->relatorio->checarAcesso($usuario->id_local, $relatorio[0]->id) !== TRUE) {
+        $parametros = count($_GET);
+        /*
+        echo "<pre>";
+        print_r($_SESSION);
+        echo "</pre>";
+        die("Ok"); // */
+        if($relatorio[0]->parametrizado && !$parametros){
+            $_SESSION['action'] = $this->router->link("Relatorios->gerar($datasource,$nomeRelatorio)"); //$router
+            $_SESSION['isTela'] = true;
+            $_SESSION['toRelatorio'] = true;
+            $rt = new RelatorioTela();
+            $telaId = $rt->getBy(array("relatorio_id" => $relatorio[0]->id))->formulario_id;
+            $formulario = new Formulario();
+            $f = $formulario->getBy(array("id"=>$telaId));
+            /*
+            echo "<pre>Parametros: <br>\n";
+            print_r($_SESSION);
+            echo "</pre>";
+            die("Ok"); // */
+            parent::go2("/formularios/formulario/$f->nome");
+        }
+        if ($this->relatorio->checarAcesso($_SESSION['user']->login, $relatorio[0]->id) !== TRUE) {
             $_SESSION['mensagem']['erro'] = "Acesso não autorizado a este relatório.";
             parent::go2("Application->index");
             exit();

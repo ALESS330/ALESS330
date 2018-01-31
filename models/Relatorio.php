@@ -93,14 +93,13 @@ WHERE
         return $lista[0]->count;
     }
 
-    public function checarAcesso($usuarioId, $relatorioId) {
+    public function checarAcesso($login, $relatorioId) {
         $rg = new RelatorioGrupo();
         $g = new Grupo();
         $u = new Usuario();
 
-        $usuario = $u->selectByEquals("id", $usuarioId)[0];
         $relatorioGrupo = $rg->selectByEquals("relatorio_id", $relatorioId);
-        if ($g->isUserInGroup($usuario->login_aghu, "developer-relator", 'relator')) {
+        if ($g->isUserInGroup($_SESSION['login'], "developer-relator", 'relator')) {
             return TRUE;
         }
 

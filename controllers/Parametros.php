@@ -12,4 +12,12 @@ class Parametros extends Controller {
         $dados['parametro'] = $p->get($parametroId);
         parent::render($dados);
     }
+    
+    function salvar(){
+        //*
+        echo "<pre>";
+        print_r($_POST);
+        echo "</pre>";
+        die("Ok"); // */
+    }
 }

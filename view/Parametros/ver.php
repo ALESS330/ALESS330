@@ -29,7 +29,14 @@
 
     <div class="row">
         <div class="input-field col s12">
-            <select id="parametro-relatorio">
+            <input type="text" required class="form-control data" id="parametro-descricao" name="parametro[descricao]" value="<?= $parametro->descricao ?>">
+            <label for="parametro-descricao">Descrição</label>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="input-field col s12">
+            <select id="parametro-relatorio" name="parametro[relatorio_id]">
                 <option value="" >Selecione o Relatório</option>
 
                 <?php

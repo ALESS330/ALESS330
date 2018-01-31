@@ -2,9 +2,9 @@
 <script type="text/javascript" src="/relator/assets/js/ace/ace.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        var editor = ace.edit("codigo-sql-relatorio");
-        editor.setTheme("ace/theme/monokai");
-        editor.getSession().setMode("ace/mode/sql");
+//        var editor = ace.edit("codigo-sql-relatorio");
+//        editor.setTheme("ace/theme/monokai");
+//        editor.getSession().setMode("ace/mode/sql");
         $('select').material_select();
         //$("#data-relatorio").mask("99/99/9999");
     });
@@ -88,7 +88,7 @@
 
     <div class="row">
         <div class="input-field col s12">
-            <div id="codigo-sql-relatorio"><?php echo $sql; ?></div>
+            <textarea required class="materialize-textarea" id="codigo-sql-relatorio" name="relatorio[codigo_sql]"><?php echo $sql; ?></textarea>
             <label for="codigo-sql-relatorio">Código SQL</label>
         </div>
     </div>
