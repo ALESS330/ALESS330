@@ -41,6 +41,15 @@ class Relatorios extends Controller {
         parent::render($dados);
     }
 
+    function excluir($relatorioId){
+        $retorno = $this->relatorio->deleta($relatorioId);
+        if (!$retorno){
+            throw new Exception("Erro na exclusão do relatório $relatorioId");
+        }
+        $_SESSION['mensagem']['sucesso'] = "Relatório $relatorioId excluído com sucesso";
+        $this->index();
+    }
+    
     function salvar() {
         $dadosRelatorio = $_POST['relatorio'];
         $dadosRelatorio['codigo_sql'] = str_replace("'", "''", $dadosRelatorio['codigo_sql']);
@@ -54,11 +63,6 @@ class Relatorios extends Controller {
     function gerar($datasource, $nomeRelatorio) {
         $relatorio = $this->relatorio->selectByEquals("nome", $nomeRelatorio);
         $parametros = count($_GET);
-        /*
-        echo "<pre>";
-        print_r($_SESSION);
-        echo "</pre>";
-        die("Ok"); // */
         if($relatorio[0]->parametrizado && !$parametros){
             $_SESSION['action'] = $this->router->link("Relatorios->gerar($datasource,$nomeRelatorio)"); //$router
             $_SESSION['isTela'] = true;
@@ -67,13 +71,9 @@ class Relatorios extends Controller {
             $telaId = $rt->getBy(array("relatorio_id" => $relatorio[0]->id))->formulario_id;
             $formulario = new Formulario();
             $f = $formulario->getBy(array("id"=>$telaId));
-            /*
-            echo "<pre>Parametros: <br>\n";
-            print_r($_SESSION);
-            echo "</pre>";
-            die("Ok"); // */
             parent::go2("/formularios/formulario/$f->nome");
         }
+  
         if ($this->relatorio->checarAcesso($_SESSION['user']->login, $relatorio[0]->id) !== TRUE) {
             $_SESSION['mensagem']['erro'] = "Acesso não autorizado a este relatório.";
             parent::go2("Application->index");
