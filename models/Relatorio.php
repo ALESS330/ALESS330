@@ -93,7 +93,7 @@ WHERE
         return $lista[0]->count;
     }
 
-    public function checarAcesso($login, $relatorioId) {
+    public function checarAcesso($relatorioId) {
         $rg = new RelatorioGrupo();
         $g = new Grupo();
         $u = new Usuario();

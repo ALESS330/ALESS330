@@ -73,8 +73,9 @@ class Relatorios extends Controller {
             $f = $formulario->getBy(array("id"=>$telaId));
             parent::go2("/formularios/formulario/$f->nome");
         }
-  
-        if ($this->relatorio->checarAcesso($_SESSION['user']->login, $relatorio[0]->id) !== TRUE) {
+
+        if ($this->relatorio->checarAcesso($relatorio[0]->id) !== TRUE) { 
+            //arquivo enviado
             $_SESSION['mensagem']['erro'] = "Acesso não autorizado a este relatório.";
             parent::go2("Application->index");
             exit();
