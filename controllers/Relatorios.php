@@ -61,11 +61,12 @@ class Relatorios extends Controller {
     }
 
     function gerar($datasource, $nomeRelatorio) {
+        $_SESSION["FLUXO"][] = "Relatorios->gerar($datasource, $nomeRelatorio)";
         $relatorio = $this->relatorio->selectByEquals("nome", $nomeRelatorio);
         $parametros = count($_GET);
         if($relatorio[0]->parametrizado && !$parametros){
             $_SESSION['action'] = $this->router->link("Relatorios->gerar($datasource,$nomeRelatorio)"); //$router
-            $_SESSION['isTela'] = true;
+            $_SESSION['tela'] = true;
             $_SESSION['toRelatorio'] = true;
             $rt = new RelatorioTela();
             $telaId = $rt->getBy(array("relatorio_id" => $relatorio[0]->id))->formulario_id;
