@@ -98,19 +98,18 @@ WHERE
         $g = new Grupo();
         $u = new Usuario();
 
+        $usuario = $u->buscaPorLogin($_SESSION['login']);
         $relatorioGrupo = $rg->selectByEquals("relatorio_id", $relatorioId);
         if ($g->isUserInGroup($_SESSION['login'], "developer-relator", 'relator')) {
             return TRUE;
         }
-
         $listaGrupos = array();
         foreach ($relatorioGrupo as $i => $linhaRG) {
             $listaGrupos[] = $g->selectByEquals("id", $linhaRG->grupo_id)[0];
         }
         $isInGroup = FALSE;
-
         foreach ($listaGrupos as $grupo) {
-            $thisGroup = $g->isUserInGroup($usuario->login_aghu, $grupo->nome, 'relator');
+            $thisGroup = $g->isUserInGroup($_SESSION['login'], $grupo->nome, 'relator');
             if ($thisGroup == TRUE) {
                 $isInGroup = TRUE;
                 break;
