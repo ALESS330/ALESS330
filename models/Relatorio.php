@@ -39,9 +39,9 @@ ORDER BY
         return $this->db->consulta($sql);
     }
     
-    public function getParametros($relatorioId){
-        $parametro = new Parametro();
-        return  $parametro->selectBy(array('relatorio_id'=> $relatorioId));
+    public function getTelaParametros($relatorioId){
+        $relatorioTela = new RelatorioTela();
+        return  $relatorioTela->selectBy(array('relatorio_id'=> $relatorioId));
     }
 
     public function pagina($pagina, $busca) {

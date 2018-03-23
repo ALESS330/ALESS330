@@ -37,17 +37,13 @@
 
 <?php if ($relatorio->parametrizado) {?>
 <fieldset>
-    <legend>Parâmetros</legend>
+    <legend>Tela de parâmetros</legend>
+    <a href="#" class="right btn" title="Alterar"><i class="material-icons">edit</i></a>
     <div>
-        <?php if (count($parametros) > 0) { ?>
-        <p>Lista de parâmetros do relatório: </p>
         <ul>
-            <?php foreach ($parametros as $parametro) {  ?>
-            <li><a href="@{Parametros->ver(<?=$parametro->id?>)}"><?= $parametro->nome ?></a> - <?= $parametro->descricao ?></li>
-            <?php } ?>
+            <li><strong>Id: </strong><?= $telaParametros->id ?></li>
+            <li><strong>Nome: </strong><?= $telaParametros->nome_formulario ?></li>
         </ul>
-        <?php }//if count($parametros) ?>
-        
     </div>
 </fieldset>
 <?php } //if (parametrizado) ?>

@@ -26,7 +26,10 @@ class Relatorios extends Controller {
     function propriedades($idRelatorio) {
         $dados['relatorio'] = $this->relatorio->get($idRelatorio);
         $dados['gruposRelatorio'] = $this->relatorio->getGrupos($idRelatorio);
-        $dados['parametros'] = $this->relatorio->getParametros($idRelatorio);
+        $tp = $this->relatorio->getTelaParametros($idRelatorio);
+        $objFormulario = new Formulario();
+        $f = $objFormulario->get($tp[0]->formulario_id);
+        $dados['telaParametros'] = $f;
         parent::render($dados);
     }
 
