@@ -43,7 +43,7 @@ if ($logado) {
                 continue;
             }
             $controle = $rota[0];
-            $acao = $rota[1];
+            $acao = explode("(",$rota[1])[0];
             if ($permissor->autoriza($controle, $acao)) {
                 $menuResultante[$r][$action] = $rotulo;
             }
