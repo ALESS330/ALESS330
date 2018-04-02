@@ -3,8 +3,9 @@
 $corSistema = " blue-grey darken-4 ";
 $corSistemaRGB = "#263238";
 $nomeSistema = 'Relator';
-$tituloSistema = 'Sistema de emissão de relatórios';
+$tituloSistema = 'Sistema de Emissão de Relatórios';
 $sisdir = "relator";
 $contexto = "/$sisdir";
+$iconeSistema = "/$sisdir/assets/img/$nomeSistema.svg";
 
 require_once dirname(dirname(__FILE__))."/base/preindex.php";
