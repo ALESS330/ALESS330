@@ -39,7 +39,7 @@
                         $selected = "selected";
                     }
                     ?>
-                    <option value="<?php echo $datasource->id; ?>" <?php echo $selected ?>><?php echo $datasource->nome; ?> </option>
+                    <option value="<?= $datasource->id?>" <?= $selected ?>><?= $datasource->nome; ?> </option>
                 <?php } ?>
             </select>
             <label>Datasource</label>
