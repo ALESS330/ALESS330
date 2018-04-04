@@ -3,6 +3,8 @@
 $routes = array();
 
 $routes["/"] = "Application->index";
+$routes['/printer'] = "Application->printers";
+
 
 $routes["/relatorios"] = "Relatorios->index";
 $routes["/relatorio/{\d+:idRelatorio}/propriedades"] = "Relatorios->propriedades";
@@ -12,6 +14,7 @@ $routes["/relatorio/{\d+:idRelatorio}"] = "Relatorios->cadastro";
 $routes["/relatorios/salvar"] = "Relatorios->salvar";
 $routes["/relatorios/{\d+:pagina}/{.+:busca}"] = "Relatorios->pagina";
 $routes["/relatorios/{\d+:pagina}/"] = "Relatorios->pagina";
+$routes["/relatorio/{\w+:datasource}/{.+:nomeRelatorio}/print"] = "Relatorios->toPDF";
 $routes["/relatorio/{\w+:datasource}/{.+:nomeRelatorio}/pdf"] = "Relatorios->gerarPdf";
 $routes["/relatorio/{\w+:datasource}/{.+:nomeRelatorio}/excel"] = "Relatorios->gerarExcel";
 $routes["/relatorio/{\w+:datasource}/{.+:nomeRelatorio}/csv"] = "Relatorios->gerarCsv";

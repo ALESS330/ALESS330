@@ -26,7 +26,6 @@ class ConstrutorRelatorios {
             $sql = $sqlBanco;
         }
         $dados = $this->conector->getDados($sql, $conexaoRelatorio);
-
         if (count($dados) == 0) {
             throw new Exception("Relatório vazio: $nome");
         }

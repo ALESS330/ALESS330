@@ -14,7 +14,13 @@ class Application extends Controller {
         $this->render($dados);
     }
 
-    function espelha(){
+    function espelha() {
         print_r($_POST);
     }
+
+    function printers() {
+
+        
+    }
+
 }
