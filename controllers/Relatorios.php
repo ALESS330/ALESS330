@@ -64,7 +64,7 @@ class Relatorios extends Controller {
     }
 
     function gerar($datasource, $nomeRelatorio) {
-         //$_SESSION["FLUXO"][] = "Relatorios->gerar($datasource, $nomeRelatorio)";
+        //$_SESSION["FLUXO"][] = "Relatorios->gerar($datasource, $nomeRelatorio)";
         $relatorio = $this->relatorio->selectByEquals("nome", $nomeRelatorio);
         $parametros = count($_GET);
         if ($relatorio[0]->parametrizado && !$parametros) {
@@ -87,15 +87,17 @@ class Relatorios extends Controller {
         $construtor = new ConstrutorRelatorios();
         $data['relatorio'] = $construtor->getRelatorio($nomeRelatorio, $datasource);
         $data['estrutura'] = $construtor->getEstruturaRelatorio($nomeRelatorio);
-               $imprimir = $_GET['imprimir'];
+        $imprimir = $_GET['imprimir'];
+        $u = "";
         if ($imprimir) {
             $r = $this->toPDF($datasource, $nomeRelatorio, $data);
+            $u = explode("&imprimir=", $_SERVER['REQUEST_URI'])[0];
             if ($r) {
                 $this->mensagemSucesso("Relatório impresso com sucesso!");
             } else {
                 $this->mensagemSucesso("Falha ao imprimir o relatório!");
             }
-            $this->go2("/relator/relatorio/$datasource/$nomeRelatorio");
+            $this->go2("$u");
         }
         parent::render($data);
     }
@@ -147,7 +149,7 @@ class Relatorios extends Controller {
         require_once dirname("..") . "/view/Relatorios/layouts/$nomeRelatorio.prn.php";
         $ipp->setData($layout);
         $s = $ipp->printJob($pulseira);
-        if ($s == "successfull-ok"){
+        if ($s == "successfull-ok") {
             return TRUE;
         }
         return FALSE;
