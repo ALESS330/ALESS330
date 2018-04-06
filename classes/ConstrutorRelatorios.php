@@ -15,7 +15,7 @@ class ConstrutorRelatorios {
         $this->conector = new Conector();
     }
 
-    private function getDados($nome, $datasource) {
+    public function getDados($nome, $datasource) {
         $dadosRelatorio = $this->getEstruturaRelatorio($nome);
         $parametros = $_SESSION['parametros'];
         $sqlBanco = $dadosRelatorio[0]["codigo_sql"];

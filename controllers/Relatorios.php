@@ -64,7 +64,7 @@ class Relatorios extends Controller {
     }
 
     function gerar($datasource, $nomeRelatorio) {
-        //$_SESSION["FLUXO"][] = "Relatorios->gerar($datasource, $nomeRelatorio)";
+         //$_SESSION["FLUXO"][] = "Relatorios->gerar($datasource, $nomeRelatorio)";
         $relatorio = $this->relatorio->selectByEquals("nome", $nomeRelatorio);
         $parametros = count($_GET);
         if ($relatorio[0]->parametrizado && !$parametros) {
@@ -87,6 +87,16 @@ class Relatorios extends Controller {
         $construtor = new ConstrutorRelatorios();
         $data['relatorio'] = $construtor->getRelatorio($nomeRelatorio, $datasource);
         $data['estrutura'] = $construtor->getEstruturaRelatorio($nomeRelatorio);
+               $imprimir = $_GET['imprimir'];
+        if ($imprimir) {
+            $r = $this->toPDF($datasource, $nomeRelatorio, $data);
+            if ($r) {
+                $this->mensagemSucesso("Relatório impresso com sucesso!");
+            } else {
+                $this->mensagemSucesso("Falha ao imprimir o relatório!");
+            }
+            $this->go2("/relator/relatorio/$datasource/$nomeRelatorio");
+        }
         parent::render($data);
     }
 
@@ -124,30 +134,23 @@ class Relatorios extends Controller {
         parent::renderCsv($data);
     }
 
-    function toPDF($datasource, $nomeRelatorio) {
-        $raizStatic = dirname(dirname(dirname(__FILE__))) . "/static";
-        require_once $raizStatic . '/mpdf60/mpdf.php';
-
-        $data = array();
+    private function toPDF($datasource, $nomeRelatorio) {
         $construtor = new ConstrutorRelatorios();
-        $data['html'] = $construtor->getRelatorio($nomeRelatorio, $datasource);
+        $dados = $construtor->getDados($nomeRelatorio, $datasource);
+        require_once dirname("..") . '/classes/lib/print-ipp/PrintIPP.php';
 
-        ini_set("max_execution_time", 90);
-
-        try {
-            //5o parametro: margem-esquerda
-            //6o parametro: margem-dierita
-            //7o parametro: margem-superior
-            //8o parametro: margem-inferior
-            //9o parametro: margem-cabecalho
-            //10o parametro: margem-rodape
-            //11o parametro: orientação
-            $mpdf=new mPDF(null,[270,25], 0, 0, 0, 0, 0, 0, -5, 0, 'P');
-            $mpdf->WriteHTML($data['html']);
-            $mpdf->Output();
-        } catch (Exception $ex) {
-            echo $ex->getMessage();
+        $pulseira = $dados[0];
+        $ipp = new PrintIPP();
+        $ipp->setHost('10.18.0.38');
+        $ipp->setPrinterURI('/printers/HUGD_PULSEIRA_TESTE');
+        $ipp->setMimeMediaType("application/vnd.cups-raw");
+        require_once dirname("..") . "/view/Relatorios/layouts/$nomeRelatorio.prn.php";
+        $ipp->setData($layout);
+        $s = $ipp->printJob($pulseira);
+        if ($s == "successfull-ok"){
+            return TRUE;
         }
+        return FALSE;
     }
 
 }
