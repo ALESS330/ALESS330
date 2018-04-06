@@ -1,7 +1,6 @@
-<?php
-$pulseira = $dados[0];
-$imprimirUrl = $_SERVER['REQUEST_URI'] . "&imprimir=true";
-?>
+<?php $pulseira = $dados[0] ; 
+$imprimirUrl = $_SERVER['REQUEST_URI'] .  "&imprimir=true";
+        ?>
 <div class="fixed-action-btn imprimir">
     <a class="btn-floating btn-large red" href="<?= $imprimirUrl ?>">
         <i class="material-icons">print</i>
@@ -15,14 +14,10 @@ $imprimirUrl = $_SERVER['REQUEST_URI'] . "&imprimir=true";
     #pulseira{
         padding-left: 5.5cm;
         padding-top: 0.18cm;
-        /*        background-image: url('/relator/assets/img/logo_sistemas_cinza.png');*/
+        background-image: url('/relator/assets/img/logo_sistemas_cinza.png');
         background-repeat: no-repeat;
         background-size: auto 90%;
         background-position: 5cm;
-        border: 0.5px solid #9e9e9e;
-        border-radius: 10px;
-        height: 2.8cm;
-
     }
     div.small{
         font-size: 6pt;
@@ -65,7 +60,7 @@ $imprimirUrl = $_SERVER['REQUEST_URI'] . "&imprimir=true";
         display: block;
     }
 </style>
-<div id="pulseira" class="card">
+<div id="pulseira">
     <div id="prontuario">
         <div class="strong"><?= $pulseira['prontuario'] ?> </div>
         <div class="small">Prontuário</div>
