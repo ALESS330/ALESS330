@@ -6,12 +6,12 @@
                 font-family: sans-serif;
             }
             #pulseira{
-                padding-left: 5cm;
+                padding-left: 5.5cm;
                 padding-top: 0.18cm;
                 background-image: url('/relator/assets/img/logo_sistemas_cinza.png');
                 background-repeat: no-repeat;
                 background-size: auto 90%;
-                background-position: 4.5cm;
+                background-position: 5cm;
             }
             div.small{
                 font-size: 6pt;
