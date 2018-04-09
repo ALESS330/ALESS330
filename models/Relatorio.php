@@ -39,6 +39,42 @@ ORDER BY
         return $this->db->consulta($sql);
     }
     
+    
+    public function listaInicial($username){
+        $sql = 
+"
+SELECT 
+    d.nome nome_datasource
+    , g.nome grupo
+    , u.username username
+    ,r.*
+FROM
+    relatorios.relatorios r
+    INNER JOIN relatorios.datasources d ON r.datasource_id = d.id
+    LEFT JOIN relatorios.relatorio_grupo rg ON rg.relatorio_id = r.id
+    LEFT JOIN public.grupos g ON g.id = rg.grupo_id
+    LEFT JOIN public.usuario_grupo ug ON ug.grupo_id = rg.grupo_id
+    LEFT JOIN public.usuarios u ON u.id = ug.usuario_id
+    -- Desenvolvedores
+WHERE TRUE 
+    AND (
+	r.publico = TRUE 
+	OR (u.username = '$username')
+	OR (
+		SELECT count(u.id) > 0
+		FROM public.usuarios u 
+		INNER JOIN public.usuario_grupo ug ON u.id = ug.usuario_id
+		INNER JOIN public.grupos g ON g.id = ug.grupo_id
+		WHERE g.nome = 'developer-relator' AND u.username = '$username'
+		) -- ids devs
+	) --devs
+ORDER BY
+    d.nome,
+    r.nome    
+";
+        return $this->db->consulta($sql);
+    }    
+    
     public function getTelaParametros($relatorioId){
         $relatorioTela = new RelatorioTela();
         return  $relatorioTela->selectBy(array('relatorio_id'=> $relatorioId));
@@ -97,12 +133,16 @@ WHERE
         $rg = new RelatorioGrupo();
         $g = new Grupo();
         $u = new Usuario();
-
+        $r = $this->get($relatorioId);
         $usuario = $u->buscaPorLogin($_SESSION['login']);
         $relatorioGrupo = $rg->selectByEquals("relatorio_id", $relatorioId);
-        if ($g->isUserInGroup($_SESSION['login'], "developer-relator", 'relator')) {
+        if ($r->publico || $g->isUserInGroup($_SESSION['login'], "developer-relator", 'relator')){
             return TRUE;
         }
+        if($relatorioGrupo === NULL && $r->publico == FALSE){
+            throw new Exception("Relatório restrito sem grupos definidos");
+        }
+        
         $listaGrupos = array();
         foreach ($relatorioGrupo as $i => $linhaRG) {
             $listaGrupos[] = $g->selectByEquals("id", $linhaRG->grupo_id)[0];
@@ -116,9 +156,5 @@ WHERE
             }//if
         }//foreach 
         return $isInGroup;
-    }
-
-// function checarAcesso
-}
-
-// classe
+    }// function checarAcesso
+}// classe

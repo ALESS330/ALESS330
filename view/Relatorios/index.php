@@ -43,9 +43,9 @@
     <td>{{:datasource}}</td>
     <td>
         <div class="acoes right">        
-            <a href="/relator/relatorio/{{:id}}/propriedades" class="btn waves-effect waves-light " title="Propriedades"><i class="material-icons">settings</i></a>
-            <a href="/relator/relatorio/{{:id}}" class="btn indigo darken-3 waves-effect waves-light " title="Editar"><i class="material-icons">edit</i></a>
-            <a href="/relator/relatorio/{{:id}}/excluir" class="btn bt-excluir red darken-3 waves-effect waves-light" title="Excluir"><i class="material-icons">delete</i></a>
+            <a href="/relator/relatorio/{{:id}}/propriedades" title="Propriedades"><i class="material-icons">settings</i></a>
+            <a href="/relator/relatorio/{{:id}}" title="Editar"><i class="material-icons">edit</i></a>
+            <a href="/relator/relatorio/{{:id}}/excluir" class="bt-excluir" title="Excluir"><i class="material-icons">delete</i></a>
         </div>
     </td>
 </tr>

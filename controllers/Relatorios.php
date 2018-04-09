@@ -9,10 +9,13 @@ require_once dirname(dirname(dirname(__FILE__))) . "/formularios/utils/GeradorFo
 class Relatorios extends Controller {
 
     private $relatorio;
+    private $construtor;
 
     public function __construct() {
         parent::__construct();
         $this->relatorio = new Relatorio();
+        $this->construtor = new ConstrutorRelatorios();
+        $this->setObjeto($this->relatorio);
     }
 
     function index() {
@@ -24,7 +27,7 @@ class Relatorios extends Controller {
     }
 
     function propriedades($idRelatorio) {
-        $dados['relatorio'] = $this->relatorio->get($idRelatorio);
+        $dados['relatorio'] = $this->buscaOuNulo($idRelatorio);
         $dados['gruposRelatorio'] = $this->relatorio->getGrupos($idRelatorio);
         $tp = $this->relatorio->getTelaParametros($idRelatorio);
         $objFormulario = new Formulario();
@@ -36,11 +39,10 @@ class Relatorios extends Controller {
     function cadastro($id = NULL) {
         $dados = array();
         if ($id) {
-            $dados['relatorioAtual'] = $this->relatorio->get($id);
+            $dados['relatorioAtual'] = $this->buscaOuNulo($id);
         }
         $datasource = new Datasource();
-        $datasources = $datasource->lista();
-        $dados['datasources'] = $datasources;
+        $dados['datasources'] = $datasource->lista();
         parent::render($dados);
     }
 
@@ -49,7 +51,7 @@ class Relatorios extends Controller {
         if (!$retorno) {
             throw new Exception("Erro na exclusão do relatório $relatorioId");
         }
-        $_SESSION['mensagem']['sucesso'] = "Relatório $relatorioId excluído com sucesso";
+        $this->mensagemSucesso("Relatório $relatorioId excluído com sucesso");
         $this->index();
     }
 
@@ -59,18 +61,15 @@ class Relatorios extends Controller {
         $dadosRelatorio['relatorio_pai_id'] = is_numeric($dadosRelatorio['relatorio_pai_id']) === TRUE ? $dadosRelatorio['relatorio_pai_id'] : null;
         $dadosRelatorio['parametrizado'] = ($dadosRelatorio['parametrizado'] == true) ? true : false;
         $this->relatorio->salvar($dadosRelatorio);
-        $_SESSION['mensagem']['sucesso'] = "Relatório salvo com sucesso.";
+        $this->mensagemSucesso("Relatório salvo com sucesso.");
         parent::go2("Relatorios->index()");
     }
 
     function gerar($datasource, $nomeRelatorio) {
-        //$_SESSION["FLUXO"][] = "Relatorios->gerar($datasource, $nomeRelatorio)";
         $relatorio = $this->relatorio->selectByEquals("nome", $nomeRelatorio);
         $parametros = count($_GET);
         if ($relatorio[0]->parametrizado && !$parametros) {
             $_SESSION['action'] = $this->router->link("Relatorios->gerar($datasource,$nomeRelatorio)"); //$router
-//            $_SESSION['tela'] = true;
-//            $_SESSION['toRelatorio'] = true;
             $rt = new RelatorioTela();
             $telaId = $rt->getBy(array("relatorio_id" => $relatorio[0]->id))->formulario_id;
             $formulario = new Formulario();
@@ -79,10 +78,8 @@ class Relatorios extends Controller {
         }
 
         if ($this->relatorio->checarAcesso($relatorio[0]->id) !== TRUE) {
-            //arquivo enviado
-            $_SESSION['mensagem']['erro'] = "Acesso não autorizado a este relatório.";
-            parent::go2("Application->index");
-            exit();
+            $this->mensagemInfo("Acesso não autorizado a este relatório.");
+            $this->go2("Application->index");
         }
         $construtor = new ConstrutorRelatorios();
         $data['relatorio'] = $construtor->getRelatorio($nomeRelatorio, $datasource);
@@ -95,7 +92,7 @@ class Relatorios extends Controller {
             if ($r) {
                 $this->mensagemSucesso("Relatório impresso com sucesso!");
             } else {
-                $this->mensagemSucesso("Falha ao imprimir o relatório!");
+                $this->mensagemErro("Falha ao imprimir o relatório!");
             }
             $this->go2("$u");
         }
@@ -106,7 +103,6 @@ class Relatorios extends Controller {
         $data = array();
         $construtor = new ConstrutorRelatorios();
         $data['html'] = $construtor->getRelatorio($nomeRelatorio, $datasource);
-
         $estrutura = $construtor->getEstruturaRelatorio($nomeRelatorio)[0];
         $data['nome'] = $estrutura['nome_relatorio'];
         $data['descricao'] = $estrutura['descricao'];
@@ -137,6 +133,7 @@ class Relatorios extends Controller {
     }
 
     private function toPDF($datasource, $nomeRelatorio) {
+        $impressora = '/printers/HUGD_PULSEIRA_TESTE';
         $construtor = new ConstrutorRelatorios();
         $dados = $construtor->getDados($nomeRelatorio, $datasource);
         require_once dirname("..") . '/classes/lib/print-ipp/PrintIPP.php';
@@ -144,7 +141,7 @@ class Relatorios extends Controller {
         $pulseira = $dados[0];
         $ipp = new PrintIPP();
         $ipp->setHost('10.18.0.38');
-        $ipp->setPrinterURI('/printers/HUGD_PULSEIRA_TESTE');
+        $ipp->setPrinterURI($impressora);
         $ipp->setMimeMediaType("application/vnd.cups-raw");
         require_once dirname("..") . "/view/Relatorios/layouts/$nomeRelatorio.prn.php";
         $ipp->setData($layout);
