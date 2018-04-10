@@ -27,12 +27,16 @@ class Relatorios extends Controller {
     }
 
     function propriedades($idRelatorio) {
-        $dados['relatorio'] = $this->buscaOuNulo($idRelatorio);
+        $relatorio = $this->buscaOuNulo($idRelatorio);
+        $dados['relatorio'] = $relatorio;
         $dados['gruposRelatorio'] = $this->relatorio->getGrupos($idRelatorio);
-        $tp = $this->relatorio->getTelaParametros($idRelatorio);
-        $objFormulario = new Formulario();
-        $f = $objFormulario->get($tp[0]->formulario_id);
-        $dados['telaParametros'] = $f;
+        if ($relatorio->parametrizado) {
+            $tp = $this->relatorio->getTelaParametros($idRelatorio);
+            $objFormulario = new Formulario();
+            $f = $objFormulario->get($tp[0]->formulario_id);
+            $dados['telaParametros'] = $f;
+            $dados['telas'] = $objFormulario->listaTelas();
+        }
         parent::render($dados);
     }
 
@@ -74,6 +78,8 @@ class Relatorios extends Controller {
             $telaId = $rt->getBy(array("relatorio_id" => $relatorio[0]->id))->formulario_id;
             $formulario = new Formulario();
             $f = $formulario->getBy(array("id" => $telaId));
+            global $corSistema;
+            $_SESSION['corEmprestada'] = $corSistema;
             parent::go2("/formularios/tela-relatorio/$f->nome");
         }
 
@@ -146,6 +152,7 @@ class Relatorios extends Controller {
         require_once dirname("..") . "/view/Relatorios/layouts/$nomeRelatorio.prn.php";
         $ipp->setData($layout);
         $s = $ipp->printJob($pulseira);
+        
         if ($s == "successfull-ok") {
             return TRUE;
         }

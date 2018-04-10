@@ -19,10 +19,11 @@
                 <span  id="totalizador" style="display: none" class="badge blue white-text">%d registros de %d</span>
             </tr>
             <tr>
-                <th>Nome</th>
+                <th></th>
                 <th>Descrição</th>
+                <th>Nome</th>
                 <th>Datasource</th>
-                <th>Ação</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -36,10 +37,11 @@
 </div>
 <script type="text/x-jsrender" id="tabela-relatorios-tmpl">
 <tr>
+ <td><i class="material-icons">{{:icone}}</i></td>
+    <td>{{:descricao}}</td>
     <td title="{{:descricao}}">
         <a href="/relator/relatorio/{{:datasource}}/{{:nome}}">{{:nome}}</a>
-    </td>
-    <td>{{:descricao}}</td>
+    </td>    
     <td>{{:datasource}}</td>
     <td>
         <div class="acoes right">        

@@ -1,3 +1,6 @@
+<?php global $corSistemaRGB; 
+$grupoAtual = "";
+?>
 <style>
     .lista-relatorios{
         display: flex;
@@ -19,7 +22,7 @@
     .lista-relatorios .relatorio .icone{
         width: 80px;
         height: 80px;
-        background-color:  silver;
+        background-color:  <?= $corSistemaRGB ?>;
         border-top-left-radius: 5px;
         border-bottom-left-radius: 5px;
         float: left;
@@ -49,16 +52,12 @@
         border-top-right-radius: 5px;
     }
 
+    a .relatorio .icone i{
+        color: white !important;
+    }
+
 </style>
 
-<?php
-$icones['almoxarifado'] = "access_alarm";
-$icones['internação-relator'] = "edit";
-$icones[''] = "";
-
-$coresIcones['almoxarifado'] = ['red', 'white-text'];
-$coresIcones['internação-relator'] = ['yellow', 'white-text'];
-?>
 <h4>Lista de Relatórios</h4>
 
 
@@ -68,7 +67,7 @@ $coresIcones['internação-relator'] = ['yellow', 'white-text'];
             <div class="relatorio card hoverable">
                 <strong><?= $relatorio->nome ?>&nbsp;</strong>
                 <div class="icone <?= implode(" ", $coresIcones[$relatorio->grupo]) ?>">
-                    <i class="material-icons"><?= $icones[$relatorio->grupo] ?></i>
+                    <i class="material-icons"><?= $relatorio->icone ?></i>
                 </div>
                 <div class="descricao">
                     <span title="<?= $relatorio->descricao ?>"><?= $relatorio->descricao ?></span>

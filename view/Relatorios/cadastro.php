@@ -102,6 +102,13 @@
         
     <div class="row">
         <div class="input-field col s12">
+            <input type="text" class="form-control" id="icone-relatorio" name="relatorio[icone]" value="<?=$relatorioAtual->icone; ?>">
+            <label for="icone-relatorio">Zícone</label>
+        </div>
+    </div>        
+        
+    <div class="row">
+        <div class="input-field col s12">
             <!--problemas com waves-effect-->
             <button class="btn btn-primary" type="submit" value="Cadastrar">Salvar</button>
             <a href="@{Relatorios->index()}" class="btn btn-danger">Cancelar</a>

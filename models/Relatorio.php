@@ -43,10 +43,9 @@ ORDER BY
     public function listaInicial($username){
         $sql = 
 "
-SELECT 
+SELECT DISTINCT
     d.nome nome_datasource
     , g.nome grupo
-    , u.username username
     ,r.*
 FROM
     relatorios.relatorios r
@@ -69,7 +68,7 @@ WHERE TRUE
 		) -- ids devs
 	) --devs
 ORDER BY
-    d.nome,
+    g.nome,
     r.nome    
 ";
         return $this->db->consulta($sql);
@@ -83,10 +82,12 @@ ORDER BY
     public function pagina($pagina, $busca) {
         $busca = str_replace(" ", "%", urldecode($busca));
         $start = ($pagina - 1) * $this->NUMERO_LINHAS;
-        $sql = "SELECT 
+        $sql = "
+SELECT 
     r.id, 
     r.nome, 
     r.descricao, 
+    r.icone,
     d.nome as datasource 
 FROM 
     relatorios.relatorios r INNER JOIN 

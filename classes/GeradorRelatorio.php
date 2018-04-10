@@ -33,6 +33,9 @@ class GeradorRelatorio {
     }
 
     function geraCabecalho(&$dados) {
+        if (count($dados) === 0){
+            return "<thead><tr><th>Relatório</th></tr></thead>";
+        }
         $linha = $dados[0];
         if (isset($dados["titulo"])) {
             $titulo = $this->getTituloRelatorio($dados["titulo"], "titulo-grupos-usuarios");
