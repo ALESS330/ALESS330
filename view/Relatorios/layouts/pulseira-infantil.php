@@ -1,34 +1,48 @@
 <?php
 $pulseira = $dados[0];
-$imprimirUrl = $_SERVER['REQUEST_URI'] . "&imprimir=true";
+$imprimirUrl = $_SERVER['REQUEST_URI']; // . "&imprimir=true";
 ?>
-<div class="fixed-action-btn imprimir">
-    <a class="btn-floating btn-large red" href="<?= $imprimirUrl ?>">
-        <i class="material-icons">print</i>
-    </a>
-</div>
 
+#{scriptPagina}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("select").material_select();
+        $('select[required]').css({
+            display: 'inline',
+            position: 'absolute',
+            float: 'left',
+            padding: 0,
+            margin: 0,
+            border: '1px solid rgba(255,255,255,0)',
+            height: 0,
+            width: 0,
+            top: '2em',
+            left: '3em',
+            opacity: 0
+        });
+    });
+</script>
+#{/scriptPagina}
 <style type="text/css">
     .fixed-action-btn:not(.imprimir){
         display: none;
     }
     #pulseira{
-        padding-left: 5.5cm;
-        padding-top: 0.18cm;
-        /*        background-image: url('/relator/assets/img/logo_sistemas_cinza.png');*/
+        padding: none;
+        padding-left: 3.5cm;
+        margin: none;
+        background-image: url(/relator/assets/img/pulseira-infantil-bg.svg);
         background-repeat: no-repeat;
-        background-size: auto 90%;
-        background-position: 5cm;
-        border: 0.5px solid #9e9e9e;
-        border-radius: 10px;
+        background-size: 17.7cm 2.5cm;
+        border: none;
         height: 2.8cm;
-
+        box-shadow: none;
     }
     div.small{
         font-size: 6pt;
     }
     div.strong{
-        font-size: 10pt;
+        font-size: 8pt;
         font-weight: bold;
     }
     div.nome-paciente{
@@ -45,7 +59,7 @@ $imprimirUrl = $_SERVER['REQUEST_URI'] . "&imprimir=true";
 
     #prontuario .strong{
         display: block;
-        font-size: 14pt;
+        font-size: 12pt;
         padding-top: 0.75cm;
     }
 
@@ -58,30 +72,58 @@ $imprimirUrl = $_SERVER['REQUEST_URI'] . "&imprimir=true";
         width: 18cm;
         height: 2.3cm;
         float: left;
-        padding-top: 5px;
+        padding-top: 10px;
     }
     .small, .strong{
         line-height: 1.15;
         display: block;
     }
+    div.container{
+        padding-top: 0.5cm;
+    }
+
 </style>
-<div id="pulseira" class="card">
-    <div id="prontuario">
-        <div class="strong"><?= $pulseira['prontuario'] ?> </div>
-        <div class="small">Prontuário</div>
+
+
+<form action="<?= $imprimirUrl ?>">
+    <div class="fixed-action-btn imprimir">
+        <input type="hidden" name="prontuario" value="<?= $pulseira['prontuario'] ?>" />
+        <input type="hidden" name="imprimir" value="true" />
+        <button class="btn-floating btn-large red">
+            <i class="material-icons">print</i>
+        </button>
     </div>
-    <div id="dados">
-        <div>
-            <div class="small">Nome: </div>
-            <div class="strong nome-paciente"><?= $pulseira['nome'] ?> </div>
+
+    <div id="pulseira">
+
+        <div id="prontuario">
+            <div class="strong"><?= $pulseira['prontuario'] ?> </div>
+            <div class="small">Prontuário</div>
         </div>
-        <div>
-            <div class="small">Nome da mãe: </div>
-            <div class="strong"><?= $pulseira['nome_mae'] ?> </div>
-        </div>
-        <div>
-            <div class="small">Data de Nascimento: </div>
-            <div class="strong"><?= $pulseira['data_nascimento'] ?> </div>
+        <div id="dados">
+            <div>
+                <div class="small">Nome: </div>
+                <div class="strong nome-paciente"><?= $pulseira['nome'] ?> </div>
+            </div>
+            <div>
+                <div class="small">Nome da mãe: </div>
+                <div class="strong"><?= $pulseira['nome_mae'] ?> </div>
+            </div>
+            <div>
+                <div class="small">Data de Nascimento: </div>
+                <div class="strong"><?= $pulseira['data_nascimento'] ?> </div>
+            </div>
         </div>
     </div>
-</div>
+    <br />
+    <select name="impressora" required>
+        <option value="">Selecione e Impressora</option>
+        <option value="HUGD_PULSEIRA_TESTE">TESTE SGPTI</option>
+        <option value="HUGD-PULS-COBS02">Centro Obstétrico - Neonato</option>
+        <option value="HUGD-PULS-COBS01">Centro Obstétrico - Adulto</option>
+        <option value="HUGD-PULS-RINTER01">Recepção de Internação - Adulto</option>
+        <!--option value="HUGD-PULS-RINTER01">Recepção de Internação - Pediátrico</option -->
+        <option value="HUGD-PULS-PAGO01">Recepção de Maternidade - Adulto</option>
+        <!--option value="HUGD-PULS-PAGO01">Recepção de Maternidade - Neonato</option -->        
+    </select>
+</form>

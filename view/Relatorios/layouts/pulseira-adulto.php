@@ -33,7 +33,7 @@ $imprimirUrl = $_SERVER['REQUEST_URI']; // . "&imprimir=true";
         margin: none;
         background-image: url(/relator/assets/img/pulseira-adulto-bg.svg);
         background-repeat: no-repeat;
-        background-size: 27.94cm 2.54cm;
+        background-size: 27.8cm 2.5cm;
         border: none;
         height: 2.8cm;
         box-shadow: none;
