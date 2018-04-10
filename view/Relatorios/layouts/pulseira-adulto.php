@@ -1,13 +1,18 @@
 <?php
 $pulseira = $dados[0];
-$imprimirUrl = $_SERVER['REQUEST_URI'] . "&imprimir=true";
+$imprimirUrl = $_SERVER['REQUEST_URI']; // . "&imprimir=true";
 ?>
-<div class="fixed-action-btn imprimir">
-    <a class="btn-floating btn-large red" href="<?= $imprimirUrl ?>">
-        <i class="material-icons">print</i>
-    </a>
-</div>
 
+#{scriptPagina}
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $("select").material_select();
+
+        $("select[required]").css({display: "inline", height: 0, padding: 0, width: 0});
+    });
+</script>
+#{/scriptPagina}
 <style type="text/css">
     .fixed-action-btn:not(.imprimir){
         display: none;
@@ -17,12 +22,10 @@ $imprimirUrl = $_SERVER['REQUEST_URI'] . "&imprimir=true";
         padding-left: 3.5cm;
         margin: none;
         background-repeat: no-repeat;
-        background-size: auto 90%;
-        background-position: 5cm;
-        border: 0.5px solid #9e9e9e;
-        border-radius: 10px;
-        height: 2.5cm;
-        width: 27cm;
+        background-size: 27.94cm 2.54cm;
+        border: none;
+        height: 2.8cm;
+        box-shadow: none;
     }
     div.small{
         font-size: 6pt;
@@ -64,12 +67,21 @@ $imprimirUrl = $_SERVER['REQUEST_URI'] . "&imprimir=true";
         line-height: 1.15;
         display: block;
     }
-    .container {
-        overflow: hidden !important;
+    div.container{
+        padding-top: 0.5cm;
     }
+
 </style>
 
-<div id="pulseira" class="card">
+<div id="pulseira">
+    <form action="<?= $imprimirUrl ?>">
+    <div class="fixed-action-btn imprimir">
+        <input type="hidden" name="prontuario" value="<?= $pulseira['prontuario'] ?>" />
+        <input type="hidden" name="imprimir" value="true" />
+        <button class="btn-floating btn-large red">
+            <i class="material-icons">print</i>
+        </button>
+
     <div id="prontuario">
         <div class="strong"><?= $pulseira['prontuario'] ?> </div>
         <div class="small">Prontuário</div>
@@ -88,5 +100,17 @@ $imprimirUrl = $_SERVER['REQUEST_URI'] . "&imprimir=true";
             <div class="strong"><?= $pulseira['data_nascimento'] ?> </div>
         </div>
     </div>
+    <br />
+    <select name="impressora" required>
+        <option value="">Selecione e Impressora</option>
+        <option value="HUGD_PULSEIRA_TESTE">TESTE SGPTI</option>
+        <option value="HUGD-PULS-COBS02">Centro Obstétrico - Neonato</option>
+        <option value="HUGD-PULS-COBS01">Centro Obstétrico - Adulto</option>
+        <option value="HUGD-PULS-RINTER01">Recepção de Internação - Adulto</option>
+        <!--option value="HUGD-PULS-RINTER01">Recepção de Internação - Pediátrico</option -->
+        <option value="HUGD-PULS-PAGO01">Recepção de Maternidade - Adulto</option>
+        <!--option value="HUGD-PULS-PAGO01">Recepção de Maternidade - Neonato</option -->        
+    </select>
+</form>
 </div>
 </body>

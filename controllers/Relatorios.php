@@ -91,14 +91,18 @@ class Relatorios extends Controller {
         $data['relatorio'] = $construtor->getRelatorio($nomeRelatorio, $datasource);
         $data['estrutura'] = $construtor->getEstruturaRelatorio($nomeRelatorio);
         $imprimir = $_GET['imprimir'];
-        $u = "";
+        $impressora = $_GET['impressora'];
+        $u = explode("&imprimir=", $_SERVER['REQUEST_URI'])[0];
         if ($imprimir) {
-            $r = $this->toPDF($datasource, $nomeRelatorio, $data);
-            $u = explode("&imprimir=", $_SERVER['REQUEST_URI'])[0];
-            if ($r) {
-                $this->mensagemSucesso("Relatório impresso com sucesso!");
+            if (!$impressora) {
+                $this->mensagemAlerta("Selecione a impressora");
             } else {
-                $this->mensagemErro("Falha ao imprimir o relatório!");
+                $r = $this->toPDF($datasource, $nomeRelatorio, $impressora);
+                if ($r) {
+                    $this->mensagemSucesso("Relatório impresso com sucesso!");
+                } else {
+                    $this->mensagemErro("Falha ao imprimir o relatório!");
+                }
             }
             $this->go2("$u");
         }
@@ -138,8 +142,8 @@ class Relatorios extends Controller {
         parent::renderCsv($data);
     }
 
-    private function toPDF($datasource, $nomeRelatorio) {
-        $impressora = '/printers/HUGD_PULSEIRA_TESTE';
+    private function toPDF($datasource, $nomeRelatorio, $impressora) {
+        $impressora = "/printers/$impressora";
         $construtor = new ConstrutorRelatorios();
         $dados = $construtor->getDados($nomeRelatorio, $datasource);
         require_once dirname("..") . '/classes/lib/print-ipp/PrintIPP.php';
@@ -152,7 +156,7 @@ class Relatorios extends Controller {
         require_once dirname("..") . "/view/Relatorios/layouts/$nomeRelatorio.prn.php";
         $ipp->setData($layout);
         $s = $ipp->printJob($pulseira);
-        
+
         if ($s == "successfull-ok") {
             return TRUE;
         }
