@@ -13,16 +13,16 @@ $imprimirUrl = $_SERVER['REQUEST_URI'] . "&imprimir=true";
         display: none;
     }
     #pulseira{
-        padding-left: 5.5cm;
-        padding-top: 0.18cm;
-        /*        background-image: url('/relator/assets/img/logo_sistemas_cinza.png');*/
+        padding: none;
+        padding-left: 3.5cm;
+        margin: none;
         background-repeat: no-repeat;
         background-size: auto 90%;
         background-position: 5cm;
         border: 0.5px solid #9e9e9e;
         border-radius: 10px;
-        height: 2.8cm;
-
+        height: 2.5cm;
+        width: 27cm;
     }
     div.small{
         font-size: 6pt;
@@ -64,7 +64,11 @@ $imprimirUrl = $_SERVER['REQUEST_URI'] . "&imprimir=true";
         line-height: 1.15;
         display: block;
     }
+    .container {
+        overflow: hidden !important;
+    }
 </style>
+
 <div id="pulseira" class="card">
     <div id="prontuario">
         <div class="strong"><?= $pulseira['prontuario'] ?> </div>
