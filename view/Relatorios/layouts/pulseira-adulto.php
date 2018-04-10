@@ -6,10 +6,20 @@ $imprimirUrl = $_SERVER['REQUEST_URI']; // . "&imprimir=true";
 #{scriptPagina}
 <script type="text/javascript">
     $(document).ready(function () {
-
         $("select").material_select();
-
-        $("select[required]").css({display: "inline", height: 0, padding: 0, width: 0});
+        $('select[required]').css({
+            display: 'inline',
+            position: 'absolute',
+            float: 'left',
+            padding: 0,
+            margin: 0,
+            border: '1px solid rgba(255,255,255,0)',
+            height: 0,
+            width: 0,
+            top: '2em',
+            left: '3em',
+            opacity: 0
+        });
     });
 </script>
 #{/scriptPagina}
@@ -21,6 +31,7 @@ $imprimirUrl = $_SERVER['REQUEST_URI']; // . "&imprimir=true";
         padding: none;
         padding-left: 3.5cm;
         margin: none;
+        background-image: url(/relator/assets/img/pulseira-adulto-bg.svg);
         background-repeat: no-repeat;
         background-size: 27.94cm 2.54cm;
         border: none;
@@ -73,31 +84,35 @@ $imprimirUrl = $_SERVER['REQUEST_URI']; // . "&imprimir=true";
 
 </style>
 
-<div id="pulseira">
-    <form action="<?= $imprimirUrl ?>">
+
+<form action="<?= $imprimirUrl ?>">
     <div class="fixed-action-btn imprimir">
         <input type="hidden" name="prontuario" value="<?= $pulseira['prontuario'] ?>" />
         <input type="hidden" name="imprimir" value="true" />
         <button class="btn-floating btn-large red">
             <i class="material-icons">print</i>
         </button>
-
-    <div id="prontuario">
-        <div class="strong"><?= $pulseira['prontuario'] ?> </div>
-        <div class="small">Prontuário</div>
     </div>
-    <div id="dados">
-        <div>
-            <div class="small">Nome: </div>
-            <div class="strong nome-paciente"><?= $pulseira['nome'] ?> </div>
+
+    <div id="pulseira">
+
+        <div id="prontuario">
+            <div class="strong"><?= $pulseira['prontuario'] ?> </div>
+            <div class="small">Prontuário</div>
         </div>
-        <div>
-            <div class="small">Nome da mãe: </div>
-            <div class="strong"><?= $pulseira['nome_mae'] ?> </div>
-        </div>
-        <div>
-            <div class="small">Data de Nascimento: </div>
-            <div class="strong"><?= $pulseira['data_nascimento'] ?> </div>
+        <div id="dados">
+            <div>
+                <div class="small">Nome: </div>
+                <div class="strong nome-paciente"><?= $pulseira['nome'] ?> </div>
+            </div>
+            <div>
+                <div class="small">Nome da mãe: </div>
+                <div class="strong"><?= $pulseira['nome_mae'] ?> </div>
+            </div>
+            <div>
+                <div class="small">Data de Nascimento: </div>
+                <div class="strong"><?= $pulseira['data_nascimento'] ?> </div>
+            </div>
         </div>
     </div>
     <br />
@@ -112,5 +127,3 @@ $imprimirUrl = $_SERVER['REQUEST_URI']; // . "&imprimir=true";
         <!--option value="HUGD-PULS-PAGO01">Recepção de Maternidade - Neonato</option -->        
     </select>
 </form>
-</div>
-</body>

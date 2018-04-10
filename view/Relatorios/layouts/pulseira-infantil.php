@@ -85,4 +85,3 @@ $imprimirUrl = $_SERVER['REQUEST_URI'] . "&imprimir=true";
         </div>
     </div>
 </div>
-</body>
