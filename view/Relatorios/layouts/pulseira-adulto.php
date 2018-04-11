@@ -1,6 +1,7 @@
 <?php
 $pulseira = $dados[0];
 $imprimirUrl = $_SERVER['REQUEST_URI']; // . "&imprimir=true";
+$user = new Usuario($_SESSION['username']);
 ?>
 
 #{scriptPagina}
@@ -33,7 +34,7 @@ $imprimirUrl = $_SERVER['REQUEST_URI']; // . "&imprimir=true";
         margin: none;
         background-image: url(/relator/assets/img/pulseira-adulto-bg.svg);
         background-repeat: no-repeat;
-        background-size: 27.8cm 2.5cm;
+        background-size: 26.8cm 2.5cm;
         border: none;
         height: 2.8cm;
         box-shadow: none;
@@ -81,7 +82,10 @@ $imprimirUrl = $_SERVER['REQUEST_URI']; // . "&imprimir=true";
     div.container{
         padding-top: 0.5cm;
     }
-
+    .titulo-relatorio {
+        padding-bottom: 25px;
+        font-weight: bold;
+    }
 </style>
 
 
@@ -94,8 +98,8 @@ $imprimirUrl = $_SERVER['REQUEST_URI']; // . "&imprimir=true";
         </button>
     </div>
 
+    <h5 class="titulo-relatorio">Pulseira Adulto</h5>
     <div id="pulseira">
-
         <div id="prontuario">
             <div class="strong"><?= $pulseira['prontuario'] ?> </div>
             <div class="small">Prontuário</div>
@@ -118,7 +122,9 @@ $imprimirUrl = $_SERVER['REQUEST_URI']; // . "&imprimir=true";
     <br />
     <select name="impressora" required>
         <option value="">Selecione e Impressora</option>
-        <option value="HUGD_PULSEIRA_TESTE">TESTE SGPTI</option>
+        <?php if ($user->isDeveloper()) { ?>
+            <option value="HUGD_PULSEIRA_TESTE">TESTE SGPTI</option>
+        <?php } ?>
         <option value="HUGD-PULS-COBS02">Centro Obstétrico - Neonato</option>
         <option value="HUGD-PULS-COBS01">Centro Obstétrico - Adulto</option>
         <option value="HUGD-PULS-RINTER01">Recepção de Internação - Adulto</option>

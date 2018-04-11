@@ -1,6 +1,7 @@
 <?php
 $pulseira = $dados[0];
 $imprimirUrl = $_SERVER['REQUEST_URI']; // . "&imprimir=true";
+$user = new Usuario($_SESSION['username']);
 ?>
 
 #{scriptPagina}
@@ -46,7 +47,7 @@ $imprimirUrl = $_SERVER['REQUEST_URI']; // . "&imprimir=true";
         font-weight: bold;
     }
     div.nome-paciente{
-        font-size: 12pt;
+        font-size: 10pt;
         font-weight: bold;
     }
     #prontuario{
@@ -72,7 +73,8 @@ $imprimirUrl = $_SERVER['REQUEST_URI']; // . "&imprimir=true";
         width: 18cm;
         height: 2.3cm;
         float: left;
-        padding-top: 10px;
+        padding-top: 5px;
+        line-height: 2px;
     }
     .small, .strong{
         line-height: 1.15;
@@ -81,7 +83,14 @@ $imprimirUrl = $_SERVER['REQUEST_URI']; // . "&imprimir=true";
     div.container{
         padding-top: 0.5cm;
     }
-
+    .titulo-relatorio {
+        padding-bottom: 25px;
+        font-weight: bold;
+    }
+    div.inline {
+        float:left;
+        padding-right: 70px;
+    }
 </style>
 
 
@@ -94,6 +103,7 @@ $imprimirUrl = $_SERVER['REQUEST_URI']; // . "&imprimir=true";
         </button>
     </div>
 
+    <h5 class="titulo-relatorio">Pulseira Neonato</h5>
     <div id="pulseira">
 
         <div id="prontuario">
@@ -113,23 +123,25 @@ $imprimirUrl = $_SERVER['REQUEST_URI']; // . "&imprimir=true";
                 <div class="small">Data/hora de nascimento: </div>
                 <div class="strong"><?= $pulseira['data_nascimento'] ?> </div>
             </div>
-            <div>
+            <div class="inline">
                 <div class="small">Sexo: </div>
                 <div class="strong"><?= $pulseira['sexo'] ?> </div>
             </div>
-            <div>
+            <div class="inline">
                 <div class="small">Cor: </div>
-                <div class="strong"><?= $pulseira['cor'] ?> </div>
+                <div class="strong"><?= $pulseira['raca_cor'] ?> </div>
             </div>
         </div>
     </div>
     <br />
     <select name="impressora" required>
         <option value="">Selecione e Impressora</option>
-        <option value="HUGD_PULSEIRA_TESTE">TESTE SGPTI</option>
+        <?php if ($user->isDeveloper()) { ?>
+            <option value="HUGD_PULSEIRA_TESTE">TESTE SGPTI</option>
+        <?php } ?>
         <option value="HUGD-PULS-COBS02">Centro Obstétrico - Neonato</option>
         <option value="HUGD-PULS-COBS01">Centro Obstétrico - Adulto</option>
-        <option value="HUGD-PULS-RINTER01">Recepção de Internação - Adulto</option>
+        <!--        <option value="HUGD-PULS-RINTER01">Recepção de Internação - Adulto</option>-->
         <!--option value="HUGD-PULS-RINTER01">Recepção de Internação - Pediátrico</option -->
         <option value="HUGD-PULS-PAGO01">Recepção de Maternidade - Adulto</option>
         <!--option value="HUGD-PULS-PAGO01">Recepção de Maternidade - Neonato</option -->        
