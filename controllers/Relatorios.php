@@ -155,7 +155,7 @@ class Relatorios extends Controller {
         $ipp->setMimeMediaType("application/vnd.cups-raw");
         require_once dirname("..") . "/view/Relatorios/layouts/$nomeRelatorio.prn.php";
         $ipp->setData($layout);
-        $s = $ipp->printJob($pulseira);
+        $s = $ipp->printJob();
 
         if ($s == "successfull-ok") {
             return TRUE;
