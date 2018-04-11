@@ -1,7 +1,7 @@
 <?php
 
 $_CONTROLE = 'Relatorios';
-$_ROTULO = 'Relatórios';
+$_ROTULO = 'Administração dos Relatórios';
 
 require_once dirname(dirname(dirname(__FILE__))) . "/formularios/models/Formulario.php";
 require_once dirname(dirname(dirname(__FILE__))) . "/formularios/utils/GeradorFormulario.php";
@@ -97,7 +97,7 @@ class Relatorios extends Controller {
             if (!$impressora) {
                 $this->mensagemAlerta("Selecione a impressora");
             } else {
-                $r = $this->toPDF($datasource, $nomeRelatorio, $impressora);
+                $r = $this->toPulseira($datasource, $nomeRelatorio, $impressora);
                 if ($r) {
                     $this->mensagemSucesso("Relatório impresso com sucesso!");
                 } else {
@@ -142,18 +142,48 @@ class Relatorios extends Controller {
         parent::renderCsv($data);
     }
 
-    private function toPDF($datasource, $nomeRelatorio, $impressora) {
+    private function toPulseira($datasource, $nomeRelatorio, $impressora) {
         $impressora = "/printers/$impressora";
         $construtor = new ConstrutorRelatorios();
         $dados = $construtor->getDados($nomeRelatorio, $datasource);
-        require_once dirname("..") . '/classes/lib/print-ipp/PrintIPP.php';
+        require_once dirname(__FILE__) . '/../classes/lib/print-ipp/PrintIPP.php';
+        require_once dirname(__FILE__) .'/../classes/lib/zplimg/image2zpl.inc.php';
+        require_once dirname(__FILE__) .'/../classes/lib/phpqrcode/qrlib.php';
 
-        $pulseira = $dados[0];
+        $pulseira = new stdClass();
+        foreach ($dados[0] as $nome => $valor) {
+            $pulseira->$nome = $valor;
+        }
+
+        date_default_timezone_set('America/Campo_Grande');
+        $data_impressao = date("Y/m/d H:i:s");
+        $user_impressao = "Chuck Norris Freitas e Santos";
+        $pulseira_id = rand(1000000, 9000000);
+        $str_qrcode = 
+"PRONTUARIO: $pulseira->prontuario
+NOME: $pulseira->nome
+NOME_MAE: $pulseira->nome_mae
+DATA_NASC: $pulseira->data_nascimento
+($data_impressao|$user_impressao|#$pulseira_id)";
+        
+        $arquivoQr = "./qr$pulseira->prontuario.png";
+        QRCode::png($str_qrcode, $arquivoQr, QR_ECLEVEL_L, 4);
+        $input = file_get_contents($arquivoQr);
+        $qrcodezebra = wbmp_to_zpl($input, "qr$pulseira->prontuario");
+        $nomeQRZebra = substr($qrcodezebra, 3, (strlen("qr".$pulseira->prontuario)-1));
+
         $ipp = new PrintIPP();
         $ipp->setHost('10.18.0.38');
         $ipp->setPrinterURI($impressora);
         $ipp->setMimeMediaType("application/vnd.cups-raw");
+
         require_once dirname("..") . "/view/Relatorios/layouts/$nomeRelatorio.prn.php";
+
+        /*
+        echo "<pre>";
+        print_r($layout);
+        echo "</pre>";
+        die("Ok"); // */
         $ipp->setData($layout);
         $s = $ipp->printJob();
 

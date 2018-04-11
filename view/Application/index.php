@@ -58,7 +58,7 @@ $grupoAtual = "";
 
 </style>
 
-<h4>Lista de Relatórios</h4>
+<h4><strong>Lista de Relatórios</strong></h4>
 
 
 <div class="lista-relatorios">
