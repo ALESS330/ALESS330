@@ -97,7 +97,7 @@ WHERE
     r.descricao ILIKE '%$busca%' OR 
     d.nome ILIKE '%$busca%' 
 ORDER BY 
-    r.nome 
+    r.descricao 
 OFFSET $start 
 LIMIT $this->NUMERO_LINHAS";
         $lista = $this->db->consulta($sql);

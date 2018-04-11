@@ -1,12 +1,14 @@
-<?php global $corSistemaRGB; 
+<?php
+global $corSistemaRGB;
 $grupoAtual = "";
 ?>
 <style>
-    .lista-relatorios{
-        display: flex;
+    .lista-relatorios{   
+        display: flex;  
         flex-wrap: wrap;
         justify-content: space-around;
-        align-items: center;
+        margin-top: 18px;
+/*        margin: 18px 25px 18px 43px !important;*/
     }
 
     .lista-relatorios .relatorio{
@@ -15,7 +17,6 @@ $grupoAtual = "";
         height: 80px;
         margin: 5px;
         border-radius: 5px;
-        /*        padding: 4px;*/
         text-align: center;
         vertical-align: middle;
     }
@@ -56,10 +57,14 @@ $grupoAtual = "";
         color: white !important;
     }
 
+    .titulo-relatorio {
+        font-weight: bold;
+    }
+
 </style>
 
-<h4><strong>Lista de Relatórios</strong></h4>
-
+<h4 class="titulo-relatorio">Lista de Relatórios</h4>
+<div class="divider"></div>
 
 <div class="lista-relatorios">
     <?php foreach ($listaRelatorios as $index => $relatorio) { ?>
@@ -75,5 +80,5 @@ $grupoAtual = "";
             </div>
 
         </a>
-    <?php } ?>    
+    <?php } ?>
 </div>

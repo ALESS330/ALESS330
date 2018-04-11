@@ -99,6 +99,7 @@ $user = new Usuario($_SESSION['username']);
     </div>
 
     <h5 class="titulo-relatorio">Pulseira Adulto</h5>
+
     <div id="pulseira">
         <div id="prontuario">
             <div class="strong"><?= $pulseira['prontuario'] ?> </div>
