@@ -64,12 +64,15 @@ class Relatorios extends Controller {
         //$dadosRelatorio['codigo_sql'] = str_replace("'", "''", $dadosRelatorio['codigo_sql']);
         $dadosRelatorio['relatorio_pai_id'] = is_numeric($dadosRelatorio['relatorio_pai_id']) === TRUE ? $dadosRelatorio['relatorio_pai_id'] : null;
         $dadosRelatorio['parametrizado'] = ($dadosRelatorio['parametrizado'] == true) ? true : false;
+        $dadosRelatorio['publico'] = ($dadosRelatorio['publico'] == true) ? true : false;
         $this->relatorio->salvar($dadosRelatorio);
         $this->mensagemSucesso("Relatório salvo com sucesso.");
         parent::go2("Relatorios->index()");
     }
 
     function gerar($datasource, $nomeRelatorio) {
+        global $_ROTULO;
+        $_ROTULO = "Relatório";
         $relatorio = $this->relatorio->selectByEquals("nome", $nomeRelatorio);
         $parametros = count($_GET);
         if ($relatorio[0]->parametrizado && !$parametros) {
@@ -80,6 +83,7 @@ class Relatorios extends Controller {
             $f = $formulario->getBy(array("id" => $telaId));
             global $corSistema;
             $_SESSION['corEmprestada'] = $corSistema;
+            $_SESSION['tituloEmprestado'] = $_ROTULO;
             parent::go2("/formularios/tela-relatorio/$f->nome");
         }
 
@@ -179,11 +183,6 @@ DATA_NASC: $pulseira->data_nascimento
 
         require_once dirname("..") . "/view/Relatorios/layouts/$nomeRelatorio.prn.php";
 
-        /*
-        echo "<pre>";
-        print_r($layout);
-        echo "</pre>";
-        die("Ok"); // */
         $ipp->setData($layout);
         $s = $ipp->printJob();
 

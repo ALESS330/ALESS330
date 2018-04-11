@@ -24,7 +24,8 @@
         $relatorio_pai = $relatorioAtual->relatorio_pai_id;
         $sql = $relatorioAtual->codigo_sql;
         $datasourceAtual = $relatorioAtual->datasource_id;
-        $checked = $relatorioAtual->parametrizado ? "checked" : "";
+        $checkedParametrizado = $relatorioAtual->parametrizado ? "checked" : "";
+        $checkedPublico = $relatorioAtual->publico ? "checked" : "";
         ?>
         <input type="hidden" name="relatorio[id]" value="<?php echo $relatorioAtual->id; ?>"/>
     <?php } ?>
@@ -39,7 +40,7 @@
                         $selected = "selected";
                     }
                     ?>
-                    <option value="<?= $datasource->id?>" <?= $selected ?>><?= $datasource->nome; ?> </option>
+                    <option value="<?= $datasource->id ?>" <?= $selected ?>><?= $datasource->nome; ?> </option>
                 <?php } ?>
             </select>
             <label>Datasource</label>
@@ -95,18 +96,25 @@
 
     <div class="row">
         <div class="input-field col s12">
-            <input type="checkbox" class="form-control" id="relatorio-parametrizado" name="relatorio[parametrizado]" value="true" <?php echo $checked ?> >
-            <label for="relatorio-parametrizado">Parametrizado</label>
-        </div>
-    </div>
-        
-    <div class="row">
-        <div class="input-field col s12">
-            <input type="text" class="form-control" id="icone-relatorio" name="relatorio[icone]" value="<?=$relatorioAtual->icone; ?>">
+            <input type="text" class="form-control" id="icone-relatorio" name="relatorio[icone]" value="<?= $relatorioAtual->icone; ?>">
             <label for="icone-relatorio">Zícone</label>
         </div>
     </div>        
-        
+
+    <div class="row">
+        <div class="input-field col s12">
+            <input type="checkbox" class="form-control" id="relatorio-parametrizado" name="relatorio[parametrizado]" value="true" <?php echo $checkedParametrizado ?> >
+            <label for="relatorio-parametrizado">Parametrizado</label>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="input-field col s12">
+            <input type="checkbox" class="form-control" id="relatorio-publico" name="relatorio[publico]" value="true" <?php echo $checkedPublico ?> >
+            <label for="relatorio-publico">Público</label>
+        </div>
+    </div>
+
     <div class="row">
         <div class="input-field col s12">
             <!--problemas com waves-effect-->
