@@ -15,7 +15,7 @@ eJztk8Fum0AQhmeBFa5UCSIZKadCOPXWN4gXCUs9gsS+TsDJocmt79AX8a2vYamHXjlysNj+swuYRE1z
 ^FT174,691^A0B,29,28^FH\^FD".$pulseira['nome_mae']."^FS
 ^FT211,236^A0B,25,24^FH\^FDCor^FS
 ^FT211,395^A0B,25,24^FH\^FDSexo^FS
-^FT247,236^A0B,29,28^FH\^FD".$pulseira['cor']."^FS
+^FT247,236^A0B,29,28^FH\^FD".$pulseira['raca_cor']."^FS
 ^FT247,395^A0B,29,28^FH\^FD".$pulseira['sexo']."^FS
 ^FT211,691^A0B,25,24^FH\^FDData/hora do nascimento^FS
 ^FT247,691^A0B,29,28^FH\^FD".$pulseira['data_nascimento']."^FS
