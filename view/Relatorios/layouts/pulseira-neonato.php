@@ -73,7 +73,7 @@ $user = new Usuario($_SESSION['username']);
         width: 18cm;
         height: 2.3cm;
         float: left;
-        padding-top: 5px;
+        padding-top: 2px;
         line-height: 2px;
     }
     .small, .strong{
