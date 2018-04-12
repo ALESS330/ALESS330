@@ -161,8 +161,8 @@ class Relatorios extends Controller {
 
         date_default_timezone_set('America/Campo_Grande');
         $data_impressao = date("Y/m/d H:i:s");
-        $user_impressao = "Chuck Norris Freitas e Santos";
-        $pulseira_id = rand(1000000, 9000000);
+        $user_impressao = "";
+        $pulseira_id = ""; rand(1000000, 9000000);
         $str_qrcode = 
 "PRONTUARIO: $pulseira->prontuario
 NOME: $pulseira->nome
