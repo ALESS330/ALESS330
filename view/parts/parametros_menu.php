@@ -24,6 +24,11 @@ $usuario = array();
 
 $admin['Datasources->index'] = "Datasources";
 $admin['Relatorios->index'] = "Relatórios";
+$admin['separador'] = "-";
+$admin['Usuarios->index'] = "Usuários";
+$admin['Grupos->index'] = "Grupos";
+$admin['Sistemas->index'] = "Sistemas";
+$admin['Funcionalidades->index'] = "Funcionalidades";
 
 $usuario['Usuarios->ver(' . $nomeUsuario . ')'] = "Meus dados";
 $usuario['separador'] = "-";

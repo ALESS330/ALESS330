@@ -93,6 +93,16 @@ class Relatorios extends Controller {
         }
         $construtor = new ConstrutorRelatorios();
         $data['relatorio'] = $construtor->getRelatorio($nomeRelatorio, $datasource);
+        if(!$data['relatorio']){
+            //$this->mensagemInfo("Dados não encontrados (Verifique o número do prontuário).");
+            $dados = array();
+            $dados['mensagem'] = "Dados não Encontrados. (Verifique o número do prontuário)";
+            $erro = new Erro();
+            $erro->generico($dados);
+            //$this->go2("Erro->generico");
+        }else{
+            //unset($_SESSION['mensagem']['info']);
+        }
         $data['estrutura'] = $construtor->getEstruturaRelatorio($nomeRelatorio);
         $imprimir = $_GET['imprimir'];
         $impressora = $_GET['impressora'];

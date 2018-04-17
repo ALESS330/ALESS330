@@ -2,14 +2,16 @@
 
     <div class="row">
         <div class="input-field col s12">
-            <input type="text" required class="form-control data" id="datasource-nome" name="datasource[nome]">
+            <input type="text" required class="form-control data" id="datasource-nome" 
+                   name="datasource[nome]" value="<?= $datasource['nome']?>" />
             <label>Nome</label>
         </div>
     </div>
 
     <div class="row">
         <div class="input-field col s12">
-            <input type="text" required class="form-control data" id="datasource-conexao" name="datasource[]">
+            <input type="text" required class="form-control data" id="datasource-conexao"
+                   name="datasource['conexa']" value="<?= $datasource['conexao']?>" />
             <label for="data-convenio">Conexão</label>
         </div>
     </div>

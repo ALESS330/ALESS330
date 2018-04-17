@@ -4,7 +4,7 @@ $_CONTROLE = 'Datasources';
 $_ROTULO = 'Datasources';
 
 class Datasources extends Controller {
-
+    
     function index() {
         $datasource = new Datasource();
         $datasources = $datasource->lista();
@@ -14,7 +14,8 @@ class Datasources extends Controller {
 
     function cadastro($idDatasource){
         $d = new Datasource();
-        $datasource = $d->get();
-        parent::render();
+        $dados = array();
+        $dados['datasource'] = $d->get($idDatasource);
+        parent::render($dados);
     }
 }

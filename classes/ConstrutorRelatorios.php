@@ -36,6 +36,9 @@ class ConstrutorRelatorios {
         $colunaGrupo = $dadosRelatorio[0]["coluna_grupo"];
         $nomeFilho = $dadosRelatorio[0]["nome_filho"];
         $dados = $this->getDados($nome, $datasource);
+        if(count($dados)==0){
+            return NULL;
+        }
         if (file_exists($layout)) {
             //$r significa relatório
             $r = $this->layout($layout, $dados);

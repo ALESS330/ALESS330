@@ -2,6 +2,7 @@
 
 $corSistema = " blue-grey darken-4 ";
 $corSistemaRGB = "#263238";
+$corBasicaSistema = " blue-grey ";
 $nomeSistema = 'relator';
 $tituloSistema = 'Sistema de Emissão de Relatórios';
 $sisdir = "relator";
