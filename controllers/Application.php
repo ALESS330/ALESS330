@@ -16,7 +16,8 @@ class Application extends Controller {
         }
         $relatorio = new Relatorio();
         $dados['listaRelatorios'] = $relatorio->listaInicial($user->getUsuario()->login);
-        if(count($dados['listaRelatorios']) == 0){
+
+        if(count($dados['listaRelatorios']) && !$user){
             $this->go2("Acessos->login");
         }
         $this->render($dados);

@@ -8,7 +8,7 @@ $grupoAtual = "";
         flex-wrap: wrap;
         justify-content: space-around;
         margin-top: 18px;
-/*        margin: 18px 25px 18px 43px !important;*/
+        /*        margin: 18px 25px 18px 43px !important;*/
     }
 
     .lista-relatorios .relatorio{
@@ -67,18 +67,22 @@ $grupoAtual = "";
 <div class="divider"></div>
 
 <div class="lista-relatorios">
-    <?php foreach ($listaRelatorios as $index => $relatorio) { ?>
-        <a href="@{Relatorios->gerar(<?= $relatorio->nome_datasource ?>,<?= $relatorio->nome ?>)}">
-            <div class="relatorio card hoverable">
-                <strong><?= $relatorio->nome ?>&nbsp;</strong>
-                <div class="icone <?= implode(" ", $coresIcones[$relatorio->grupo]) ?>">
-                    <i class="material-icons"><?= $relatorio->icone ?></i>
+    <?php
+    if ($listaRelatorios) {
+        foreach ($listaRelatorios as $index => $relatorio) {
+            ?>
+            <a href="@{Relatorios->gerar(<?= $relatorio->nome_datasource ?>,<?= $relatorio->nome ?>)}">
+                <div class="relatorio card hoverable">
+                    <strong><?= $relatorio->nome ?>&nbsp;</strong>
+                    <div class="icone <?= implode(" ", $coresIcones[$relatorio->grupo]) ?>">
+                        <i class="material-icons"><?= $relatorio->icone ?></i>
+                    </div>
+                    <div class="descricao">
+                        <span title="<?= $relatorio->descricao ?>"><?= $relatorio->descricao ?></span>
+                    </div>
                 </div>
-                <div class="descricao">
-                    <span title="<?= $relatorio->descricao ?>"><?= $relatorio->descricao ?></span>
-                </div>
-            </div>
 
-        </a>
-    <?php } ?>
+            </a>
+    <?php }
+} ?>
 </div>

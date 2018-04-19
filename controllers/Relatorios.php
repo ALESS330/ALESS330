@@ -96,7 +96,7 @@ class Relatorios extends Controller {
         if(!$data['relatorio']){
             //$this->mensagemInfo("Dados não encontrados (Verifique o número do prontuário).");
             $dados = array();
-            $dados['mensagem'] = "Dados não Encontrados. (Verifique o número do prontuário)";
+            $dados['mensagem'] = "Dados não encontrados";
             $erro = new Erro();
             $erro->generico($dados);
             //$this->go2("Erro->generico");
