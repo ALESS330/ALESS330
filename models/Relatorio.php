@@ -22,10 +22,9 @@ class Relatorio extends Model {
         }//if
         return $grupos;
     }
-    
-    public function listaTodos(){
-        $sql = 
-"
+
+    public function listaTodos() {
+        $sql = "
 SELECT 
     d.nome nome_datasource
     ,r.*
@@ -38,11 +37,22 @@ ORDER BY
 ";
         return $this->db->consulta($sql);
     }
-    
-    
-    public function listaInicial($username){
-        $sql = 
-"
+
+    public function listaInicial($username = NULL) {
+        if (!$username) {
+            $sql = "
+SELECT 
+    d.nome nome_datasource
+    , 'publico' grupo
+    , r.* 
+FROM
+    relatorios.relatorios r
+    INNER JOIN relatorios.datasources d ON r.datasource_id = d.id
+WHERE
+    r.publico = TRUE
+";
+        } else {
+            $sql = "
 SELECT DISTINCT
     d.nome nome_datasource
     , g.nome grupo
@@ -70,13 +80,14 @@ WHERE TRUE
 ORDER BY
     g.nome,
     r.nome    
-";
+        ";
+        }
         return $this->db->consulta($sql);
-    }    
-    
-    public function getTelaParametros($relatorioId){
+    }
+
+    public function getTelaParametros($relatorioId) {
         $relatorioTela = new RelatorioTela();
-        return  $relatorioTela->selectBy(array('relatorio_id'=> $relatorioId));
+        return $relatorioTela->selectBy(array('relatorio_id' => $relatorioId));
     }
 
     public function pagina($pagina, $busca) {
@@ -137,13 +148,13 @@ WHERE
         $r = $this->get($relatorioId);
         $usuario = $u->buscaPorLogin($_SESSION['login']);
         $relatorioGrupo = $rg->selectByEquals("relatorio_id", $relatorioId);
-        if ($r->publico || $g->isUserInGroup($_SESSION['login'], "developer-relator", 'relator')){
+        if ($r->publico || $g->isUserInGroup($_SESSION['login'], "developer-relator", 'relator')) {
             return TRUE;
         }
-        if($relatorioGrupo === NULL && $r->publico == FALSE){
+        if ($relatorioGrupo === NULL && $r->publico == FALSE) {
             throw new Exception("Relatório restrito sem grupos definidos");
         }
-        
+
         $listaGrupos = array();
         foreach ($relatorioGrupo as $i => $linhaRG) {
             $listaGrupos[] = $g->selectByEquals("id", $linhaRG->grupo_id)[0];
@@ -157,5 +168,9 @@ WHERE
             }//if
         }//foreach 
         return $isInGroup;
-    }// function checarAcesso
-}// classe
+    }
+
+// function checarAcesso
+}
+
+// classe
