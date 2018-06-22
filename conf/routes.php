@@ -7,6 +7,9 @@ $routes['/printer'] = "Application->printers";
 
 
 $routes["/relatorios"] = "Relatorios->index";
+$routes["/relatorio/{\d+:idRelatorio}/tela-parametros/salvar"]  = "Relatorios->salvarTelaParametros";
+$routes['/relatorio/{\d+:idRealtorio}/grupo/{\d+:idGrupo}/associa'] = "Relatorios->associaGrupo";
+$routes['/relatorio/{\d+:idRealtorio}/grupo/{\d+:idGrupo}/remove'] = "Relatorios->removeGrupo";
 $routes["/relatorio/{\d+:idRelatorio}/propriedades"] = "Relatorios->propriedades";
 $routes["/relatorio/{\d+:idRelatorio}/excluir"] = "Relatorios->excluir";
 $routes["/relatorio"] = "Relatorios->cadastro";
@@ -19,7 +22,6 @@ $routes["/relatorio/{\w+:datasource}/{.+:nomeRelatorio}/pdf"] = "Relatorios->ger
 $routes["/relatorio/{\w+:datasource}/{.+:nomeRelatorio}/excel"] = "Relatorios->gerarExcel";
 $routes["/relatorio/{\w+:datasource}/{.+:nomeRelatorio}/csv"] = "Relatorios->gerarCsv";
 $routes["/relatorio/{\w+:datasource}/{.+:nomeRelatorio}"] = "Relatorios->gerar";
-
 $routes["/parametro/{\d+:parametroId}"] = "Parametros->ver";
 $routes["/parametros/salvar"] = "Parametros->salvar";
 

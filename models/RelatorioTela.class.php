@@ -6,5 +6,4 @@ class RelatorioTela extends Model {
         parent::__construct();
         $this->nomeTabela = "relatorios.relatorio_tela";
     }
-
 }

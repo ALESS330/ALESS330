@@ -1,7 +1,7 @@
 <?php
 $pulseira = $dados[0];
 $imprimirUrl = $_SERVER['REQUEST_URI']; // . "&imprimir=true";
-$user = new Usuario($_SESSION['username']);
+$user = new Usuario($_SESSION['username'] ?? NULL);
 ?>
 
 #{scriptPagina}

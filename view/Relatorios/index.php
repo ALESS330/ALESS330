@@ -53,7 +53,7 @@
 </tr>
 </script>
 #{scriptPagina}
-<script src = "/base/assets/js/TabelaAjax.js" type = "text/javascript"></script>
+<script src = "/base-x/assets/js/TabelaAjax.js" type = "text/javascript"></script>
 <script type="text/javascript">
     $(document).ready(function () {
         TabelaAjax.initIndex("/relator/relatorios/:pagina/:busca", "#tabela-relatorios", "#tabela-relatorios-tmpl", 1);

@@ -1,6 +1,7 @@
 <?php
 global $corSistemaRGB;
 $grupoAtual = "";
+$coresIcones = array();
 ?>
 <style>
     .lista-relatorios{   
@@ -74,7 +75,8 @@ $grupoAtual = "";
             <a href="@{Relatorios->gerar(<?= $relatorio->nome_datasource ?>,<?= $relatorio->nome ?>)}">
                 <div class="relatorio card hoverable">
                     <strong><?= $relatorio->nome ?>&nbsp;</strong>
-                    <div class="icone <?= implode(" ", $coresIcones[$relatorio->grupo]) ?>">
+                    <!-- div class="icone < ?= implode(" ", $coresIcones[$relatorio->grupo]) ?>" -->
+                    <div class="icone">
                         <i class="material-icons"><?= $relatorio->icone ?></i>
                     </div>
                     <div class="descricao">

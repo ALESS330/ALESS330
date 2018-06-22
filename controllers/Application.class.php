@@ -10,10 +10,11 @@ class Application extends Controller {
     }
 
     function index() {
-        $user = new Usuario($_SESSION['username']);
+        $username = isset($_SESSION['username']) ? $_SESSION['username'] : "";
+        $user = new Usuario($username);
         $relatorio = new Relatorio();
-        $dados['listaRelatorios'] = $relatorio->listaInicial($user->getUsuario()->login);
-        if(!count($dados['listaRelatorios']) && !$user){
+        $dados['listaRelatorios'] = $relatorio->listaInicial($user);
+        if (!count($dados['listaRelatorios']) && !$user) {
             $this->go2("Acessos->login");
         }
         $this->render($dados);

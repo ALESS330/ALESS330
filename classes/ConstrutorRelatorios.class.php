@@ -16,11 +16,11 @@ class ConstrutorRelatorios {
     }
 
     public function getDados($nome, $datasource) {
-        $dadosRelatorio = $this->getEstruturaRelatorio($nome);
+        $dadosRelatorio = $this->getEstruturaRelatorio($nome)[0];        
         $parametros = $_SESSION['parametros'];
-        $sqlBanco = $dadosRelatorio[0]["codigo_sql"];
+        $sqlBanco = $dadosRelatorio["codigo_sql"];
         $conexaoRelatorio = $this->conector->getConexao($datasource);
-        if ($dadosRelatorio[0]['parametrizado'] == true) {
+        if ($dadosRelatorio['parametrizado'] == true) {
             $sql = $this->processaParametros($parametros, $sqlBanco);
         } else {
             $sql = $sqlBanco;
@@ -31,10 +31,10 @@ class ConstrutorRelatorios {
 
     function getRelatorio($nome, $datasource) {
         global $sisbase;
-        $dadosRelatorio = $this->getEstruturaRelatorio($nome);
+        $dadosRelatorio = $this->getEstruturaRelatorio($nome)[0];
         $layout = $sisbase . "/view/Relatorios/layouts/$nome.php";
-        $colunaGrupo = $dadosRelatorio[0]["coluna_grupo"];
-        $nomeFilho = $dadosRelatorio[0]["nome_filho"];
+        $colunaGrupo = $dadosRelatorio["coluna_grupo"];
+        $nomeFilho = $dadosRelatorio["nome_filho"];
         $dados = $this->getDados($nome, $datasource);
         if(count($dados)==0){
             return NULL;
@@ -43,7 +43,7 @@ class ConstrutorRelatorios {
             //$r significa relatório
             $r = $this->layout($layout, $dados);
         } else {
-            $r = $this->relatorio($dados, $dadosRelatorio[0]['tipo'], $colunaGrupo, $nomeFilho);
+            $r = $this->relatorio($dados, $dadosRelatorio['tipo'], $colunaGrupo, $nomeFilho);
         }
         return $r;
     }
@@ -76,9 +76,9 @@ WHERE r.nome = '$nome'";
 
     public function getTituloRelatorio($nomeTitulo, $parametro) {
         $estruturaRelatorio = $this->getEstruturaRelatorio($nomeTitulo);
-        $sql = str_replace(":parametro", $parametro, $estruturaRelatorio[0]["codigo_sql"]);
-        $dados = $this->conector->getDados($sql, $this->conector->getConexao($estruturaRelatorio[0]["nome_datasource"]));
-        return $dados[0]["titulo"];
+        $sql = str_replace(":parametro", $parametro, $estruturaRelatorio["codigo_sql"]);
+        $dados = $this->conector->getDados($sql, $this->conector->getConexao($estruturaRelatorio["nome_datasource"]));
+        return $dados["titulo"];
     }
 
     private function relatorio($dados, $tipo, $colunaGrupo) {
@@ -99,13 +99,11 @@ WHERE r.nome = '$nome'";
     }
 
     public function processaParametros($parametros, $sql) {
-
         unset($parametros['__ANONIMOS__']);
         foreach ($parametros as $nome => $valor) {
-            $$nome = $valor;
+            $sql = str_replace('$'.$nome, $valor, $sql);
         }
-        eval('$s="' . $sql.'";');
-        return $s;
+        return $sql;
     }
 
     public function layout($layout, $dados){

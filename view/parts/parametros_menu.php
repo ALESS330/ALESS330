@@ -5,16 +5,14 @@ global $nomeSistema;
 global $tituloSistema;
 global $urlSistema;
 
-$nomeUsuario = $_SESSION['username'] ?: "Acessar";
-$logado = $_SESSION['username'] ? TRUE : FALSE;
+$nomeUsuario = isset($_SESSION['username']) ? $_SESSION['username'] : "Acessar";
+$logado = isset($_SESSION['username']) === TRUE;
 $rodapeHuufgd = '© <?= date("Y") ?> Hospital Universitário da UFGD';
-//$linkAcesso = $logado ? "#" : "@{Acessos->login()}";
 $mostrarAcesso = true;
 
-// Fim do bloco */
 $mostrarAcesso = ((strcmp($_SESSION['request']['CONTROLLER'], "Acessos") == 0) && (strcmp($_SESSION['request']['ACTION'], "login") == 0)) ? false : true;
 $mostrarBusca = true;
-if (($_SESSION['request']['CONTROLE'] == "Formularios") && ($_SESSION['request']['CONTROLE'] == "gerar")){
+if (($_SESSION['request']['CONTROLLER'] == "Formularios") && ($_SESSION['request']['CONTROLLER'] == "gerar")){
     $mostrarBusca = false;
 }
 
@@ -43,16 +41,20 @@ if ($logado) {
         $permissor = new Permissor();
         foreach ($menu as $action => $rotulo) {
             $rota = explode("->", $action);
-            if (count($rota) == 1) {
+            if ($rota[0] == "separador") {
                 $menuResultante[$r]['-'] = '-';
                 continue;
             }
             $controle = $rota[0];
-            $acao = explode("(",$rota[1])[0];
+            $acao = explode("(", $rota[1])[0];
             if ($permissor->autoriza($controle, $acao)) {
                 $menuResultante[$r][$action] = $rotulo;
             }
         } //itens de menu
+        //Se só sobrou o separador, não exibir esse menu.
+        if (count($menuResultante[$r]) == 1 && $menuResultante[$r]['-'] == '-') {
+            unset($menuResultante[$r]);
+        }
     }//foreach $menus
 } //if logado
 

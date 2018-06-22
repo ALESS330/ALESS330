@@ -15,9 +15,11 @@
 <form class="form-horizontal" rol="form" id="form-cadastro-relatorio" action="@{Relatorios->salvar()}" method="POST" >
 
     <?php
-    $datasourceAtual = $sql = $relatorio_pai = $coluna_grupo = $tipo = $nome = $descricao = "";
+    $checkedPublico = $checkedParametrizado = $datasourceAtual = $sql = $relatorio_pai = $coluna_grupo = $tipo = $nome = $descricao = "";
+    
     if (isset($relatorioAtual) && $relatorioAtual) {
         $tipo = $relatorioAtual->tipo;
+        $icone = $relatorioAtual->icone;
         $nome = $relatorioAtual->nome;
         $descricao = $relatorioAtual->descricao;
         $coluna_grupo = $relatorioAtual->coluna_grupo;
@@ -96,7 +98,7 @@
 
     <div class="row">
         <div class="input-field col s12">
-            <input type="text" class="form-control" id="icone-relatorio" name="relatorio[icone]" value="<?= $relatorioAtual->icone; ?>">
+            <input type="text" class="form-control" id="icone-relatorio" name="relatorio[icone]" value="<?= $icone ?? ""; ?>">
             <label for="icone-relatorio">Zícone</label>
         </div>
     </div>        

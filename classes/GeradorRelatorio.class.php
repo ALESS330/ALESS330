@@ -1,7 +1,5 @@
 <?php
 
-require_once 'ConstrutorRelatorios.php';
-
 /**
  * Description of GeradorRelatorio
  *

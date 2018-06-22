@@ -23,6 +23,21 @@ class Relatorio extends Model {
         return $grupos;
     }
 
+    public function listaGruposPossiveis($relatorioId){
+        $sql = "
+select distinct
+    g.*
+from
+    public.grupos g
+    inner join public.sistemas s ON g.sistema_id = s.id
+    left join relatorios.relatorio_grupo rg ON g.id = rg.grupo_id
+where true
+    and s.nome_unico = 'relator' 
+    and g.id not in (select grupo_administrador_id from public.grupos_admins)
+    and g.id not in (select grupo_id from relatorios.relatorio_grupo where relatorio_id = $relatorioId)
+";
+        return $this->db->consulta($sql);
+    }
     public function listaTodos() {
         $sql = "
 SELECT 
@@ -38,7 +53,12 @@ ORDER BY
         return $this->db->consulta($sql);
     }
 
-    public function listaInicial($username = NULL) {
+    public function listaInicial($usuario) {
+        $u = $usuario->getUsuario();
+        $username = false;
+        if ($u){
+            $username = $u->username;
+        }
         if (!$username) {
             $sql = "
 SELECT 
@@ -90,6 +110,12 @@ ORDER BY
         return $relatorioTela->selectBy(array('relatorio_id' => $relatorioId));
     }
 
+    public function salvarTelaParametros($tela){
+        $objTP = new RelatorioTela();
+        $r = $objTP->salvar($tela);
+        return $r;
+    }
+    
     public function pagina($pagina, $busca) {
         $busca = str_replace(" ", "%", urldecode($busca));
         $start = ($pagina - 1) * $this->NUMERO_LINHAS;
@@ -124,8 +150,6 @@ LIMIT $this->NUMERO_LINHAS";
         } else {
             $busca = "%" . str_replace(" ", "%", urldecode($busca)) . "%";
         }
-        $busca = str_replace(" ", "%", urldecode($busca));
-        $start = ($pagina - 1) * $this->NUMERO_LINHAS;
         $sql = " 
 SELECT 
     count(r.id)
@@ -141,16 +165,22 @@ WHERE
         return $lista[0]->count;
     }
 
-    public function checarAcesso($relatorioId) {
+    public function checarAcesso($relatorioId, $login) {
         $rg = new RelatorioGrupo();
         $g = new Grupo();
         $u = new Usuario();
         $r = $this->get($relatorioId);
-        $usuario = $u->buscaPorLogin($_SESSION['login']);
+        if (isset($_SESSION['login'])){
+            $usuario = $u->buscaPorLogin($login);
+            if($g->isUserInGroup($login, "developer-relator", 'relator')){
+                return true;
+            }
+        }
         $relatorioGrupo = $rg->selectByEquals("relatorio_id", $relatorioId);
-        if ($r->publico || $g->isUserInGroup($_SESSION['login'], "developer-relator", 'relator')) {
+        if ($r->publico) {
             return TRUE;
         }
+        
         if ($relatorioGrupo === NULL && $r->publico == FALSE) {
             throw new Exception("Relatório restrito sem grupos definidos");
         }
@@ -159,7 +189,13 @@ WHERE
         foreach ($relatorioGrupo as $i => $linhaRG) {
             $listaGrupos[] = $g->selectByEquals("id", $linhaRG->grupo_id)[0];
         }
+
+        if(!isset($login) || $login === FALSE || $login == NULL){
+            return FALSE;
+        }
+        
         $isInGroup = FALSE;
+        
         foreach ($listaGrupos as $grupo) {
             $thisGroup = $g->isUserInGroup($_SESSION['login'], $grupo->nome, 'relator');
             if ($thisGroup == TRUE) {
@@ -168,9 +204,5 @@ WHERE
             }//if
         }//foreach 
         return $isInGroup;
-    }
-
-// function checarAcesso
-}
-
-// classe
+    }// function checarAcesso
+}// classe

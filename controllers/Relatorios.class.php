@@ -3,8 +3,8 @@
 $_CONTROLE = 'Relatorios';
 $_ROTULO = 'Administração dos Relatórios';
 
-require_once dirname(dirname(dirname(__FILE__))) . "/formularios/models/Formulario.php";
-require_once dirname(dirname(dirname(__FILE__))) . "/formularios/utils/GeradorFormulario.php";
+require_once dirname(dirname(dirname(__FILE__))) . "/formularios/models/Formulario.class.php";
+require_once dirname(dirname(dirname(__FILE__))) . "/formularios/utils/GeradorFormulario.class.php";
 
 class Relatorios extends Controller {
 
@@ -28,18 +28,48 @@ class Relatorios extends Controller {
 
     function propriedades($idRelatorio) {
         $relatorio = $this->buscaOuNulo($idRelatorio);
+        $objRelatorio = new Relatorio();
         $dados['relatorio'] = $relatorio;
         $dados['gruposRelatorio'] = $this->relatorio->getGrupos($idRelatorio);
+        $dados['grupos'] = $objRelatorio->listaGruposPossiveis($relatorio->id);
         if ($relatorio->parametrizado) {
             $tp = $this->relatorio->getTelaParametros($idRelatorio);
             $objFormulario = new Formulario();
-            $f = $objFormulario->get($tp[0]->formulario_id);
+            if($tp){
+                $f = $objFormulario->get($tp[0]->formulario_id);
+            }else{
+                $f = NULL;
+            }
             $dados['telaParametros'] = $f;
             $dados['telas'] = $objFormulario->listaTelas();
         }
         parent::render($dados);
     }
-
+    function salvarTelaParametros($relatorioId){
+        $tela = $_POST['tela'];
+        $objTP = new RelatorioTela();
+        $this->relatorio->salvarTelaParametros($tela);
+        $this->mensagemSucesso("Tela de Parâmetros associada com sucesso");
+        parent::go2("Relatorios->propriedades($relatorioId)");
+    }
+    
+    function associaGrupo($relatorioId, $grupoId){
+        $objRG = new RelatorioGrupo();
+        $dadosRG['grupo_id'] = $grupoId;
+        $dadosRG['relatorio_id'] = $relatorioId;
+        $resultadoRG = $objRG->salvar($dadosRG);
+        $this->mensagemSucesso("Relatório #$relatorioId associado ao grupo #$grupoId com sucesso.");
+        $this->go2("Relatorios->propriedades($relatorioId)");
+    }
+    
+    function removeGrupo($relatorioId, $grupoId){
+        $objRG = new RelatorioGrupo();
+        $dadosRG = $objRG->busca($relatorioId, $grupoId);
+        $objRG->deleta($dadosRG->id);
+        $this->mensagemSucesso("Relatório #$relatorioId removido do grupo #$grupoId com sucesso.");
+        $this->go2("Relatorios->propriedades($relatorioId)");
+    }
+    
     function cadastro($id = NULL) {
         $dados = array();
         if ($id) {
@@ -63,49 +93,66 @@ class Relatorios extends Controller {
         $dadosRelatorio = $_POST['relatorio'];
         //$dadosRelatorio['codigo_sql'] = str_replace("'", "''", $dadosRelatorio['codigo_sql']);
         $dadosRelatorio['relatorio_pai_id'] = is_numeric($dadosRelatorio['relatorio_pai_id']) === TRUE ? $dadosRelatorio['relatorio_pai_id'] : null;
-        $dadosRelatorio['parametrizado'] = ($dadosRelatorio['parametrizado'] == true) ? true : false;
-        $dadosRelatorio['publico'] = ($dadosRelatorio['publico'] == true) ? true : false;
-        $this->relatorio->salvar($dadosRelatorio);
+        $dadosRelatorio['parametrizado'] = isset($dadosRelatorio['parametrizado']) ? $dadosRelatorio['parametrizado'] : FALSE;
+        $dadosRelatorio['publico'] = (($dadosRelatorio['publico'] ?? FALSE)  == true) ? true : false;
+        if (isset($dadosRelatorio['id'])){
+            $id = $dadosRelatorio['id'];
+        }else{
+            $id = FALSE;
+        }
+        $novoId = $this->relatorio->salvar($dadosRelatorio);
+        $relatorioId =  $id ?: $novoId;
+        
         $this->mensagemSucesso("Relatório salvo com sucesso.");
-        parent::go2("Relatorios->index()");
+        if($dadosRelatorio['parametrizado'] && $dadosRelatorio['parametrizado'] == TRUE){
+            parent::go2("Relatorios->propriedades($relatorioId)");
+        }else{
+            parent::go2("Relatorios->index()");
+        }
     }
 
     function gerar($datasource, $nomeRelatorio) {
         global $_ROTULO;
         $_ROTULO = "Relatório";
-        $relatorio = $this->relatorio->selectByEquals("nome", $nomeRelatorio);
+        $relatorio = $this->relatorio->selectByEquals("nome", $nomeRelatorio)[0];
+        if ($this->relatorio->checarAcesso($relatorio->id, $_SESSION['login'] ?? NULL) !== TRUE) {
+            $this->mensagemInfo("Acesso não autorizado a este relatório.");
+            $this->go2("Application->index");
+            exit();
+        }
+        
         $parametros = count($_GET);
-        if ($relatorio[0]->parametrizado && !$parametros) {
+        if ($relatorio->parametrizado && !$parametros) {
             $_SESSION['action'] = $this->router->link("Relatorios->gerar($datasource,$nomeRelatorio)"); //$router
             $rt = new RelatorioTela();
-            $telaId = $rt->getBy(array("relatorio_id" => $relatorio[0]->id))->formulario_id;
+            $_tela = $rt->getBy(array("relatorio_id" => $relatorio->id));
+            if(!isset($_tela[0])){
+                throw new Exception("Impossível buscar tela de parâmetros.", 5);
+            }
+            $tela = $_tela[0];
             $formulario = new Formulario();
-            $f = $formulario->getBy(array("id" => $telaId));
+            $_f = $formulario->getBy(array("id" => $tela->formulario_id));
+            $f = $_f[0];
             global $corSistema;
             $_SESSION['corEmprestada'] = $corSistema;
             $_SESSION['tituloEmprestado'] = $_ROTULO;
             parent::go2("/formularios/tela-relatorio/$f->nome");
         }
 
-        if ($this->relatorio->checarAcesso($relatorio[0]->id) !== TRUE) {
-            $this->mensagemInfo("Acesso não autorizado a este relatório.");
-            $this->go2("Application->index");
-        }
         $construtor = new ConstrutorRelatorios();
         $data['relatorio'] = $construtor->getRelatorio($nomeRelatorio, $datasource);
-        if(!$data['relatorio']){
-            //$this->mensagemInfo("Dados não encontrados (Verifique o número do prontuário).");
+        if (!$data['relatorio']) {
             $dados = array();
-            $dados['mensagem'] = "Dados não encontrados";
+            $dados['mensagem'] = "Dados não encontrados. Verifique os parâmetros";
             $erro = new Erro();
             $erro->generico($dados);
             //$this->go2("Erro->generico");
-        }else{
+        } else {
             //unset($_SESSION['mensagem']['info']);
         }
         $data['estrutura'] = $construtor->getEstruturaRelatorio($nomeRelatorio);
-        $imprimir = $_GET['imprimir'];
-        $impressora = $_GET['impressora'];
+        $imprimir = isset($_GET['imprimir']) ? $_GET['imprimir'] : "";
+        $impressora = isset($_GET['impressora']) ? $_GET['impressora'] : "";
         $u = explode("&imprimir=", $_SERVER['REQUEST_URI'])[0];
         if ($imprimir) {
             if (!$impressora) {
@@ -161,8 +208,8 @@ class Relatorios extends Controller {
         $construtor = new ConstrutorRelatorios();
         $dados = $construtor->getDados($nomeRelatorio, $datasource);
         require_once dirname(__FILE__) . '/../classes/lib/print-ipp/PrintIPP.php';
-        require_once dirname(__FILE__) .'/../classes/lib/zplimg/image2zpl.inc.php';
-        require_once dirname(__FILE__) .'/../classes/lib/phpqrcode/qrlib.php';
+        require_once dirname(__FILE__) . '/../classes/lib/zplimg/image2zpl.inc.php';
+        require_once dirname(__FILE__) . '/../classes/lib/phpqrcode/qrlib.php';
 
         $pulseira = new stdClass();
         foreach ($dados[0] as $nome => $valor) {
@@ -172,19 +219,19 @@ class Relatorios extends Controller {
         date_default_timezone_set('America/Campo_Grande');
         $data_impressao = date("Y/m/d H:i:s");
         $user_impressao = "";
-        $pulseira_id = ""; rand(1000000, 9000000);
-        $str_qrcode = 
-"PRONTUARIO: $pulseira->prontuario
+        $pulseira_id = "";
+        rand(1000000, 9000000);
+        $str_qrcode = "PRONTUARIO: $pulseira->prontuario
 NOME: $pulseira->nome
 NOME_MAE: $pulseira->nome_mae
 DATA_NASC: $pulseira->data_nascimento
 ($data_impressao|$user_impressao|#$pulseira_id)";
-        
+
         $arquivoQr = "./qr$pulseira->prontuario.png";
         QRCode::png($str_qrcode, $arquivoQr, QR_ECLEVEL_L, 4);
         $input = file_get_contents($arquivoQr);
         $qrcodezebra = wbmp_to_zpl($input, "qr$pulseira->prontuario");
-        $nomeQRZebra = substr($qrcodezebra, 3, (strlen("qr".$pulseira->prontuario)-1));
+        $nomeQRZebra = substr($qrcodezebra, 3, (strlen("qr" . $pulseira->prontuario) - 1));
 
         $ipp = new PrintIPP();
         $ipp->setHost('10.18.0.38');
@@ -195,7 +242,6 @@ DATA_NASC: $pulseira->data_nascimento
 
         $ipp->setData($layout);
         $s = $ipp->printJob();
-
         if ($s == "successfull-ok") {
             return TRUE;
         }

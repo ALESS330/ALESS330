@@ -8,5 +8,5 @@ $tituloSistema = 'Sistema de Emissão de Relatórios';
 $sisdir = "relator";
 $contexto = "/$sisdir";
 $iconeSistema = "/$sisdir/assets/img/$nomeSistema.svg";
-
-require_once dirname(dirname(__FILE__))."/base/preindex.php";
+ 
+require_once dirname(dirname(__FILE__))."/base-x/preindex.php";
