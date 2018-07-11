@@ -32,6 +32,12 @@ class Relatorios extends Controller {
         $dados['relatorio'] = $relatorio;
         $dados['gruposRelatorio'] = $this->relatorio->getGrupos($idRelatorio);
         $dados['grupos'] = $objRelatorio->listaGruposPossiveis($relatorio->id);
+        $lFormatos = $objRelatorio->getFormatos($relatorio->id);
+        $formatos = array();
+        foreach ($lFormatos as $key => $value) {
+            $formatos[$value->formato] = TRUE;
+        }
+        $dados['formatos'] = $formatos;
         if ($relatorio->parametrizado) {
             $tp = $this->relatorio->getTelaParametros($idRelatorio);
             $objFormulario = new Formulario();
@@ -45,9 +51,16 @@ class Relatorios extends Controller {
         }
         parent::render($dados);
     }
+    
+    function salvarFormatos($relatorioId){
+        $formatos = $_POST['formatos'];
+        $this->relatorio->salvarFormatos($relatorioId, $formatos);
+        $this->mensagemSucesso("Formatos salvos com suscesso");
+        $this->go2("Relatorios->propriedades($relatorioId)");
+    }
+    
     function salvarTelaParametros($relatorioId){
         $tela = $_POST['tela'];
-        $objTP = new RelatorioTela();
         $this->relatorio->salvarTelaParametros($tela);
         $this->mensagemSucesso("Tela de Parâmetros associada com sucesso");
         parent::go2("Relatorios->propriedades($relatorioId)");
@@ -178,9 +191,12 @@ class Relatorios extends Controller {
         $data['nome'] = $estrutura['nome_relatorio'];
         $data['descricao'] = $estrutura['descricao'];
         ini_set("max_execution_time", 90);
-        parent::renderPdf($data);
+        if($nomeRelatorio == "rotulo-medicamento"){
+            $this->renderPDFview("Relatorios/layouts/rotulo-medicamento", $data, NULL, "pdf-horizontal");
+        }
+        $this->renderPDF($data);
     }
-
+    
     function gerarExcel($datasource, $nomeRelatorio) {
         $data = array();
         $construtor = new ConstrutorRelatorios();
@@ -193,12 +209,16 @@ class Relatorios extends Controller {
     }
 
     function gerarCsv($datasource, $nomeRelatorio) {
-        $data = array();
         $construtor = new ConstrutorRelatorios();
+        $estrutura = $construtor->getEstruturaRelatorio($nomeRelatorio)[0];
+        $suportaCSV = $this->relatorio->checaFormato($estrutura['relatorio_id'], 'csv')->suporta;
+        if(!$suportaCSV){
+            throw new Exception("Formato CSV não suportado para esse relatório.", 8);
+        }
+        $data = array();
         $data['dados'] = $construtor->getDadosRaw($nomeRelatorio, $datasource);
-        $estrutura = $construtor->getEstruturaRelatorio($nomeRelatorio);
-        $data['tipo'] = $estrutura[0]['tipo'];
-        $data['coluna_grupo'] = $estrutura[0]['coluna_grupo'];
+        $data['tipo'] = $estrutura['tipo'];
+        $data['coluna_grupo'] = $estrutura['coluna_grupo'];
         $data['nome_relatorio'] = $nomeRelatorio;
         parent::renderCsv($data);
     }

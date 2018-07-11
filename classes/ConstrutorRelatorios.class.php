@@ -25,6 +25,7 @@ class ConstrutorRelatorios {
         } else {
             $sql = $sqlBanco;
         }
+        //echo "<pre>$sql</pre>";
         $dados = $this->conector->getDados($sql, $conexaoRelatorio);
         return $dados;
     }
@@ -51,7 +52,8 @@ class ConstrutorRelatorios {
     public function getEstruturaRelatorio($nome) {
         $sqlRelatorio = "
 SELECT 
-    r.codigo_sql
+    r.id relatorio_id
+    , r.codigo_sql
     ,r.nome as nome_relatorio
     ,r.descricao
     ,r.tipo

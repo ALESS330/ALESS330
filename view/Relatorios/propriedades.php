@@ -1,5 +1,36 @@
-#{botoes}
+<?php
 
+$checked = array();
+$checked['pdf'] = "";
+$checked['xls'] = "";
+$checked['csv'] = "";
+$checked['html'] = "";
+$checked['printer'] = "";
+if (isset($formatos)) {
+
+    if (isset($formatos['printer'])) {
+        $checked['printer'] = 'checked="checked"';
+    }
+    
+    if (isset($formatos['pdf'])) {
+        $checked['pdf'] = 'checked="checked"';
+    }
+
+    if (isset($formatos['csv'])) {
+        $checked['csv'] = 'checked="checked"';
+    }
+
+    if (isset($formatos['xls'])) {
+        $checked['xls'] = 'checked="checked"';
+    }
+
+    if (isset($formatos['html'])) {
+        $checked['html'] = 'checked="checked"';
+    }
+}
+?>
+
+#{botoes}
 <div class="fixed-action-btn">
     <a class="btn-floating btn-large" href="@{Relatorios->index()}">
         <i class="large material-icons">arrow_back</i>
@@ -19,6 +50,47 @@
 
 <ul class="collapsible">
 
+    <li> <!-- Formatos -->
+        <div class="collapsible-header">
+            <i class="material-icons">insert_drive_file</i>Formatos do relatório
+        </div>
+        <div class="collapsible-body">
+            <div class="col s12">
+                <form action="@{Relatorios->salvarFormatos(<?=$relatorio->id?>)}" role="form" method="POST" >
+                    <input type="hidden" name="relatorio[id]" value="<?= $relatorio->id ?>" />
+                    <div class="row">
+                        <div class="input-field">
+                            <p>
+                                <input type="checkbox" name="formatos[printer]" value="printer" id="checkbox-printer" <?= $checked['printer'] ?>/>
+                                <label for="checkbox-printer">Impressora</label>
+                            </p>
+                            <p>
+                                <input type="checkbox" name="formatos[csv]" value="csv" id="checkbox-csv" <?= $checked['csv'] ?>/>
+                                <label for="checkbox-csv">CSV</label>
+                            </p>
+                            <p>
+                                <input type="checkbox" name="formatos[pdf]" value="pdf" id="checkbox-pdf" <?= $checked['pdf'] ?>/>
+                                <label for="checkbox-pdf">PDF</label>
+                            </p>
+                            <p>
+                                <input type="checkbox" name="formatos[xls]" value="xls" id="checkbox-xls" <?= $checked['xls'] ?>/>
+                                <label for="checkbox-xls">XLS</label>
+                            </p>
+                            <p>
+                                <input type="checkbox" name="formatos[html]" value="html" id="checkbox-html" <?= $checked['html'] ?>/>
+                                <label for="checkbox-html">HTML</label>
+                            </p>                           
+                        </div>
+                    </div>
+                    <div>
+                        <div class="input-field">
+                            <button class="btn btn-primary" type="submit" >Salvar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </li> <!-- Formatos -->
     <li> <!--Grupos de Acesso-->
         <div class="collapsible-header active">
             <i class="material-icons">group</i>Grupos de Acesso
@@ -66,8 +138,8 @@
                         <tr>
                             <td><?= $grupo->nome ?></td>
                             <td style="text-align: left">
-                                <a href="@{Relatorios->associaGrupo(<?= "$relatorio->id,$grupo->id"?>)}"
-                                   title="Associar este relatório ao grupo <?= $grupo->nome?> ">
+                                <a href="@{Relatorios->associaGrupo(<?= "$relatorio->id,$grupo->id" ?>)}"
+                                   title="Associar este relatório ao grupo <?= $grupo->nome ?> ">
                                     <i class="material-icons">add</i>
                                 </a>
                             </td>
@@ -84,11 +156,10 @@
             <div class="collapsible-body">
                 <form action="@{Relatorios->salvarTelaParametros(<?= $relatorio->id ?>)}" class="form-horizontal" rol="form" id="form-consulta-parametros" method="POST" >
                     <input type="hidden" name="tela[relatorio_id]" value="<?= $relatorio->id ?>">
-                    <?php  
-                      if (isset($telaParametros->id)) {
+                    <?php
+                    if (isset($telaParametros->id)) {
                         echo '<input type="hidden" name="tela[id]" value="' . $telaParametros->id . '">';
-                        }
-
+                    }
                     ?>
                     <div class="row">
                         <div class="input-field col s12">
@@ -112,7 +183,7 @@
                 </form>
             </div>
         </li><!-- Tela de parâmetros-->
-    <?php } //if parametrizado ?>
+    <?php } //if parametrizado  ?>
 </ul>
 
 #{scriptPagina}
