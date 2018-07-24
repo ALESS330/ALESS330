@@ -30,6 +30,7 @@ class Relatorios extends Controller {
         $relatorio = $this->buscaOuNulo($idRelatorio);
         $objRelatorio = new Relatorio();
         $dados['relatorio'] = $relatorio;
+        $dados['datasource'] = $objRelatorio->getDatasource($idRelatorio);
         $dados['gruposRelatorio'] = $this->relatorio->getGrupos($idRelatorio);
         $dados['grupos'] = $objRelatorio->listaGruposPossiveis($relatorio->id);
         $lFormatos = $objRelatorio->getFormatos($relatorio->id);
@@ -41,32 +42,32 @@ class Relatorios extends Controller {
         if ($relatorio->parametrizado) {
             $tp = $this->relatorio->getTelaParametros($idRelatorio);
             $objFormulario = new Formulario();
-            if($tp){
+            if ($tp) {
                 $f = $objFormulario->get($tp[0]->formulario_id);
-            }else{
+            } else {
                 $f = NULL;
             }
             $dados['telaParametros'] = $f;
             $dados['telas'] = $objFormulario->listaTelas();
         }
-        parent::render($dados);
+        $this->render($dados);
     }
-    
-    function salvarFormatos($relatorioId){
+
+    function salvarFormatos($relatorioId) {
         $formatos = $_POST['formatos'];
         $this->relatorio->salvarFormatos($relatorioId, $formatos);
         $this->mensagemSucesso("Formatos salvos com suscesso");
         $this->go2("Relatorios->propriedades($relatorioId)");
     }
-    
-    function salvarTelaParametros($relatorioId){
+
+    function salvarTelaParametros($relatorioId) {
         $tela = $_POST['tela'];
         $this->relatorio->salvarTelaParametros($tela);
         $this->mensagemSucesso("Tela de Parâmetros associada com sucesso");
         parent::go2("Relatorios->propriedades($relatorioId)");
     }
-    
-    function associaGrupo($relatorioId, $grupoId){
+
+    function associaGrupo($relatorioId, $grupoId) {
         $objRG = new RelatorioGrupo();
         $dadosRG['grupo_id'] = $grupoId;
         $dadosRG['relatorio_id'] = $relatorioId;
@@ -74,15 +75,15 @@ class Relatorios extends Controller {
         $this->mensagemSucesso("Relatório #$relatorioId associado ao grupo #$grupoId com sucesso.");
         $this->go2("Relatorios->propriedades($relatorioId)");
     }
-    
-    function removeGrupo($relatorioId, $grupoId){
+
+    function removeGrupo($relatorioId, $grupoId) {
         $objRG = new RelatorioGrupo();
         $dadosRG = $objRG->busca($relatorioId, $grupoId);
         $objRG->deleta($dadosRG->id);
         $this->mensagemSucesso("Relatório #$relatorioId removido do grupo #$grupoId com sucesso.");
         $this->go2("Relatorios->propriedades($relatorioId)");
     }
-    
+
     function cadastro($id = NULL) {
         $dados = array();
         if ($id) {
@@ -107,19 +108,19 @@ class Relatorios extends Controller {
         //$dadosRelatorio['codigo_sql'] = str_replace("'", "''", $dadosRelatorio['codigo_sql']);
         $dadosRelatorio['relatorio_pai_id'] = is_numeric($dadosRelatorio['relatorio_pai_id']) === TRUE ? $dadosRelatorio['relatorio_pai_id'] : null;
         $dadosRelatorio['parametrizado'] = isset($dadosRelatorio['parametrizado']) ? $dadosRelatorio['parametrizado'] : FALSE;
-        $dadosRelatorio['publico'] = (($dadosRelatorio['publico'] ?? FALSE)  == true) ? true : false;
-        if (isset($dadosRelatorio['id'])){
+        $dadosRelatorio['publico'] = (($dadosRelatorio['publico'] ?? FALSE) == true) ? true : false;
+        if (isset($dadosRelatorio['id'])) {
             $id = $dadosRelatorio['id'];
-        }else{
+        } else {
             $id = FALSE;
         }
         $novoId = $this->relatorio->salvar($dadosRelatorio);
-        $relatorioId =  $id ?: $novoId;
-        
+        $relatorioId = $id ?: $novoId;
+
         $this->mensagemSucesso("Relatório salvo com sucesso.");
-        if($dadosRelatorio['parametrizado'] && $dadosRelatorio['parametrizado'] == TRUE){
+        if ($dadosRelatorio['parametrizado'] && $dadosRelatorio['parametrizado'] == TRUE) {
             parent::go2("Relatorios->propriedades($relatorioId)");
-        }else{
+        } else {
             parent::go2("Relatorios->index()");
         }
     }
@@ -133,13 +134,13 @@ class Relatorios extends Controller {
             $this->go2("Application->index");
             exit();
         }
-        
+
         $parametros = count($_GET);
         if ($relatorio->parametrizado && !$parametros) {
             $_SESSION['action'] = $this->router->link("Relatorios->gerar($datasource,$nomeRelatorio)"); //$router
             $rt = new RelatorioTela();
             $_tela = $rt->getBy(array("relatorio_id" => $relatorio->id));
-            if(!isset($_tela[0])){
+            if (!isset($_tela[0])) {
                 throw new Exception("Impossível buscar tela de parâmetros.", 5);
             }
             $tela = $_tela[0];
@@ -150,6 +151,16 @@ class Relatorios extends Controller {
             $_SESSION['corEmprestada'] = $corSistema;
             $_SESSION['tituloEmprestado'] = $_ROTULO;
             parent::go2("/formularios/tela-relatorio/$f->nome");
+        }
+        $objRelatorio = new Relatorio();
+        $lFormatos = $objRelatorio->getFormatos($relatorio->id);
+        if (count($lFormatos) == 1) {
+            if ($lFormatos[0]->formato == "pdf") {
+                $this->gerarPdf($datasource, $nomeRelatorio);
+            }
+            if ($lFormatos[0]->formato == "csv") {
+                $this->gerarCsv($datasource, $nomeRelatorio);
+            }
         }
 
         $construtor = new ConstrutorRelatorios();
@@ -191,12 +202,12 @@ class Relatorios extends Controller {
         $data['nome'] = $estrutura['nome_relatorio'];
         $data['descricao'] = $estrutura['descricao'];
         ini_set("max_execution_time", 90);
-        if($nomeRelatorio == "rotulo-medicamento"){
+        if ($nomeRelatorio == "rotulo-medicamento") {
             $this->renderPDFview("Relatorios/layouts/rotulo-medicamento", $data, NULL, "pdf-horizontal");
         }
         $this->renderPDF($data);
     }
-    
+
     function gerarExcel($datasource, $nomeRelatorio) {
         $data = array();
         $construtor = new ConstrutorRelatorios();
@@ -212,7 +223,7 @@ class Relatorios extends Controller {
         $construtor = new ConstrutorRelatorios();
         $estrutura = $construtor->getEstruturaRelatorio($nomeRelatorio)[0];
         $suportaCSV = $this->relatorio->checaFormato($estrutura['relatorio_id'], 'csv')->suporta;
-        if(!$suportaCSV){
+        if (!$suportaCSV) {
             throw new Exception("Formato CSV não suportado para esse relatório.", 8);
         }
         $data = array();

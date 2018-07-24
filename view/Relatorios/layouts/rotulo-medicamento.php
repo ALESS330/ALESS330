@@ -5,16 +5,17 @@ $paciente = $dados[0];
 
     .rotulo{
         width: 63mm;
-        height: 97mm;
+        height: 100mm;
         background-image: url('/relator/assets/img/fundo-rotulo-medicamento.jpg');
-        background-size: 99%;
+        background-size: 98%;
         background-position: center;
         background-repeat: no-repeat;
-        padding-top: 10mm;
+        padding-top: 5mm;
         padding-left: 5mm;
         padding-right: 5mm;
+        padding-bottom: 0mm;
         float: left;
-        border: solid 1px silver;
+/*        border: solid 1px silver;*/
         font-size: 10pt;
         font-family: Arial;
     }
@@ -23,6 +24,13 @@ $paciente = $dados[0];
         list-style: none;
     }
 
+    .rotulo .titulo-rotulo{
+        padding-left: 30mm;
+        font-weight: bold;
+        font-size: 8pt;
+        color: white;
+        padding-bottom: 2mm;
+    }
     strong{
         font-size: 8pt;
         line-height: 10pt;
@@ -36,6 +44,7 @@ $paciente = $dados[0];
 </style>
 <?php for ($i = 0; $i <= 7; $i++) { ?>
     <div class="rotulo">
+        <div class="titulo-rotulo">Rótulo de Medicação</div>
         <div class="paciente">
             <strong>Paciente: </strong><span><?= $paciente['nome'] ?></span>
             <strong>DN: </strong><span><?= $paciente['data_nascimento'] ?></span>        

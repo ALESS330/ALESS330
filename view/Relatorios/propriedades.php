@@ -42,7 +42,7 @@ if (isset($formatos)) {
     <legend>Propriedades do Relatório</legend>
     <blockquote>
         <ul>
-            <li>Nome: <strong><?= $relatorio->nome ?></strong></li>
+            <li>Nome: <strong><a href="@{Relatorios->gerar(<?= $datasource->nome ?>,<?= $relatorio->nome?>)}"><?= $relatorio->nome ?></a></strong></li>
             <li>Descrição: <strong><?= $relatorio->descricao ?></strong></li>
         </ul>
     </blockquote>

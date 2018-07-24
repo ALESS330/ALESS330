@@ -210,7 +210,9 @@ WHERE
             }//if
         }//foreach 
         return $isInGroup;
-    }// function checarAcesso
+    }
+
+// function checarAcesso
 
     public function salvarFormatos($relatorioId, $formatos) {
         $rf = new RelatorioFormato();
@@ -229,6 +231,10 @@ WHERE
         return $this->db->consulta($sql)[0];
     }
 
-}
+    public function getDatasource($idRelatorio) {
+        $oDatasource = new Datasource();
+        $oRelatorio = new Relatorio();
+        return $oDatasource->get($oRelatorio->get($idRelatorio)->datasource_id);
+    }
 
-// classe
+}// classe
