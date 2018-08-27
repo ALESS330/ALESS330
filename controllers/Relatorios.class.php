@@ -156,10 +156,10 @@ class Relatorios extends Controller {
         $lFormatos = $objRelatorio->getFormatos($relatorio->id);
         if (count($lFormatos) == 1) {
             if ($lFormatos[0]->formato == "pdf") {
-                $this->gerarPdf($datasource, $nomeRelatorio);
+                $this->forcaDownload('pdf', $datasource, $nomeRelatorio, $parametros);
             }
             if ($lFormatos[0]->formato == "csv") {
-                $this->gerarCsv($datasource, $nomeRelatorio);
+                $this->forcaDownload("csv", $datasource, $nomeRelatorio, $parametros);
             }
         }
 
@@ -194,6 +194,10 @@ class Relatorios extends Controller {
         parent::render($data);
     }
 
+    private function forcaDownload($formato, $datasource, $nomeRelatorio, $parametros = NULL) {
+        $this->gerarCsv($datasource, $nomeRelatorio, $parametros);
+    }
+
     function gerarPdf($datasource, $nomeRelatorio) {
         $data = array();
         $construtor = new ConstrutorRelatorios();
@@ -219,7 +223,7 @@ class Relatorios extends Controller {
         parent::renderExcel($data);
     }
 
-    function gerarCsv($datasource, $nomeRelatorio) {
+    function gerarCsv($datasource, $nomeRelatorio, $parametros = NULL) {
         $construtor = new ConstrutorRelatorios();
         $estrutura = $construtor->getEstruturaRelatorio($nomeRelatorio)[0];
         $suportaCSV = $this->relatorio->checaFormato($estrutura['relatorio_id'], 'csv')->suporta;

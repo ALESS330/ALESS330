@@ -1,5 +1,5 @@
 <?php
-
+/*
 $_CONTROLE = 'Parametros';
 $_ROTULO = 'Parâmetros';
 
@@ -18,6 +18,7 @@ class Parametros extends Controller {
         echo "<pre>";
         print_r($_POST);
         echo "</pre>";
-        die("Ok"); // */
+        die("Ok Parametros::salvar"); // * /
     }
 }
+*/
