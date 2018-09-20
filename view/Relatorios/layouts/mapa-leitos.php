@@ -263,8 +263,16 @@
                 </thead>
                 <tbody>
                     <?php
+                    $listaUnidadesFuncionais = array();
+                    $listaSituacoes = array();
                     $i = 0;
                     foreach ($dados as $linha) {
+                        /*
+                        echo "<pre>";
+                        print_r($linha);
+                        echo "</pre>";
+                        die("OK");
+// */
                         if ($i % 2 === 0) {
                             $parImpar = " par ";
                         } else {
@@ -275,15 +283,17 @@
                             $$campo = $valor == NULL ? "" : $valor;
                         }
                         $MAX_LETRAS = 30;
-                        $unidadesFuncionais[$unidade_funcional] = is_numeric($unidadesFuncionais[$unidade_funcional]) ? $unidadesFuncionais[$unidade_funcional] + 1 : 1;
-                        $situacoes[$situacao_leito] = is_numeric($situacoes[$situacao_leito]) ? $situacoes[$situacao_leito] + 1 : 1;
-                        $nome = strlen($nome_paciente) > $MAX_LETRAS ? substr($nome_paciente, 0, $MAX_LETRAS - 3) . "..." : $nome_paciente;
-                        $procedimento = strlen($procedimento_descricao) > $MAX_LETRAS ? substr($procedimento_descricao, 0, $MAX_LETRAS - 3) . "..." : $procedimento_descricao;
+                        $listaUnidadesFuncionais[] = $unidade_funcional;
+                        //$unidadesFuncionais[$unidade_funcional] = is_numeric($unidadesFuncionais[$unidade_funcional]) ? $unidadesFuncionais[$unidade_funcional] + 1 : 1;
+                        //$situacoes[$situacao_leito] = is_numeric($situacoes[$situacao_leito]) ? $situacoes[$situacao_leito] + 1 : 1;
+                        $listaSituacoes[] = $situacao_leito;
+                        $nome = strlen($nome) > $MAX_LETRAS ? substr($nome, 0, $MAX_LETRAS - 3) . "..." : $nome;
+                        $procedimento = strlen($procedimento) > $MAX_LETRAS ? substr($procedimento, 0, $MAX_LETRAS - 3) . "..." : $procedimento;
                         $uf = strlen($unidade_funcional) > $MAX_LETRAS ? substr($unidade_funcional, 0, $MAX_LETRAS - 3) . "..." : $unidade_funcional;
-                        $dias_a_maior = $dias_internados - $dias_media_permanencia;
+                        $dias_a_maior = $dias_internados ?? 0 - $dias_media_permanencia ?? 0;
                         echo "        <tr class=\"visivel $parImpar\">\n";
-                        echo "            <td>$prontuario_paciente</td>\n";
-                        echo "            <td class=\"quebravel\" title=\"$nome_paciente\">$nome</td>\n";
+                        echo "            <td>$prontuario</td>\n";
+                        echo "            <td class=\"quebravel\" title=\"$nome\">$nome</td>\n";
                         echo "            <td>$sexo</td>\n";
                         echo "            <td>$idade</td>\n";
                         echo "            <td>$leito</td>\n";
@@ -291,18 +301,18 @@
                         echo "            <td class=\"tipo\">$tipo_leito</td>\n";
                         echo "            <td>$clinica</td>\n";
                         echo "            <td title=\"$unidade_funcional\" class=\"uf\">$uf</td>\n";
-                        echo "            <td>$procedimento_codigo</td>\n";
-                        echo "            <td title=\"$procedimento_descricao\">$procedimento</td>\n";
+                        echo "            <td>$codigo_procedimento</td>\n";
+                        echo "            <td title=\"$procedimento\">$procedimento</td>\n";
                         echo "            <td>$data_internacao</td>";
                         echo "            <td>$dias_media_permanencia</td>\n";
                         echo "            <td>$dias_internados</td>\n";
                         echo "            <td>$dias_a_maior</td>";
-                        echo "            <td>$data_prevista_alta</td>";
+                        echo "            <td>$data_previsao_alta</td>";
                         echo "        </tr>\n";
                     } //foreach ($dados)
-                    $listaSituacoes = array_keys($situacoes);
+                    $listaSituacoes = array_unique($listaSituacoes);
+                    $listaUnidadesFuncionais = array_unique($listaUnidadesFuncionais);
                     sort($listaSituacoes);
-                    $listaUnidadesFuncionais = array_keys($unidadesFuncionais);
                     sort($listaUnidadesFuncionais);
                     ?>
                 </tbody>
@@ -328,7 +338,7 @@
 <?php
 echo '        var unidadesFuncionais = ' . json_encode($listaUnidadesFuncionais) . ";\n";
 echo '        var situacaosLeitos = ' . json_encode($listaSituacoes) . ";\n";
-echo '        var situacoes = ' . json_encode($situacoes) . "; \n";
+echo '        var situacoes = ' . json_encode($listaSituacoes) . "; \n";
 ?>
     $(document).ready(function () {
         var $optionsUnidadesFuncionais = "<option value=\"todos\">Todos</option>\n";
