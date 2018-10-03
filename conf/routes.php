@@ -4,7 +4,7 @@ $routes = array();
 
 $routes["/"] = "Application->index";
 $routes['/printer'] = "Application->printers";
-
+$routes['/pdf'] = "Application->pdf_me";
 
 $routes["/relatorios"] = "Relatorios->index";
 $routes["/relatorio/{\d+:idRelatorio}/tela-parametros/salvar"]  = "Relatorios->salvarTelaParametros";

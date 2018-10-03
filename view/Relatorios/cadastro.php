@@ -24,6 +24,7 @@
         $descricao = $relatorioAtual->descricao;
         $coluna_grupo = $relatorioAtual->coluna_grupo;
         $relatorio_pai = $relatorioAtual->relatorio_pai_id;
+        $ativo = $relatorioAtual->ativo;
         $sql = $relatorioAtual->codigo_sql;
         $datasourceAtual = $relatorioAtual->datasource_id;
         $checkedParametrizado = $relatorioAtual->parametrizado ? "checked" : "";
@@ -116,7 +117,21 @@
             <label for="relatorio-publico">Público</label>
         </div>
     </div>
-
+        
+    <div class="row">
+            <div class="input-field col s12">
+                <div class="switch" style="height: 35px">
+                    <label>
+                        Inativo
+                        <input name="relatorio[ativo]" id="relatorio-ativo" type="checkbox" value="true" <?= $ativo ? 'checked' : '' ?>>
+                        <span class="lever"></span>
+                        Ativo
+                    </label>
+                </div>
+                <label class="active">Estado</label>
+            </div>
+        </div>
+        
     <div class="row">
         <div class="input-field col s12">
             <!--problemas com waves-effect-->

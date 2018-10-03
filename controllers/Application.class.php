@@ -27,5 +27,10 @@ class Application extends Controller {
     function printers() {
         
     }
+    
+    function pdf_me(){
+        $dados['usuario'] = "Nome do Usuário";
+        $this->renderPDF($dados);
+    }
 
 }

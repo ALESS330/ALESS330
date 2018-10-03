@@ -92,6 +92,7 @@ FROM
     LEFT JOIN public.usuarios u ON u.id = ug.usuario_id
     -- Desenvolvedores
 WHERE TRUE 
+    AND r.ativo = TRUE
     AND (
 	r.publico = TRUE 
 	OR (u.username = '$username')
@@ -118,6 +119,15 @@ ORDER BY
 
     public function salvarTelaParametros($tela) {
         $objTP = new RelatorioTela();
+        //verificando se existe essa tela de parâmetros
+        if (isset($tela['id'])) {
+            $telaBanco = $objTP->get($tela['id']);
+            if ($telaBanco == NULL) {
+                //se não existir, irá remover o ID para que seja executado um
+                //insert e não update
+                unset($tela['id']);
+            }
+        }
         $r = $objTP->salvar($tela);
         return $r;
     }
@@ -125,6 +135,7 @@ ORDER BY
     public function pagina($pagina, $busca) {
         $busca = str_replace(" ", "%", urldecode($busca));
         $start = ($pagina - 1) * $this->NUMERO_LINHAS;
+        $mostrarInativos = "";
         $sql = "
 SELECT 
     r.id, 
@@ -136,9 +147,9 @@ FROM
     relatorios.relatorios r INNER JOIN 
     relatorios.datasources d ON r.datasource_id = d.id 
 WHERE 
-    r.nome ILIKE '%$busca%' OR 
+    (r.nome ILIKE '%$busca%' OR 
     r.descricao ILIKE '%$busca%' OR 
-    d.nome ILIKE '%$busca%' 
+    d.nome ILIKE '%$busca%')
 ORDER BY 
     r.descricao 
 OFFSET $start 

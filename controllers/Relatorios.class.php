@@ -109,6 +109,7 @@ class Relatorios extends Controller {
         $dadosRelatorio['relatorio_pai_id'] = is_numeric($dadosRelatorio['relatorio_pai_id']) === TRUE ? $dadosRelatorio['relatorio_pai_id'] : null;
         $dadosRelatorio['parametrizado'] = isset($dadosRelatorio['parametrizado']) ? $dadosRelatorio['parametrizado'] : FALSE;
         $dadosRelatorio['publico'] = (($dadosRelatorio['publico'] ?? FALSE) == true) ? true : false;
+        $dadosRelatorio['ativo'] = (($dadosRelatorio['ativo'] ?? FALSE) == true) ? true : false;
         if (isset($dadosRelatorio['id'])) {
             $id = $dadosRelatorio['id'];
         } else {
@@ -195,7 +196,13 @@ class Relatorios extends Controller {
     }
 
     private function forcaDownload($formato, $datasource, $nomeRelatorio, $parametros = NULL) {
-        $this->gerarCsv($datasource, $nomeRelatorio, $parametros);
+        if ($formato == "csv") {
+            return $this->gerarCsv($datasource, $nomeRelatorio, $parametros);
+        }
+        if ($formato == "pdf") {
+            return $this->gerarPdf($datasource, $nomeRelatorio);
+        }
+        
     }
 
     function gerarPdf($datasource, $nomeRelatorio) {
@@ -206,8 +213,11 @@ class Relatorios extends Controller {
         $data['nome'] = $estrutura['nome_relatorio'];
         $data['descricao'] = $estrutura['descricao'];
         ini_set("max_execution_time", 90);
-        if ($nomeRelatorio == "rotulo-medicamento") {
-            $this->renderPDFview("Relatorios/layouts/rotulo-medicamento", $data, NULL, "pdf-horizontal");
+        $layout = "Relatorios/layouts/$nomeRelatorio";
+        global $sisbase;
+        $arquivoLayout = "$sisbase/view/$layout.php";
+        if(file_exists($arquivoLayout)){
+            $this->renderPDFview($layout, $data,NULL, "blank");
         }
         $this->renderPDF($data);
     }

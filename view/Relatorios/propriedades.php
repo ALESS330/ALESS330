@@ -125,7 +125,7 @@ if (isset($formatos)) {
                 echo "<p>Nenhum grupo associado ao relatório</p>";
             }
             ?>
-            <table>
+            <table class="striped">
                 <thead>
                     <tr>
                         <th colspan="2">
@@ -164,7 +164,7 @@ if (isset($formatos)) {
                     <div class="row">
                         <div class="input-field col s12">
                             <select name="tela[formulario_id]">
-                                <option>Selecione a tela de parâmetros</option>
+                                <option value=" ">Selecione a tela de parâmetros</option>
                                 <?php
                                 foreach ($telas as $tela) {
                                     $selected = $tela->id == $telaParametros->id ? " selected " : " ";

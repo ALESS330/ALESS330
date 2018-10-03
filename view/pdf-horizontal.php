@@ -1,6 +1,6 @@
 <?php
-    global $orientacao;
-    $orientacao = "L";
+global $orientacao;
+$orientacao = "L";
 ?>
 <html>
     <head>
@@ -18,18 +18,10 @@
             }
         }
     </style>
-    #{stylesPagina /}    
-    <div class="header">
-        #{header /}
-    </div>
+    #{stylesPagina /}
     <body>
         <div class="content">
-            <?php $html ?>
+            <?= $html ?>
         </div>
     </body>
-    <div class="footer">
-        #{footer /}
-        <div class="pages"></div>
-    </div>
 </html>
-        

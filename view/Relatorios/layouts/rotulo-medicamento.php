@@ -1,4 +1,6 @@
 <?php
+global $orientacao;
+$orientacao = "L";
 $paciente = $dados[0];
 ?>
 <style type="text/css">
