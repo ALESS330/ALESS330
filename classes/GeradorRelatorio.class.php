@@ -76,7 +76,7 @@ class GeradorRelatorio {
         $rodape .= "                </tr>\n";
         $rodape .= "            </tfoot>\n";
 
-        return $rodape;
+        return "";
     }
 
     function geraTabela($dados, $colunaGrupo) {
