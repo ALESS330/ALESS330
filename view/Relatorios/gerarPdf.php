@@ -16,7 +16,7 @@ echo $html;
 #{footer}
 <div class="footer">
     <div class="footer-content">
-        <p>Impresso em <?= $horaImpressao?> por <?= $usuarioImpressao ?></p>
+        <p>Impresso em <?= $horaImpressao?> por <?= $usuarioImpressao ?></p> 
     </div>
     <div style="text-align: right;">
         <div>Página {PAGENO} de {nbpg}</div>
