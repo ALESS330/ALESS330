@@ -187,7 +187,9 @@ class Relatorios extends Controller {
                 if ($r) {
                     $this->mensagemSucesso("Relatório impresso com sucesso!");
                 } else {
-                    $this->mensagemErro("Falha ao imprimir o relatório!");
+                    $s = $_SESSION['erro-pulseira'];
+                    unset($_SESSION['erro-pulseira']);
+                    $this->mensagemErro("Falha ao imprimir o relatório! ($s)");
                 }
             }
             $this->go2("$u");
@@ -290,6 +292,7 @@ DATA_NASC: $pulseira->data_nascimento
         if ($s == "successfull-ok") {
             return TRUE;
         }
+        $_SESSION['erro-pulseira'] = $s;
         return FALSE;
     }
 

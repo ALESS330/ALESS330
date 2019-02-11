@@ -8,6 +8,7 @@ $db["password"] = "teste";
 $db["database"] = "teste";
 $db['porta']    = 5432; 
 
+//
 //$db["server"]   = "10.18.0.58";
 //$db["user"]     = "postgres";
 //$db["password"] = "Zxcpoi2k0";
