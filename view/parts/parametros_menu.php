@@ -12,7 +12,7 @@ $mostrarAcesso = true;
 
 $mostrarAcesso = ((strcmp($_SESSION['request']['CONTROLLER'], "Acessos") == 0) && (strcmp($_SESSION['request']['ACTION'], "login") == 0)) ? false : true;
 $mostrarBusca = true;
-if (($_SESSION['request']['CONTROLLER'] == "Formularios") && ($_SESSION['request']['CONTROLLER'] == "gerar")){
+if (($_SESSION['request']['CONTROLLER'] == "Formularios") && ($_SESSION['request']['CONTROLLER'] == "gerar")) {
     $mostrarBusca = false;
 }
 
@@ -32,8 +32,8 @@ $usuario['Usuarios->ver(' . $nomeUsuario . ')'] = "Meus dados";
 $usuario['separador'] = "-";
 $usuario['Acessos->logout'] = "Logout";
 
-$menus['Administração'] = $admin;
-$menus[$nomeUsuario] = $usuario;
+$menus['<i class="material-icons">settings</i>'] = $admin;
+$menus['<i class="material-icons">account_circle</i>'] = $usuario;
 
 $menuResultante = array();
 if ($logado) {
@@ -61,21 +61,24 @@ if ($logado) {
 $barra_menu = '';
 if ($logado) {
     if ($mostrarBusca) {
-        $barra_menu .= '<li class="search">
-                <div class="nav-wrapper">
-                <form>
-                    <div class="input-field">
-                      <input class="search-barra-menu" id="search" type="search">
-                      <label for="search"><i class="material-icons icone-pesquisa">search</i></label>
-                      <i class="material-icons">close</i>
+        $barra_menu .= '
+            <li class="center">
+                <nav>
+                    <div class="nav-wrapper white grey lighten-4">
+                        <form>
+                          <div class="input-field div-pesquisa">
+                            <input id="search" type="search" placeholder="Pesquisar">
+                            <label class="label-icon" for="search"><i class="material-icons icone-pesquisa">search</i></label>
+                            <i class="material-icons">close</i>
+                          </div>
+                        </form>
                     </div>
-                    </form>
-                </div>
-          </li> ';
+                </nav> 
+            </li>';
     }
     $idDropDown = (1 + count($menus));
     foreach ($menuResultante as $rotulo => $itens) {
-        $barra_menu .= '<li><a class="waves-effect dropdown-button" href="#" data-activates="dropdown-' . $idDropDown++ . '">' . $rotulo . '<i class="material-icons right">arrow_drop_down</i></a></li>' . "\n";
+        $barra_menu .= '<li><a class="dropdown-trigger" href="#" data-target="dropdown-' . $idDropDown++ . '">' . $rotulo . '</a></li>' . "\n";
     }
 } else {//se não logado
     if ($mostrarAcesso) {
@@ -97,7 +100,7 @@ if ($mostrarBusca) {
 $idDropDown = 1;
 if ($logado) {
     foreach ($menuResultante as $rotulo => $itens) {
-        $barra_menu_redimensionado .= '<li><a class="waves-effect dropdown-button" href="#" data-activates="dropdown-' . $idDropDown++ . '">' . $rotulo . '<i class="material-icons right">arrow_drop_down</i></a></li>' . "\n";
+        $barra_menu_redimensionado .= '<li><a class="waves-effect dropdown-trigger" href="#" data-target="dropdown-' . $idDropDown++ . '">' . $rotulo . '<i class="material-icons right">arrow_drop_down</i></a></li>' . "\n";
     }
 } else {
     $barra_menu_redimensionado .= '<li><a class="waves-effect" href="@{Acessos->login()}">' . $nomeUsuario . '</a></li>';

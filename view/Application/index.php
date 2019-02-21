@@ -64,7 +64,7 @@ $coresIcones = array();
 
 </style>
 
-<h4 class="titulo-relatorio">Lista de Relatórios</h4>
+<h5 class="titulo-relatorio">Lista de Relatórios</h5>
 <div class="divider"></div>
 
 <div class="lista-relatorios">
