@@ -38,11 +38,12 @@ class Conector {
                 }
             }
         } catch (PDOException $e) {
-            echo "<pre>";
-            echo "Erro de conexão:\n";
-            print_r($e);
-            echo "$stringConexao";
-            die("</pre>");
+//            echo "<pre>";
+//            echo "Erro de conexão:\n";
+//            print_r($e);
+//            echo "$stringConexao";
+//            die("</pre>");
+            die("Erro de conexão!");
         }
     }
 

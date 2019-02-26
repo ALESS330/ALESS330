@@ -9,4 +9,4 @@ $sisdir = "relator";
 $contexto = "/$sisdir";
 $iconeSistema = "/$sisdir/assets/img/$nomeSistema.svg";
  
-require_once dirname(dirname(__FILE__))."/base-x/preindex.php";
+require_once dirname(dirname(__FILE__))."/base-z/preindex.php";
