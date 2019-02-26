@@ -61,24 +61,34 @@ if (isset($formatos)) {
                     <div class="row">
                         <div class="input-field">
                             <p>
-                                <input type="checkbox" name="formatos[printer]" value="printer" id="checkbox-printer" <?= $checked['printer'] ?>/>
-                                <label for="checkbox-printer">Impressora</label>
+                                <label for="checkbox-printer">
+                                    <input type="checkbox" name="formatos[printer]" value="printer" id="checkbox-printer" <?= $checked['printer'] ?>/>
+                                    <span>Impressora</span>
+                                </label>
                             </p>
                             <p>
-                                <input type="checkbox" name="formatos[csv]" value="csv" id="checkbox-csv" <?= $checked['csv'] ?>/>
-                                <label for="checkbox-csv">CSV</label>
+                                <label for="checkbox-csv">
+                                    <input type="checkbox" name="formatos[csv]" value="csv" id="checkbox-csv" <?= $checked['csv'] ?>/>
+                                    <span>CSV</span>
+                                </label>
                             </p>
                             <p>
-                                <input type="checkbox" name="formatos[pdf]" value="pdf" id="checkbox-pdf" <?= $checked['pdf'] ?>/>
-                                <label for="checkbox-pdf">PDF</label>
+                                <label for="checkbox-pdf">
+                                    <input type="checkbox" name="formatos[pdf]" value="pdf" id="checkbox-pdf" <?= $checked['pdf'] ?>/>
+                                    <span>PDF</span>
+                                </label>
                             </p>
                             <p>
-                                <input type="checkbox" name="formatos[xls]" value="xls" id="checkbox-xls" <?= $checked['xls'] ?>/>
-                                <label for="checkbox-xls">XLS</label>
+                                <label for="checkbox-xls">
+                                    <input type="checkbox" name="formatos[xls]" value="xls" id="checkbox-xls" <?= $checked['xls'] ?>/>
+                                    <span>XLS</span>
+                                </label>
                             </p>
                             <p>
-                                <input type="checkbox" name="formatos[html]" value="html" id="checkbox-html" <?= $checked['html'] ?>/>
-                                <label for="checkbox-html">HTML</label>
+                                <label for="checkbox-html">
+                                    <input type="checkbox" name="formatos[html]" value="html" id="checkbox-html" <?= $checked['html'] ?>/>
+                                    <span>HTML</span>
+                                </label>
                             </p>                           
                         </div>
                     </div>

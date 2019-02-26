@@ -130,10 +130,12 @@ class Relatorios extends Controller {
         global $_ROTULO;
         $_ROTULO = "Relatório";
         $relatorio = $this->relatorio->selectByEquals("nome", $nomeRelatorio)[0];
-        if ($this->relatorio->checarAcesso($relatorio->id, $_SESSION['login'] ?? NULL) !== TRUE) {
-            $this->mensagemInfo("Acesso não autorizado a este relatório.");
-            $this->go2("Application->index");
-            exit();
+        if (!$relatorio->publico) {
+            if ($this->relatorio->checarAcesso($relatorio->id, $_SESSION['login'] ?? NULL) !== TRUE) {
+                $this->mensagemInfo("Acesso não autorizado a este relatório.");
+                $this->go2("Application->index");
+                exit();
+            }
         }
 
         $parametros = count($_GET);

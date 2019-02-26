@@ -106,15 +106,19 @@
 
     <div class="row">
         <div class="input-field col s12">
-            <input type="checkbox" class="form-control" id="relatorio-parametrizado" name="relatorio[parametrizado]" value="true" <?php echo $checkedParametrizado ?> >
-            <label for="relatorio-parametrizado">Parametrizado</label>
+            <label for="relatorio-parametrizado">
+                <input type="checkbox" class="form-control" id="relatorio-parametrizado" name="relatorio[parametrizado]" value="true" <?php echo $checkedParametrizado ?> >
+                <span>Parametrizado</span>
+            </label>
         </div>
     </div>
 
     <div class="row">
         <div class="input-field col s12">
-            <input type="checkbox" class="form-control" id="relatorio-publico" name="relatorio[publico]" value="true" <?php echo $checkedPublico ?> >
-            <label for="relatorio-publico">Público</label>
+            <label for="relatorio-publico">
+                <input type="checkbox" class="form-control" id="relatorio-publico" name="relatorio[publico]" value="true" <?php echo $checkedPublico ?> >
+                <span>Público</span>
+            </label>
         </div>
     </div>
         
