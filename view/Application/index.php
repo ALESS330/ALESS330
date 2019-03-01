@@ -73,7 +73,7 @@ $coresIcones = array();
         foreach ($listaRelatorios as $index => $relatorio) {
             ?>
             <a href="@{Relatorios->gerar(<?= $relatorio->nome_datasource ?>,<?= $relatorio->nome ?>)}">
-                <div class="relatorio card hoverable">
+                <div class="relatorio card">
                     <strong><?= $relatorio->nome ?>&nbsp;</strong>
                     <!-- div class="icone < ?= implode(" ", $coresIcones[$relatorio->grupo]) ?>" -->
                     <div class="icone">

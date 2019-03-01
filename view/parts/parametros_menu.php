@@ -12,5 +12,5 @@ $menuUsuario['Usuarios->ver(' . $nomeUsuario . ')'] = "Meus dados";
 $menuUsuario['separador'] = "-";
 $menuUsuario['Acessos->logout'] = "Logout";
 
-$menus['<i class="material-icons">settings</i>'] = $admin;
-$menus['<i class="material-icons">account_circle</i>'] = $menuUsuario;
+$menus['<i class="material-icons">settings</i><span class="hide-on-large-only truncate">Administração</span>'] = $admin;
+$menus['<i class="material-icons">account_circle</i><span class="hide-on-large-only truncate">' . $nomeUsuario . '</span>'] = $menuUsuario;

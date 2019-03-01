@@ -13,10 +13,10 @@
 </style>
 
 <div class="table-responsive">
-    <table class="bordered highlight hoverable responsive-table"   id="tabela-relatorios">
+    <table class="highlight" id="tabela-relatorios">
         <thead>
             <tr>
-                <span  id="totalizador" style="display: none" class="badge blue white-text">%d registros de %d</span>
+                <span id="totalizador" style="display: none" class="badge blue white-text">%d registros de %d</span>
             </tr>
             <tr>
                 <th></th>
