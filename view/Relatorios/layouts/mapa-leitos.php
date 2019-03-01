@@ -355,9 +355,8 @@ echo '        var situacoes = ' . json_encode($listaSituacoes) . "; \n";
         $("#situacao-leitos").html($optionsSituacoesLeito);
         $("#unidades-funcionais").val("todos");
         $("#situacao-leitos").val("todos");
-        $("select").material_select();
 
-        $("#botao-filtrar").click(function () {
+        $("#botao-filtrar").click(function () { 
             $("select").material_select();
             var $series = new Array();
             var $seriesTipo = new Array();

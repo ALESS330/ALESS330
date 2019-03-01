@@ -34,10 +34,10 @@ select distinct
     g.*
 from
     public.grupos g
-    inner join public.sistemas s ON g.sistema_id = s.id
+    left join public.sistemas s ON g.sistema_id = s.id
     left join relatorios.relatorio_grupo rg ON g.id = rg.grupo_id
 where true
-    and s.nome_unico = 'relator' 
+    and (s.nome_unico = 'relator' OR s.id is null)
     and g.id not in (select grupo_administrador_id from public.grupos_admins)
     and g.id not in (select grupo_id from relatorios.relatorio_grupo where relatorio_id = $relatorioId)
 ";
@@ -239,6 +239,12 @@ WHERE
 
     public function checaFormato($relatorioId, $formato) {
         $sql = "SELECT count(id)::integer = 1 as suporta FROM relatorios.relatorio_formato WHERE relatorio_id = $relatorioId and formato ='$formato'";
+        //*
+        echo "<pre>";
+        print_r($sql);
+        echo "</pre>";
+        die("OK");
+// */
         return $this->db->consulta($sql)[0];
     }
 

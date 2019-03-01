@@ -127,7 +127,7 @@
                 <div class="switch" style="height: 35px">
                     <label>
                         Inativo
-                        <input name="relatorio[ativo]" id="relatorio-ativo" type="checkbox" value="true" <?= $ativo ? 'checked' : '' ?>>
+                        <input name="relatorio[ativo]" id="relatorio-ativo" type="checkbox" value="true" <?= $ativo ?? FALSE ? 'checked' : '' ?>>
                         <span class="lever"></span>
                         Ativo
                     </label>
