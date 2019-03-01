@@ -8,6 +8,6 @@ $tituloSistema = 'Relatórios';
 $descricaoSistema = 'Sistema de Emissão de Relatórios';
 $sisdir = "relator";
 $contexto = "/$sisdir";
-$iconeSistema = "/$sisdir/assets/img/$nomeSistema.svg";
+$iconeSistema = "/$sisdir/assets/img/$nomeSistema.png";
  
 require_once dirname(dirname(__FILE__))."/base-z/preindex.php";
