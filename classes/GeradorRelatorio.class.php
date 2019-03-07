@@ -84,7 +84,7 @@ class GeradorRelatorio {
         if (isset($colunaGrupo)){
             $class =" quebrar-pagina ";
         }
-        $tabela = "        <table class=\"$class bordered highlight hoverable responsive-table\" cellpadding=\"0\" cellspacing=\"0\">\n";
+        $tabela = "        <table class=\"$class highlight\">\n";
         if (isset($colunaGrupo)) {
             $tabela .= $this->geraCabecalho($dados, $colunaGrupo);
         } else {
