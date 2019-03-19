@@ -1,5 +1,6 @@
 <?php
 
+$admin['tooltip'] = "Administração"; // [action] = "rotulo"
 $admin['Datasources->index'] = "Datasources";
 $admin['Relatorios->index'] = "Relatórios";
 $admin['separador'] = "-";
@@ -8,9 +9,13 @@ $admin['Grupos->index'] = "Grupos";
 $admin['Sistemas->index'] = "Sistemas";
 $admin['Funcionalidades->index'] = "Funcionalidades";
 
+$menuUsuario['tooltip'] = "Menu do usuário";
 $menuUsuario['Usuarios->ver(' . $nomeUsuario . ')'] = "Meus dados";
 $menuUsuario['separador'] = "-";
 $menuUsuario['Acessos->logout'] = "Logout";
 
-$menus['<i class="material-icons">settings</i><span class="hide-on-large-only truncate">Administração</span>'] = $admin;
-$menus['<i class="material-icons">account_circle</i><span class="hide-on-large-only truncate">' . $nomeUsuario . '</span>'] = $menuUsuario;
+$menus['settings'] = $admin; // icone do material-icons
+$menus['account_circle'] = $menuUsuario;
+
+$rotulosMobile['settings'] = 'Administração';
+$rotulosMobile['account_circle'] = $nomeUsuario;
