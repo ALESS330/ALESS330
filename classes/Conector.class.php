@@ -10,19 +10,22 @@ class Conector {
     private $conexoes;
 
     function __construct() {
-        $this->conexoes["relatorios"] = new PDO("pgsql:dbname=teste;user=teste;password=teste;host=10.18.0.101");
+        global $db;
+        $this->conexoes["relatorios"] = new PDO("pgsql:dbname=".$db['database'].";user=".$db['user'].";password=".$db['password'].";host=".$db['server']);
         $t = $this->conexoes["relatorios"]->setAttribute(PDO::ATTR_PERSISTENT, true);
-        $sqlDatasources = "SELECT id, nome, conexao FROM relatorios.datasources order by id desc";
+        $sqlDatasources = "SELECT id, nome, conexao FROM relatorios.datasources WHERE ativo = TRUE order by id desc";
         $r = $this->conexoes["relatorios"]->prepare($sqlDatasources);
         if (!$r) {
             print_r($this->conexoes->errorInfo());
         }
         $result = $r->execute();
         $conexoesBanco = $r->fetchAll(PDO::FETCH_ASSOC);
+        $serverTried = "- -";
         try {
             foreach ($conexoesBanco as $conexaoAtual) {
                 $stringConexao = $conexaoAtual["conexao"];
                 $nome = $conexaoAtual["nome"];
+                $serverTried = $nome;
                 if (strpos($stringConexao, "mysql:") === 0) {
                     $dados = array();
                     preg_match("/;user=(.*?);/", $stringConexao, $dados);
@@ -43,7 +46,7 @@ class Conector {
 //            print_r($e);
 //            echo "$stringConexao";
 //            die("</pre>");
-            die("Erro de conexão!");
+            die("Erro de conexão: " . $serverTried);
         }
     }
 

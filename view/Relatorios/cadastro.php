@@ -123,18 +123,18 @@
     </div>
         
     <div class="row">
-            <div class="input-field col s12">
-                <div class="switch" style="height: 35px">
-                    <label>
-                        Inativo
-                        <input name="relatorio[ativo]" id="relatorio-ativo" type="checkbox" value="true" <?= $ativo ?? FALSE ? 'checked' : '' ?>>
-                        <span class="lever"></span>
-                        Ativo
-                    </label>
-                </div>
-                <label class="active">Estado</label>
+        <div class="input-field col s12">
+            <div class="switch" style="height: 35px">
+                <label>
+                    Inativo
+                    <input name="relatorio[ativo]" id="relatorio-ativo" type="checkbox" value="true" <?= $ativo ?? FALSE ? 'checked' : '' ?>>
+                    <span class="lever"></span>
+                    Ativo
+                </label>
             </div>
+            <label class="active">Estado</label>
         </div>
+    </div>
         
     <div class="row">
         <div class="input-field col s12">

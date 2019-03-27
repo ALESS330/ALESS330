@@ -332,8 +332,8 @@
 
 #{scriptPagina}
 <script type="text/javascript" src="/relator/view/Relatorios/layouts/mapa-leitos.js"></script>
-<script type="text/javascript" src="/static/highcharts/code/highcharts.js"></script>
-<script type="text/javascript" src="/static/tablesorter/jquery.tablesorter.min.js"></script>
+<script type="text/javascript" src="http://10.18.0.101/static/highcharts/code/highcharts.js"></script>
+<script type="text/javascript" src="http://10.18.0.101/static/tablesorter/jquery.tablesorter.min.js"></script>
 <script type="text/javascript">
 <?php
 echo '        var unidadesFuncionais = ' . json_encode($listaUnidadesFuncionais) . ";\n";
@@ -357,7 +357,6 @@ echo '        var situacoes = ' . json_encode($listaSituacoes) . "; \n";
         $("#situacao-leitos").val("todos");
 
         $("#botao-filtrar").click(function () { 
-            $("select").material_select();
             var $series = new Array();
             var $seriesTipo = new Array();
 
@@ -532,7 +531,7 @@ echo '        var situacoes = ' . json_encode($listaSituacoes) . "; \n";
         $("#botao-limpar").click(function () {
             $("#unidades-funcionais").val("todos");
             $("#situacao-leitos").val("todos");
-            $("select").material_select();
+             M.AutoInit();
             $("#botao-filtrar").click();
         });
 

@@ -1,5 +1,12 @@
 <?php
-global $orientacao;
+global $orientacao, $margem;
+$margem = array(
+    'margin_left' => 0, 
+    'margin_right' => 0, 
+    'margin_top' => 0, 
+    'margin_bottom' => 0, 
+    'margin_header' => 0, 
+    'margin_footer' => 0);
 $orientacao = "L";
 $paciente = $dados[0];
 ?>
