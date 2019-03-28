@@ -158,10 +158,10 @@ class Relatorios extends Controller {
         $objRelatorio = new Relatorio();
         $lFormatos = $objRelatorio->getFormatos($relatorio->id);
         if (count($lFormatos) == 1) {
-            if ($lFormatos[0]->formato == "pdf") {
+            if ($lFormatos[0]->formato === "pdf") {
                 $this->forcaDownload('pdf', $datasource, $nomeRelatorio, $parametros);
             }
-            if ($lFormatos[0]->formato == "csv") {
+            if ($lFormatos[0]->formato === "csv") {
                 $this->forcaDownload("csv", $datasource, $nomeRelatorio, $parametros);
             }
         }
@@ -200,10 +200,25 @@ class Relatorios extends Controller {
     }
 
     private function forcaDownload($formato, $datasource, $nomeRelatorio, $parametros = NULL) {
-        if ($formato == "csv") {
-            return $this->gerarCsv($datasource, $nomeRelatorio, $parametros);
+        $nome = "";
+        if($parametros){
+            $p = $_SESSION['parametros'];
+            unset($p['__ANONIMOS__']);
+            unset($p['telaId']);
+            unset($p['formularioId']);
+            $nome = $nomeRelatorio."[" . implode("_", $p) . "]).csv";
+        }else{
+            $nome = "$nomeRelatorio-$hora.csv";
         }
-        if ($formato == "pdf") {
+        if ($formato === "csv") {
+            $csv = $this->gerarCsv($datasource, $nomeRelatorio, $parametros);
+            header("Content-Description: File Transfer"); 
+            header("Content-Type: application/octet-stream"); 
+            header("Content-Disposition: attachment; filename=" . $nome); 
+            echo $csv;
+            exit(0);
+        }
+        if ($formato === "pdf") {
             return $this->gerarPdf($datasource, $nomeRelatorio);
         }
         
@@ -249,7 +264,7 @@ class Relatorios extends Controller {
         $data['tipo'] = $estrutura['tipo'];
         $data['coluna_grupo'] = $estrutura['coluna_grupo'];
         $data['nome_relatorio'] = $nomeRelatorio;
-        parent::renderCsv($data);
+        $this->renderCsv($data);
     }
 
     private function toPulseira($datasource, $nomeRelatorio, $impressora) {
