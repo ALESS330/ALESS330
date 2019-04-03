@@ -208,7 +208,7 @@ class Relatorios extends Controller {
             unset($p['formularioId']);
             $nome = $nomeRelatorio."[" . implode("_", $p) . "]).csv";
         }else{
-            $nome = "$nomeRelatorio-$hora.csv";
+            $nome = "$nomeRelatorio.csv";
         }
         if ($formato === "csv") {
             $csv = $this->gerarCsv($datasource, $nomeRelatorio, $parametros);
@@ -264,7 +264,7 @@ class Relatorios extends Controller {
         $data['tipo'] = $estrutura['tipo'];
         $data['coluna_grupo'] = $estrutura['coluna_grupo'];
         $data['nome_relatorio'] = $nomeRelatorio;
-        $this->renderCsv($data);
+        return $this->renderCsv($data);
     }
 
     private function toPulseira($datasource, $nomeRelatorio, $impressora) {
