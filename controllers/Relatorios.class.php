@@ -236,7 +236,7 @@ class Relatorios extends Controller {
         global $sisbase;
         $arquivoLayout = "$sisbase/view/$layout.php";
         if(file_exists($arquivoLayout)){
-            $this->renderPDFview($layout, $data,NULL, "blank");
+            $this->renderPDFview($layout, $data, NULL, "blank");
         }
         $this->renderPDF($data);
     }

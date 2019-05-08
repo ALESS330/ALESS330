@@ -25,7 +25,9 @@ class ConstrutorRelatorios {
         } else {
             $sql = $sqlBanco;
         }
-        //echo "<pre>$sql</pre>";
+        
+//        echo "<pre>$sql</pre>"; 
+//        exit();
         $dados = $this->conector->getDados($sql, $conexaoRelatorio);
         return $dados;
     }
