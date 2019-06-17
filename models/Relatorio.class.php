@@ -17,6 +17,8 @@ class Relatorio extends Model {
         $grupos = array();
         if ($listaRG) {
             foreach ($listaRG as $relatorioGrupo) {
+                $oGrupo = new Grupo; 
+                $g = $oGrupo->get($relatorioGrupo->grupo_id);
                 $grupos[] = $grupo->get($relatorioGrupo->grupo_id);
             }//foreach
         }//if
