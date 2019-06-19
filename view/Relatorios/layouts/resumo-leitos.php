@@ -1,6 +1,3 @@
-<?php
-//$jsonDadosTabela = json_encode($dados);
-?>
 <style>
 
     .container{
@@ -172,72 +169,36 @@
         font-family: "Material Icons";
     }    
 
+    nav{
+        display: none;
+    }
+    div.chip{
+        display: none;
+    }
+    footer{
+        display: none;
+    }
+    
+    table{
+        width: 100%;
+        height: 100%;
+    }
 </style>
 <div class="titulo">
     <span id="alerta-need-update" title="Pode ser necessário atualizar a página a fim de visualizar as informações mais recentes.">Atenção! Dados carregados a mais de 60 segundos!</span>
-    <strong>Mapa de Leitos</strong>
-</div>
-<div class="cards">
-    <div class="row">
-        <div class="col s6">
-            <fieldset>
-                <legend>Filtros</legend>
-                <div>
-                    <form>
-                        <div class="row">
-                            <div class="input-field">
-                                <select id="unidades-funcionais" multiple>
-                                </select>
-                                <label for="unidades-funcionais">Unidade Funcional</label>                
-                            </div>                    
-                        </div>
-                        <div class="row">
-                            <div class="input-field">
-                                <select id="situacao-leitos" multiple>
-                                </select>
-                                <label for="situacao-leitos">Situação do Leito</label>                
-                            </div>                    
-                        </div>
-
-                        <div class="row right">
-                            <button type="button" id="botao-limpar" class="btn waves-effect grey lighten-2 " style="color: black">Limpar</button>
-                            <button type="button" id="botao-filtrar" class="btn primary waves-effect ">Aplicar</button>
-                        </div>
-
-                    </form>
-                </div>
-            </fieldset>
-        </div>
-
-        <div class="col s3">
-            <fieldset>
-                <legend>Leitos <span id="total-linhas"></span></legend>
-                <div id="grafico-leitos">
-
-                </div>
-            </fieldset>
-        </div>
-        <div class="col s3">
-            <fieldset>
-                <legend>Tipo</legend>
-                <div id="grafico-tipo-leitos">
-
-                </div>
-            </fieldset>
-        </div>
-    </div>
+    <strong>Mapa de Leitos: <?= $dados[0]['unidade_funcional'] ?></strong>
 </div>
 
 <div class="content">
     <div class="corpo">
         <fieldset>
-            <table class="bordered responsive-table" style="display: none">
+            <table class="bordered responsive-table">
                 <thead>
                     <tr>
                         <th colspan="3">Leito</th>
                         <th colspan="4" class="mesclada">Paciente</th>
                         <th rowspan="2" class="mesclada">Município</th>
-                        <th>Clínica</th>
+                        <!-- th>Clínica</th -->
                         <th rowspan="2" class="mesclada">Data</th>
                         <th rowspan="2" class="mesclada">Dias Int.</th>
                     </tr>
@@ -249,7 +210,7 @@
                         <th>Nome</th>
                         <th>Sexo</th>
                         <th>Idade</th>
-                        <th>Unidade Funcional</th>
+                        <!-- th>Unidade Funcional</th -->
                     </tr>
                 </thead>
                 <tbody>
@@ -299,7 +260,7 @@
                         echo "            <td>$idade</td>\n";
                         echo "            <td>$municipio</td>";
                         //echo "            <td>$clinica</td>\n";
-                        echo "            <td title=\"$unidade_funcional\" class=\"uf\">$uf</td>\n";
+                        //echo "            <td title=\"$unidade_funcional\" class=\"uf\">$uf</td>\n";
                         echo "            <td>$data_internacao</td>";
                         echo "            <td>$dias_internados</td>\n";
                         echo "        </tr>\n";

@@ -121,17 +121,12 @@ ORDER BY
 
     public function salvarTelaParametros($tela) {
         $objTP = new RelatorioTela();
+        $objTP->deleta($tela);
         //verificando se existe essa tela de parâmetros
-        if (isset($tela['id'])) {
-            $telaBanco = $objTP->get($tela['id']);
-            if ($telaBanco == NULL) {
-                //se não existir, irá remover o ID para que seja executado um
-                //insert e não update
-                unset($tela['id']);
-            }
+        if (isset($tela['relatorio_id']) && isset($tela['formulario_id']) && $tela['relatorio_id'] && $tela['formulario_id']) {
+            $objTP->salvar($tela);            
         }
-        $r = $objTP->salvar($tela);
-        return $r;
+        return true;
     }
 
     public function pagina($pagina, $busca) {
