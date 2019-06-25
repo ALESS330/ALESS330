@@ -12,7 +12,7 @@
 #{/scriptPagina}
 
 
-<form class="form-horizontal" rol="form" id="form-cadastro-relatorio" action="@{Relatorios->salvar()}" method="POST" >
+<form class="form-horizontal" id="form-cadastro-relatorio" action="@{Relatorios->salvar()}" method="POST" >
 
     <?php
     $checkedPublico = $checkedParametrizado = $datasourceAtual = $sql = $relatorio_pai = $coluna_grupo = $tipo = $nome = $descricao = "";
