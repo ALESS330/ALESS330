@@ -1,4 +1,4 @@
-<form class="form-horizontal" rol="form" id="form-cadastro-convenio" action="@{Datasources->salvar()}" method="POST" >
+<form class="form-horizontal" rol="form" id="form-cadastro-datasource" action="@{Datasources->salvar()}" method="POST" >
     
     <?php if ($datasource->id) { ?>
         <input type="hidden" name="datasource[id]" value="<?= $datasource->id ?>">
@@ -8,16 +8,24 @@
     <div class="row">
         <div class="input-field col s12">
             <input type="text" required class="form-control data" id="datasource-nome" 
-                   name="datasource[nome]" value="<?= $datasource->nome?>" />
+                   name="datasource[nome]" value="<?= $datasource->nome ?? ""?>" />
             <label>Nome</label>
         </div>
     </div>
+        
+    <div class="row">
+        <div class="input-field col s12">
+            <input type="text" required class="form-control data" id="datasource-descricao" 
+                   name="datasource[descricao]" value="<?= $datasource->descricao ?? ""?>" />
+            <label>Descrição</label>
+        </div>
+    </div>        
 
     <div class="row">
         <div class="input-field col s12">
             <input type="text" required class="form-control data" id="datasource-conexao"
-                   name="datasource[conexao]" value="<?= $datasource->conexao?>" />
-            <label for="data-convenio">Conexão</label>
+                   name="datasource[conexao]" value="<?= $datasource->conexao ?? ""?>" />
+            <label for="data-datasource">Conexão</label>
         </div>
     </div>
     

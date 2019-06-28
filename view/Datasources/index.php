@@ -6,48 +6,29 @@
 #{/botoes}
 
 <div class="table-responsive">
-    <table class="bordered highlight hoverable responsive-table" id="tabela-datasources">
+    <table class="highlight" id="tabela-datasources">
         <thead>
             <tr>
                 <th>Nome</th>
-                <th>Coneo</th>
+                <th>Conexão</th>
+                <th>Descrição</th>                
+                <th>Ativo</th>
                 <th>Ação</th>
             </tr>
         </thead>
         <?php foreach ($datasources as $datasource) { ?>
             <tr>
-                <td> <?php echo $datasource->nome; ?> </td>
-                <td> <?php echo $datasource->conexao; ?> </td>
+                <td><?=$datasource->nome?> </td>
+                <td><?=$datasource->conexao?> </td>
+                <td><?=$datasource->descricao?> </td>
+                <td><?=$datasource->ativo ? "Sim" : "Não" ?></td>
                 <td>
-                    <div class="acoes">
-                        <a href="/relator/datasource/<?= $datasource->id?>" id="<?= $datasource->id ?>" class="btn indigo darken-3 waves-effect waves-light glyphicon glyphicon-edit" aria-hidden="true" >
-                           <i class="material-icons">edit</i>
-                        </a>
-                        <a class="btn btn-excluir red darken-3 waves-effect waves-light glyphicon glyphicon-edit" alt="Excluir" href="<?= $datasource->id; ?>"> 
-                            <i class="material-icons">delete</i></a>
+                    <div class="acoes right">
+                        <a href="/relator/datasource/<?= $datasource->id?>" id="<?= $datasource->id ?>"><i class="material-icons">edit</i></a>
+                        <a class="bt-excluir" href="<?= $datasource->id; ?>" title="Excluir datasource"><i class="material-icons">delete</i></a>
                     </div>
                 </td>
             </tr> 
         <?php } ?>
     </table>
-
-    #{modal}
-    Deseja realmente excluir esse registro?
-    #{/modal}
 </div>
-
-#{scriptPagina}
-
-
-
-<script type="text/javascript">
-    $(document).ready(function () {
-        var id = null;
-        $("td").on('click', '.btn-excluir', function (e) {
-            e.preventDefault();
-            id = $(this).attr("href");
-            $('#modal').openModal();
-        });
-    });
-</script>
-#{/scriptPagina}

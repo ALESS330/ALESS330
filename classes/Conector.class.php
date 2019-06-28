@@ -8,7 +8,8 @@
 class Conector {
 
     private $conexoes;
-
+    private $erros; 
+    
     function __construct() {
         global $db;
         $this->conexoes["relatorios"] = new PDO("pgsql:dbname=".$db['database'].";user=".$db['user'].";password=".$db['password'].";host=".$db['server']);
@@ -41,12 +42,7 @@ class Conector {
                 }
             }
         } catch (PDOException $e) {
-//            echo "<pre>";
-//            echo "Erro de conexão:\n";
-//            print_r($e);
-//            echo "$stringConexao";
-//            die("</pre>");
-            die("Erro de conexão: " . $serverTried);
+            $erros[] = "Erro de conexão com $serverTried";
         }
     }
 
@@ -59,9 +55,13 @@ class Conector {
     }
 
     function getDados($sql, $conex) {
-        $r = $conex->prepare($sql);
-        $result = $r->execute();
-        $linhas = $r->fetchAll(PDO::FETCH_ASSOC);
+        try{
+            $r = $conex->prepare($sql);
+            $result = $r->execute();
+            $linhas = $r->fetchAll(PDO::FETCH_ASSOC);            
+        } catch (Exception $ex) {
+            $this->mensagemErro("Conexão não efetuada $conex");
+        }
         return $linhas;
     }
 
@@ -74,7 +74,11 @@ class Conector {
     }
 
     function getConexao($nome) {
-        return $this->conexoes[$nome];
+        if(isset($this->conexoes[$nome])){
+            return $this->conexoes[$nome];
+        }
+        $oDatasource = new Datasource();
+        $datasource = $oDatasource->selectBy(array("nome" => $nome))[0];
+        throw new Exception("Conexão inexistente ou inativa para '$datasource->descricao' ($nome)");
     }
-
 }
