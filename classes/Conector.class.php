@@ -42,7 +42,7 @@ class Conector {
                 }
             }
         } catch (PDOException $e) {
-            $erros[] = "Erro de conexão com $serverTried";
+            $this->erros[] = "Erro de conexão com $serverTried";
         }
     }
 
