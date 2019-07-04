@@ -1,7 +1,9 @@
 <?php
 $termo = $dados[0];
-
+global $filename;
 $assinar = urldecode($termo['responsavel'] ?: $termo['nome']);
+
+$filename = "termo-transfusional[" .$termo['nome'] . "]";
 setlocale(LC_ALL, 'pt_BR.UTF-8');
 $data = strftime('%d de %B de %Y');
 ?>

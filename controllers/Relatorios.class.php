@@ -206,26 +206,28 @@ class Relatorios extends Controller {
             unset($p['__ANONIMOS__']);
             unset($p['telaId']);
             unset($p['formularioId']);
-            $nome = $nomeRelatorio."[" . implode("_", $p) . "]).csv";
+            $nome = $nomeRelatorio."[" . implode("_", $p) . "])";
         }else{
-            $nome = "$nomeRelatorio.csv";
+            $nome = "$nomeRelatorio";
         }
         if ($formato === "csv") {
             $csv = $this->gerarCsv($datasource, $nomeRelatorio, $parametros);
             header("Content-Description: File Transfer"); 
             header("Content-Type: application/octet-stream"); 
-            header("Content-Disposition: attachment; filename=" . $nome); 
+            header("Content-Disposition: attachment; filename=$nome.csv"); 
             echo $csv;
             exit(0);
         }
         if ($formato === "pdf") {
-            return $this->gerarPdf($datasource, $nomeRelatorio);
+            return $this->gerarPdf($datasource, $nomeRelatorio, "$nome.pdf");
         }
         
     }
 
-    function gerarPdf($datasource, $nomeRelatorio) {
+    function gerarPdf($datasource, $nomeRelatorio, $nomePDFDownload = NULL) {
         $data = array();
+        global $sisbase, $filename;
+        $filename = $nomePDFDownload;        
         $construtor = new ConstrutorRelatorios();
         $data['html'] = $construtor->getRelatorio($nomeRelatorio, $datasource);
         $estrutura = $construtor->getEstruturaRelatorio($nomeRelatorio)[0];
@@ -233,7 +235,6 @@ class Relatorios extends Controller {
         $data['descricao'] = $estrutura['descricao'];
         ini_set("max_execution_time", 90);
         $layout = "Relatorios/layouts/$nomeRelatorio";
-        global $sisbase;
         $arquivoLayout = "$sisbase/view/$layout.php";
         if(file_exists($arquivoLayout)){
             $this->renderPDFview($layout, $data, NULL);
