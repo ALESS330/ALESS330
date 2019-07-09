@@ -190,6 +190,7 @@ WHERE
                 return true;
             }
         }
+        
         $relatorioGrupo = $rg->selectByEquals("relatorio_id", $relatorioId);
         if ($r->publico) {
             return TRUE;

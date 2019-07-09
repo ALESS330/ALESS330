@@ -19,11 +19,11 @@ class Relatorios extends Controller {
     }
 
     function index() {
-        parent::render();
+        $this->render();
     }
 
     function pagina($pagina = 1, $busca = " ") {
-        parent::json($this->relatorio->pagina($pagina, $busca));
+        $this->json($this->relatorio->pagina($pagina, $busca));
     }
 
     function propriedades($idRelatorio) {
@@ -131,12 +131,16 @@ class Relatorios extends Controller {
         $_ROTULO = "Relatório";
         $relatorio = $this->relatorio->selectByEquals("nome", $nomeRelatorio)[0];
         if (!$relatorio->publico) {
-            if ($this->relatorio->checarAcesso($relatorio->id, $_SESSION['login'] ?? NULL) !== TRUE) {
-                $this->mensagemInfo("Acesso não autorizado a este relatório.");
-                $this->go2("Application->index");
-                exit();
-            }
-        }
+            if (!isset($_SESSION['login'])) {
+                $url = $_SESSION['PAGINA'] = $_SERVER['REQUEST_URI'];
+                $a = new Acessos();
+                $a->login($url);
+            } else if($this->relatorio->checarAcesso($relatorio->id, $_SESSION['login'] ?? NULL) !== TRUE) {
+                    $this->mensagemInfo("Acesso não autorizado a este relatório.");
+                    $this->go2("Application->index");
+                    exit();
+            }//else if
+        }//if (public)
 
         $parametros = count($_GET);
         if ($relatorio->parametrizado && !$parametros) {
@@ -201,33 +205,32 @@ class Relatorios extends Controller {
 
     private function forcaDownload($formato, $datasource, $nomeRelatorio, $parametros = NULL) {
         $nome = "";
-        if($parametros){
+        if ($parametros) {
             $p = $_SESSION['parametros'];
             unset($p['__ANONIMOS__']);
             unset($p['telaId']);
             unset($p['formularioId']);
-            $nome = $nomeRelatorio."[" . implode("_", $p) . "])";
-        }else{
+            $nome = $nomeRelatorio . "[" . implode("_", $p) . "])";
+        } else {
             $nome = "$nomeRelatorio";
         }
         if ($formato === "csv") {
             $csv = $this->gerarCsv($datasource, $nomeRelatorio, $parametros);
-            header("Content-Description: File Transfer"); 
-            header("Content-Type: application/octet-stream"); 
-            header("Content-Disposition: attachment; filename=$nome.csv"); 
+            header("Content-Description: File Transfer");
+            header("Content-Type: application/octet-stream");
+            header("Content-Disposition: attachment; filename=$nome.csv");
             echo $csv;
             exit(0);
         }
         if ($formato === "pdf") {
             return $this->gerarPdf($datasource, $nomeRelatorio, "$nome.pdf");
         }
-        
     }
 
     function gerarPdf($datasource, $nomeRelatorio, $nomePDFDownload = NULL) {
         $data = array();
         global $sisbase, $filename;
-        $filename = $nomePDFDownload;        
+        $filename = $nomePDFDownload;
         $construtor = new ConstrutorRelatorios();
         $data['html'] = $construtor->getRelatorio($nomeRelatorio, $datasource);
         $estrutura = $construtor->getEstruturaRelatorio($nomeRelatorio)[0];
@@ -236,7 +239,7 @@ class Relatorios extends Controller {
         ini_set("max_execution_time", 90);
         $layout = "Relatorios/layouts/$nomeRelatorio";
         $arquivoLayout = "$sisbase/view/$layout.php";
-        if(file_exists($arquivoLayout)){
+        if (file_exists($arquivoLayout)) {
             $this->renderPDFview($layout, $data, NULL);
         }
         $this->renderPDF($data);
