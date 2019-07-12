@@ -8,11 +8,11 @@
 class Conector {
 
     private $conexoes;
-    private $erros; 
-    
+    private $erros;
+
     function __construct() {
         global $db;
-        $this->conexoes["relatorios"] = new PDO("pgsql:dbname=".$db['database'].";user=".$db['user'].";password=".$db['password'].";host=".$db['server']);
+        $this->conexoes["relatorios"] = new PDO("pgsql:dbname=" . $db['database'] . ";user=" . $db['user'] . ";password=" . $db['password'] . ";host=" . $db['server']);
         $t = $this->conexoes["relatorios"]->setAttribute(PDO::ATTR_PERSISTENT, true);
         $sqlDatasources = "SELECT id, nome, conexao FROM relatorios.datasources WHERE ativo = TRUE order by id desc";
         $r = $this->conexoes["relatorios"]->prepare($sqlDatasources);
@@ -39,10 +39,11 @@ class Conector {
                     $this->conexoes[$nome]->query("SET NAMES utf8");
                 } else {
                     $this->conexoes[$nome] = new PDO($stringConexao);
-                }
-            }
+                } // else
+            } // foreach
         } catch (PDOException $e) {
-            $this->erros[] = "Erro de conexão com $serverTried";
+            echo "Erro de conexão com $serverTried";
+            // $this->erros[] = "Erro de conexão com $serverTried";
         }
     }
 
@@ -55,10 +56,10 @@ class Conector {
     }
 
     function getDados($sql, $conex) {
-        try{
+        try {
             $r = $conex->prepare($sql);
             $result = $r->execute();
-            $linhas = $r->fetchAll(PDO::FETCH_ASSOC);            
+            $linhas = $r->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $ex) {
             $this->mensagemErro("Conexão não efetuada $conex");
         }
@@ -74,11 +75,12 @@ class Conector {
     }
 
     function getConexao($nome) {
-        if(isset($this->conexoes[$nome])){
+        if (isset($this->conexoes[$nome])) {
             return $this->conexoes[$nome];
         }
         $oDatasource = new Datasource();
         $datasource = $oDatasource->selectBy(array("nome" => $nome))[0];
         throw new Exception("Conexão inexistente ou inativa para '$datasource->descricao' ($nome)");
     }
+
 }
