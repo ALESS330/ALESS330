@@ -252,6 +252,7 @@
                         <th>Nome</th>
                         <th>Sexo</th>
                         <th>Idade</th>
+                        <th>Município</th>
                         <th>Número</th>
                         <th>Situação</th>
                         <th>Tipo</th>
@@ -297,6 +298,7 @@
                         echo "            <td>$sexo</td>\n";
                         echo "            <td>$idade</td>\n";
                         echo "            <td>$leito</td>\n";
+                        echo "            <td>$municipio</td>\n";
                         echo "            <td class=\"situacao\"><span class=\"" . strtolower($situacao_leito) . "\">$situacao_leito</span></td>\n";
                         echo "            <td class=\"tipo\">$tipo_leito</td>\n";
                         echo "            <td>$clinica</td>\n";

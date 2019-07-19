@@ -129,7 +129,12 @@ class Relatorios extends Controller {
     function gerar($datasource, $nomeRelatorio) {
         global $_ROTULO;
         $_ROTULO = "Relatório";
-        $relatorio = $this->relatorio->selectByEquals("nome", $nomeRelatorio)[0];
+        $relatorio = $this->relatorio->selectByEquals("nome", $nomeRelatorio);
+        if(count($relatorio)!= 1){
+            throw new Exception("Esse relatório não existe!");
+        }else{
+            $relatorio = $relatorio[0];
+        }
         if (!$relatorio->publico) {
             if (!isset($_SESSION['login'])) {
                 $url = $_SESSION['PAGINA'] = $_SERVER['REQUEST_URI'];
@@ -157,8 +162,8 @@ class Relatorios extends Controller {
             global $corSistema;
             $_SESSION['corEmprestada'] = $corSistema;
             $_SESSION['tituloEmprestado'] = $_ROTULO;
-            parent::go2("/formularios/tela-relatorio/$f->nome");
-        }
+            $this->go2("/formularios/tela-relatorio/$f->nome");
+        }//if
         $objRelatorio = new Relatorio();
         $lFormatos = $objRelatorio->getFormatos($relatorio->id);
         if (count($lFormatos) == 1) {
@@ -200,7 +205,7 @@ class Relatorios extends Controller {
             }
             $this->go2("$u");
         }
-        parent::render($data);
+        $this->render($data);
     }
 
     private function forcaDownload($formato, $datasource, $nomeRelatorio, $parametros = NULL) {
@@ -215,11 +220,13 @@ class Relatorios extends Controller {
             $nome = "$nomeRelatorio";
         }
         if ($formato === "csv") {
-            $csv = $this->gerarCsv($datasource, $nomeRelatorio, $parametros);
-            header("Content-Description: File Transfer");
-            header("Content-Type: application/octet-stream");
-            header("Content-Disposition: attachment; filename=$nome.csv");
-            echo $csv;
+            //$csv = $this->gerarCsv($datasource, $nomeRelatorio, $parametros);
+//            header("Content-Description: File Transfer");
+//            header("Content-Type: application/octet-stream");
+//            header("Content-Disposition: attachment; filename=$nome.csv");
+//            echo $csv;
+//            exit(0);
+            $this->gerarCsv($datasource, $nomeRelatorio, $parametros);            
             exit(0);
         }
         if ($formato === "pdf") {
@@ -263,13 +270,27 @@ class Relatorios extends Controller {
         if (!$suportaCSV) {
             throw new Exception("Formato CSV não suportado para esse relatório.", 8);
         }
+        
+        if ($parametros) {
+            $p = $_SESSION['parametros'];
+            unset($p['__ANONIMOS__']);
+            unset($p['telaId']);
+            unset($p['formularioId']);
+            $nome = $nomeRelatorio . "[" . implode("_", $p) . "])";
+        } else {
+            $nome = "$nomeRelatorio";
+        }
+        header("Content-Description: File Transfer");
+        header("Content-Type: application/octet-stream");
+        header("Content-Disposition: attachment; filename=$nome.csv");
         $data = array();
         $data['dados'] = $construtor->getDadosRaw($nomeRelatorio, $datasource);
         $data['tipo'] = $estrutura['tipo'];
         $data['coluna_grupo'] = $estrutura['coluna_grupo'];
         $data['nome_relatorio'] = $nomeRelatorio;
-        return $this->renderCsv($data);
-    }
+        echo $this->renderCsv($data);
+        exit(0);
+    }//gerarCsv
 
     private function toPulseira($datasource, $nomeRelatorio, $impressora) {
         $impressora = "/printers/$impressora";

@@ -1,6 +1,3 @@
-<?php
-//$jsonDadosTabela = json_encode($dados);
-?>
 <style>
 
     .container{
@@ -91,10 +88,22 @@
     table tbody tr td.situacao span.manutencao{
         background-color: black !important;
         color: yellow;
-    }        
-
+    }
+    
+    table tbody tr td.situacao span.isolamento{
+        background-color: #ffc107 !important;
+        color: black;
+    }
+    
     table td:not(.quebravel){
         /* white-space: nowrap /**/
+    }
+    
+    table tbody td.truncate{
+    width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     }
 
     .cards div fieldset{
@@ -143,7 +152,7 @@
     }
 
     #alerta-need-update:hover{
-        width: 372px;
+        width: 500px;
     }
 
     li.search{
@@ -258,12 +267,6 @@
                     $listaSituacoes = array();
                     $i = 0;
                     foreach ($dados as $linha) {
-                        /*
-                        echo "<pre>";
-                        print_r($linha);
-                        echo "</pre>";
-                        die("OK");
-// */
                         if ($i % 2 === 0) {
                             $parImpar = " par ";
                         } else {
@@ -447,79 +450,76 @@ echo '        var situacoes = ' . json_encode($listaSituacoes) . "; \n";
                 }
             });
             //constriur gráficos
-            Highcharts.chart('grafico-leitos', {
-
-                chart: {
-                    plotBackgroundColor: null,
-                    plotBorderWidth: null,
-                    plotShadow: false,
-                    type: 'pie'
-                },
-                title: {
-                    text: null
-                },
-                tooltip: {
-                    pointFormat: '{series.name}: <b>{point.y}</b>'
-                },
-                plotOptions: {
-                    pie: {
-                        allowPointSelect: true,
-                        cursor: 'pointer',
-                        //showInLegend: true,
-                        dataLabels: {
-                            enabled: true,
-                            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-                            style: {
-                                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-                            }
-                        }
-                    }
-                },
-                series: [{
-                        name: 'Situação',
-                        colorByPoint: true,
-                        data: $series //Dados
-                    }]
-            }); // gráfico leitos
+//            Highcharts.chart('grafico-leitos', {
+//
+//                chart: {
+//                    plotBackgroundColor: null,
+//                    plotBorderWidth: null,
+//                    plotShadow: false,
+//                    type: 'pie'
+//                },
+//                title: {
+//                    text: null
+//                },
+//                tooltip: {
+//                    pointFormat: '{series.name}: <b>{point.y}</b>'
+//                },
+//                plotOptions: {
+//                    pie: {
+//                        allowPointSelect: true,
+//                        cursor: 'pointer',
+//                        //showInLegend: true,
+//                        dataLabels: {
+//                            enabled: true,
+//                            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+//                            style: {
+//                                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+//                            }
+//                        }
+//                    }
+//                },
+//                series: [{
+//                        name: 'Situação',
+//                        colorByPoint: true,
+//                        data: $series //Dados
+//                    }]
+//            }); // gráfico leitos
 
             //gráfico tipo leitos
-            Highcharts.chart('grafico-tipo-leitos', {
-
-                chart: {
-                    plotBackgroundColor: null,
-                    plotBorderWidth: null,
-                    plotShadow: false,
-                    type: 'pie'
-                },
-                title: {
-                    text: null
-                },
-                tooltip: {
-                    pointFormat: '{series.name}: <b>{point.y}</b>'
-                },
-                plotOptions: {
-                    pie: {
-                        allowPointSelect: true,
-                        cursor: 'pointer',
-                        //showInLegend: true,
-                        dataLabels: {
-                            enabled: true,
-                            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-                            style: {
-                                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-                            }
-                        }
-                    }
-                },
-                series: [{
-                        name: 'Tipo',
-                        colorByPoint: true,
-                        data: $seriesTipo //Dados
-                    }]
-            });
-
-
-            //fim gráficos
+//            Highcharts.chart('grafico-tipo-leitos', {
+//
+//                chart: {
+//                    plotBackgroundColor: null,
+//                    plotBorderWidth: null,
+//                    plotShadow: false,
+//                    type: 'pie'
+//                },
+//                title: {
+//                    text: null
+//                },
+//                tooltip: {
+//                    pointFormat: '{series.name}: <b>{point.y}</b>'
+//                },
+//                plotOptions: {
+//                    pie: {
+//                        allowPointSelect: true,
+//                        cursor: 'pointer',
+//                        //showInLegend: true,
+//                        dataLabels: {
+//                            enabled: true,
+//                            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+//                            style: {
+//                                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+//                            }
+//                        }
+//                    }
+//                },
+//                series: [{
+//                        name: 'Tipo',
+//                        colorByPoint: true,
+//                        data: $seriesTipo //Dados
+//                    }]
+//            });//fim gráficos
         }); // #botao-filtrar.click()
 
         $("#botao-limpar").click(function () {
@@ -544,7 +544,7 @@ echo '        var situacoes = ' . json_encode($listaSituacoes) . "; \n";
         $("fieldset").animate({"opacity": "1"});
         window.setTimeout(function () {
             $("#alerta-need-update").fadeIn();
-        }, 60000);
+        }, 600);
         $("#botao-limpar").click();
         $(window).scroll(function () {
             if ($(this).scrollTop() > $("table").position().top) {
