@@ -35,10 +35,13 @@ class Relatorios extends Controller {
         $dados['grupos'] = $objRelatorio->listaGruposPossiveis($relatorio->id);
         $lFormatos = $objRelatorio->getFormatos($relatorio->id);
         $formatos = array();
-        foreach ($lFormatos as $key => $value) {
+        foreach ($lFormatos as $value) {
             $formatos[$value->formato] = TRUE;
         }
         $dados['formatos'] = $formatos;
+        $dados['decoradores'] = $objRelatorio->getDecoradores($idRelatorio);
+        $oTipoDecorador = new TipoDecorador();
+        $dados['tipos_decoradores'] = $oTipoDecorador->lista();
         if ($relatorio->parametrizado) {
             $tp = $this->relatorio->getTelaParametros($idRelatorio);
             $objFormulario = new Formulario();
@@ -59,12 +62,37 @@ class Relatorios extends Controller {
         $this->mensagemSucesso("Formatos salvos com suscesso");
         $this->go2("Relatorios->propriedades($relatorioId)");
     }
-
+    
+    function salvarDecoradores($relatorioId){
+        $oDecorador = new Decorador();
+        $decoradores = $_POST['decoradores'];
+        $novoDecorador = $_POST['novoDecorador'];        
+        try{
+            $this->relatorio->getConex()->transaction();
+            $decorador['relatorio_id'] = $relatorioId;
+            foreach ($decoradores as $i => $decorador) {
+                $decorador['id'] = $i;                
+                if(!isset($decorador['ativo'])){
+                    $decorador['ativo'] = false;
+                }//if
+                $oDecorador->salvar($decorador);
+            }//foreach
+            if($novoDecorador['nome'] && $novoDecorador['parametro'] && $novoDecorador['ordem']){
+                $novoDecorador['ativo'] = true;
+            }//if
+            $this->relatorio->getConex()->commit();
+        } catch (Exception $e){
+            $this->relatorio->getConex()->rollback();
+            $this->erro("Relatorios->propriedades($relatorioId)", "Erro ao salvar ($e->getMessage())");
+        }//catch
+        $this->sucesso("Relatorios->propriedades($relatorioId)", "Decoradores salvos com sucesso");
+    }
+    
     function salvarTelaParametros($relatorioId) {
         $tela = $_POST['tela'];
         $this->relatorio->salvarTelaParametros($tela);
         $this->mensagemSucesso("Tela de Parâmetros associada com sucesso");
-        parent::go2("Relatorios->propriedades($relatorioId)");
+        $this->go2("Relatorios->propriedades($relatorioId)");
     }
 
     function associaGrupo($relatorioId, $grupoId) {

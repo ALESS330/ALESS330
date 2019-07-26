@@ -9,6 +9,7 @@ $routes['/pdf'] = "Application->pdf_me";
 $routes["/relatorios"] = "Relatorios->index";
 $routes["/relatorio/{\d+:idRelatorio}/tela-parametros/salvar"]  = "Relatorios->salvarTelaParametros";
 $routes['/relatorio/{\d+:idRelatorio}/formatos/salvar'] = "Relatorios->salvarFormatos";
+$routes['/relatorio/{\d+:idRelatorio}/decoradores/salvar'] = "Relatorios->salvarDecoradores";
 $routes['/relatorio/{\d+:idRealtorio}/grupo/{\d+:idGrupo}/associa'] = "Relatorios->associaGrupo";
 $routes['/relatorio/{\d+:idRealtorio}/grupo/{\d+:idGrupo}/remove'] = "Relatorios->removeGrupo";
 $routes["/relatorio/{\d+:idRelatorio}/propriedades"] = "Relatorios->propriedades";

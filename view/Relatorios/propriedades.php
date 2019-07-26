@@ -194,6 +194,117 @@ if (isset($formatos)) {
             </div>
         </li><!-- Tela de parâmetros-->
     <?php } //if parametrizado  ?>
+        <li> <!-- Decoradores -->
+        <div class="collapsible-header">
+            <i class="material-icons">compare_arrows</i>Decoradores
+        </div>
+        <div class="collapsible-body">
+            <div class="col s12">
+                <form action="@{Relatorios->salvarDecoradores(<?=$relatorio->id?>)}" role="form" method="POST" >
+                    <input type="hidden" name="relatorio[id]" value="<?= $relatorio->id ?>" />
+                    <div class="row">
+                        <table>
+                            <thead>
+                                <th>Campo</th>
+                                <th>Tipo decorador</th>
+                                <th>Parâmetro</th>
+                                <th>Ordem</th>
+                                <th>Ativo</th>
+                                <th></th>
+                            </thead>
+                            <tbody>
+                                <?php foreach($decoradores as $decorador){?>
+                                <tr>
+                                    <input type="hidden" name="decoradores[<?=$decorador->id?>][id]" value="<?=$decorador->id?>" />
+                                    <td>
+                                        <div class="input-field inline">
+                                          <input type="text" value="<?= $decorador->nome_campo ?>" name="decoradores[<?=$decorador->id?>][nome_campo]">
+                                        </div>                                        
+                                    </td>
+                                    <td>
+                                        <select name="decoradores[<?=$decorador->id?>][tipo_decorador_id]">
+                                        <?php foreach($tipos_decoradores as $tipo){
+                                            $tipoSelected = $tipo->id == $decorador->tipo_decorador_id ? ' selected ' : '';
+                                            echo "<option $tipoSelected value='$tipo->id'>$tipo->nome</option>\n";
+                                        }//foreach tipos?>
+                                        </select>                                            
+                                    </td>
+                                    <td>
+                                        <div class="input-field inline">
+                                          <input type="text" value="<?= $decorador->parametro ?>" name="decoradores[<?=$decorador->id?>][parametro]">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="input-field inline">
+                                          <input type="text" value="<?=$decorador->ordem?>" name="decoradores[<?=$decorador->id?>][ordem]">
+                                        </div>                                        
+                                    </td>
+                                    <td>
+                                        <p>
+                                          <label>
+                                              <input type="checkbox" name="decoradores[<?=$decorador->id?>][ativo]" value="true" 
+                                                     <?php echo $decorador->ativo ? 'checked' : '' ?>/>
+                                              <span>&nbsp;</span>
+                                          </label>
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <div class="acoes">
+                                            <a class="bt-excluir" href="#"><i class="material-icons">delete</i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <?php }//foreach?>
+                                <tr>
+                                    <td>
+                                        <div class="input-field inline">
+                                          <input type="text" value="" name="novoDecorador[nome_campo]">
+                                        </div>                                        
+                                    </td>
+                                    <td>
+                                        <select name="novoDecorador[tipo_decorador_id]">
+                                            <option value="">Escolha um tipo de decorador</option>
+                                        <?php foreach($tipos_decoradores as $tipo){
+                                            echo "<option value='$tipo->id'>$tipo->nome</option>\n";
+                                        }//foreach tipos?>
+                                        </select>                                            
+                                    </td>
+                                    <td>
+                                        <div class="input-field inline">
+                                          <input type="text" name="novoDecorador[parametro]">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="input-field inline">
+                                          <input type="text" name="novoDecorador[ordem]">
+                                        </div>                                        
+                                    </td>
+                                    <td>
+                                        <p>
+                                          <label>
+                                              <input type="checkbox" name="novoDecorador[ativo]" value="true" />
+                                              <span>&nbsp;</span>
+                                          </label>
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <div class="acoes">
+                                            <a class="" href="#"><i class="material-icons">info</i></a>
+                                        </div>
+                                    </td>
+                                </tr>                                
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                        <div class="input-field">
+                            <button class="btn btn-primary" type="submit" >Salvar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </li>
 </ul>
 
 #{scriptPagina}

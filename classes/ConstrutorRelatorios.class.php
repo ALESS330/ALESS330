@@ -42,9 +42,16 @@ class ConstrutorRelatorios {
         if (file_exists($layout)) {
             //$r significa relatório
             $r = $this->layout($layout, $dados);
+        } 
+        $oDecorador = new Decorador();
+        $decoradores = $oDecorador->decoradores($dadosRelatorio['relatorio_id']);
+        if($decoradores){
+            $dadosDecorados = $oDecorador->decorar($dados, $decoradores);
         } else {
-            $r = $this->relatorio($dados, $dadosRelatorio['tipo'], $colunaGrupo, $nomeFilho);
+            $dadosDecorados = $dados;
         }
+
+        $r = $this->relatorio($dadosDecorados, $dadosRelatorio['tipo'], $colunaGrupo, $nomeFilho);
         return $r;
     }
 

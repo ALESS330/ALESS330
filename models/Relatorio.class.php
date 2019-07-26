@@ -29,6 +29,11 @@ class Relatorio extends Model {
         $rf = new RelatorioFormato();
         return $rf->selectBy(array("relatorio_id" => $relatorioId));
     }
+    
+    public function getDecoradores($relatorioId){
+        $d = new Decorador();
+        return $d->decoradores($relatorioId);
+    }
 
     public function listaGruposPossiveis($relatorioId) {
         $sql = "
