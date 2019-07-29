@@ -39,17 +39,18 @@ class ConstrutorRelatorios {
         if(count($dados)==0){
             return NULL;
         }
-        if (file_exists($layout)) {
-            //$r significa relatório
-            $r = $this->layout($layout, $dados);
-        } 
         $oDecorador = new Decorador();
         $decoradores = $oDecorador->decoradores($dadosRelatorio['relatorio_id']);
         if($decoradores){
             $dadosDecorados = $oDecorador->decorar($dados, $decoradores);
         } else {
             $dadosDecorados = $dados;
-        }
+        }        
+        if (file_exists($layout)) {
+            //$r significa relatório
+            $r = $this->layout($layout, $dadosDecorados);
+            return $r;
+        } 
 
         $r = $this->relatorio($dadosDecorados, $dadosRelatorio['tipo'], $colunaGrupo, $nomeFilho);
         return $r;

@@ -64,12 +64,13 @@ class Relatorios extends Controller {
     }
     
     function salvarDecoradores($relatorioId){
+        $relatorio = $this->buscaOuNulo($relatorioId);
         $oDecorador = new Decorador();
-        $decoradores = $_POST['decoradores'];
-        $novoDecorador = $_POST['novoDecorador'];        
+        $decoradores = $_POST['decoradores'] ?? array();
+        $novoDecorador = $_POST['novoDecorador'] ?? false;        
         try{
             $this->relatorio->getConex()->transaction();
-            $decorador['relatorio_id'] = $relatorioId;
+            $decorador['relatorio_id'] = $relatorio->id;
             foreach ($decoradores as $i => $decorador) {
                 $decorador['id'] = $i;                
                 if(!isset($decorador['ativo'])){
@@ -77,15 +78,18 @@ class Relatorios extends Controller {
                 }//if
                 $oDecorador->salvar($decorador);
             }//foreach
-            if($novoDecorador['nome'] && $novoDecorador['parametro'] && $novoDecorador['ordem']){
-                $novoDecorador['ativo'] = true;
+            if($novoDecorador['nome_campo'] && $novoDecorador['parametro'] && $novoDecorador['tipo_decorador_id'] && $novoDecorador['ordem']){
+                $novoDecorador['ativo'] = isset($novoDecorador['ativo']) ? $novoDecorador['ativo'] : false;
+                $novoDecorador['relatorio_id'] = $relatorio->id;
+                $id = $oDecorador->salvar($novoDecorador);
             }//if
             $this->relatorio->getConex()->commit();
         } catch (Exception $e){
             $this->relatorio->getConex()->rollback();
             $this->erro("Relatorios->propriedades($relatorioId)", "Erro ao salvar ($e->getMessage())");
         }//catch
-        $this->sucesso("Relatorios->propriedades($relatorioId)", "Decoradores salvos com sucesso");
+        $msgSalvo = $id ? "Decorador " . $novoDecorador['nome_campo'] . "salvo com sucesso #$id" : '';
+        $this->sucesso("Relatorios->propriedades($relatorioId)", "Decoradores salvos com sucesso. $msgSalvo");
     }
     
     function salvarTelaParametros($relatorioId) {

@@ -58,10 +58,10 @@ class Decorador extends Model {
     public function decoraLinha($linha, $decoradores) {
         $decorador = array_pop($decoradores);
         $novaLinha = $linha;
-        foreach($linha as $coluna => $valorCampo){
+        foreach ($linha as $coluna => $valorCampo) {
             $novaLinha[$coluna] = $this->decoraValor($decorador, $valorCampo, $coluna, $novaLinha);
-        }      
-        if(count($decoradores)){
+        }
+        if (count($decoradores)) {
             $novaLinha = $this->decoraLinha($novaLinha, $decoradores);
         }
         return $novaLinha;
@@ -93,6 +93,12 @@ class Decorador extends Model {
             case "envelope";
                 $decorado = $this->decoraComEnvelope($valorCampo, $decorador->parametro, $linha);
                 break;
+            case "tag";
+                $decorado = $this->decoraComTag($valorCampo, $decorador->parametro, $linha);
+                break;
+            case "data";
+                $decorado = $this->decoraComData($valorCampo, $decorador->parametro, $linha);
+                break;
             default:
                 $decorado = "Falha na decoração desse valor: $valorCampo";
                 break;
@@ -120,9 +126,35 @@ class Decorador extends Model {
 //decoraComRemocao
 
     public function decoraComEnvelope($valorDecorar, $parametro, $linha) {
-        return "$parametro $valorDecorar $parametro";
+        return $this->decoraComTag($valorDecorar, $parametro, $linha);
     }
 
+//decoraComEnvelope
+
+    public function decoraComTag($valorDecorar, $parametro, $linha) {
+        $chaves = explode(",", $parametro);
+        if (count($chaves) == 1) {
+            $chaveAbrir = $chaveFechar = $chaves[0];
+        } else if (count($chaves) == 2) {
+            $chaveAbrir = $chaves[0];
+            $chaveFechar = $chaves[1];
+        } else {
+            throw new Exceptin("Parâmetros demais para tipo de decorator com chaves");
+        }
+        return "$chaveAbrir$valorDecorar$chaveFechar";
+    }
+
+    public function decoraComData($valorDecorar, $parametro, $linha) {
+        if (trim($valorDecorar)) {
+            $parsed = date_parse($valorDecorar);
+            $miliseconds = mktime(0, 0, 0, $parsed['month'], $parsed['day'], $parsed['year']);
+            $formated = date($parametro, $miliseconds);
+            return $formated;
+        }
+        return "";
+    }
+
+//decoraComData
 }
 
 //class

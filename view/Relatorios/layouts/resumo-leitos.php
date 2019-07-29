@@ -1,3 +1,22 @@
+<?php
+$tabela = $unidades = array();
+global $escondeBusca;
+$escondeBusca = true;
+$j = 0;
+$codigoUFAtual = $dados[0]['codigo_unidade_funcional'];
+foreach ($dados as $i => $linha) {
+    if ($codigoUFAtual !== $linha['codigo_unidade_funcional']) {
+        $j = 0;
+        $codigoUFAtual = $linha['codigo_unidade_funcional'];
+    }
+    foreach ($linha as $campo => $valor) {
+        $tabela[$linha['codigo_unidade_funcional']][$j][$campo] = $valor;
+        $unidades[$linha['codigo_unidade_funcional']]['nome'] = $linha['unidade_funcional'];
+    }//foreach linha
+    $j++;
+}//foreach dados
+?>
+
 <style>
 
     .container{
@@ -28,16 +47,23 @@
         text-align: center;
     }
 
+    table thead th.titulo-tabela{
+        font-family: Arial;
+        font-size: 12pt;
+        padding: 8px;
+        text-align: left;
+    }
+
     table tbody tr td{
         border-right: solid 1px silver;
         border-left: solid 1px silver;
     }
-    table > tbody > tr{
-        background-color: white;
+    table tbody tr:nth-child(2n-1){
+        background-color: #f0f0f0;
     }
-    table > tbody > tr.par {
-        background-color: #f2f2f2 !important; 
-    }
+    /*    table > tbody > tr.par {
+            background-color: #f1f1f1 !important; 
+        }*/
 
     div.titulo{
         text-align: center;
@@ -53,10 +79,10 @@
     fieldset > legend{
         font-size: 16pt;
     }
-
-    table tbody tr td.situacao {
+    table tbody tr td:not(.left){
         text-align: center;
     }
+
     table tbody tr td.situacao span {
         padding: 5px;
         border-radius: 3px;
@@ -89,21 +115,21 @@
         background-color: black !important;
         color: yellow;
     }
-    
+
     table tbody tr td.situacao span.isolamento{
         background-color: #ffc107 !important;
         color: black;
     }
-    
+
     table td:not(.quebravel){
         /* white-space: nowrap /**/
     }
-    
+
     table tbody td.truncate{
-    width: 250px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+        width: 250px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .cards div fieldset{
@@ -155,405 +181,241 @@
         width: 500px;
     }
 
-    li.search{
-        display: none;
-    }
+    /*    li.search{
+            display: none;
+        }
+    
+        .cards .row .col:first-child {
+            padding-left: 0;
+        }
+    
+        .cards .row .col:last-child {
+            padding-right: 0;
+        }
+    
+        .header:after{
+            content: "swap_vert";
+            font-family: "Material Icons";
+        }
+        .headerSortUp:after{
+            content: "arrow_drop_down" !important;
+            font-family: "Material Icons";
+        }
+    
+        .headerSortDown:after{
+            content: "arrow_drop_up" !important;
+            font-family: "Material Icons";
+        }    */
 
-    .cards .row .col:first-child {
-        padding-left: 0;
+    .remover-linha i, .desocupar-leito i{
+        width: 20px !important;
+        height: 20px !important;
+        font-size: 20px !important;
+        border-radius: 15px;
+        color: white;
     }
-
-    .cards .row .col:last-child {
-        padding-right: 0;
+    
+    .remover-linha{
+        background-color: #b71c1c;
     }
-
-    .header:after{
-        content: "swap_vert";
-        font-family: "Material Icons";
+    
+    .desocupar-leito{
+        background-color: #004d40;
     }
-    .headerSortUp:after{
-        content: "arrow_drop_down" !important;
-        font-family: "Material Icons";
+    
+    td div.acoes-pagina a {
+        padding-top: 6px;
+        width: 32px !important;
+        height: 32px !important;
+        display: inline-block;
+        border-radius: 16px;
     }
-
-    .headerSortDown:after{
-        content: "arrow_drop_up" !important;
-        font-family: "Material Icons";
-    }    
-
+    
+    div.acoes-pagina{
+        opacity: 0.05;
+        transition-property: opacity;
+        transition-duration: 0.5s;        
+    }
+    
+    table tbody tr:hover td div.acoes-pagina{
+        opacity: 1;
+    }
 </style>
 <div class="titulo">
     <span id="alerta-need-update" title="Pode ser necessário atualizar a página a fim de visualizar as informações mais recentes.">Atenção! Dados carregados a mais de 60 segundos!</span>
     <strong>Mapa de Leitos</strong>
 </div>
-<div class="cards">
-    <div class="row">
-        <div class="col s6">
-            <fieldset>
-                <legend>Filtros</legend>
-                <div>
-                    <form>
-                        <div class="row">
-                            <div class="input-field">
-                                <select id="unidades-funcionais" multiple>
-                                </select>
-                                <label for="unidades-funcionais">Unidade Funcional</label>                
-                            </div>                    
-                        </div>
-                        <div class="row">
-                            <div class="input-field">
-                                <select id="situacao-leitos" multiple>
-                                </select>
-                                <label for="situacao-leitos">Situação do Leito</label>                
-                            </div>                    
-                        </div>
-
-                        <div class="row right">
-                            <button type="button" id="botao-limpar" class="btn waves-effect grey lighten-2 " style="color: black">Limpar</button>
-                            <button type="button" id="botao-filtrar" class="btn primary waves-effect ">Aplicar</button>
-                        </div>
-
-                    </form>
-                </div>
-            </fieldset>
-        </div>
-
-        <div class="col s3">
-            <fieldset>
-                <legend>Leitos <span id="total-linhas"></span></legend>
-                <div id="grafico-leitos">
-
-                </div>
-            </fieldset>
-        </div>
-        <div class="col s3">
-            <fieldset>
-                <legend>Tipo</legend>
-                <div id="grafico-tipo-leitos">
-
-                </div>
-            </fieldset>
-        </div>
-    </div>
-</div>
 
 <div class="content">
     <div class="corpo">
         <fieldset>
-            <table class="bordered responsive-table" style="display: none">
-                <thead>
-                    <tr>
-                        <th colspan="3">Leito</th>
-                        <th colspan="4" class="mesclada">Paciente</th>
-                        <th rowspan="2" class="mesclada">Município</th>
-                        <th>Clínica</th>
-                        <th rowspan="2" class="mesclada">Data</th>
-                        <th rowspan="2" class="mesclada">Dias Int.</th>
-                    </tr>
-                    <tr>
-                        <th>Número</th>
-                        <th>Situação</th>
-                        <th>Tipo</th>
-                        <th>Prontuário</th>
-                        <th>Nome</th>
-                        <th>Sexo</th>
-                        <th>Idade</th>
-                        <th>Unidade Funcional</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    $listaUnidadesFuncionais = array();
-                    $listaSituacoes = array();
-                    $i = 0;
-                    foreach ($dados as $linha) {
-                        if ($i % 2 === 0) {
-                            $parImpar = " par ";
-                        } else {
-                            $parImpar = " impar ";
-                        }
-                        $i++;
-                        foreach ($linha as $campo => $valor) {
-                            $$campo = $valor == NULL ? "" : $valor;
-                        }
-                        $MAX_LETRAS = 30;
-                        $listaUnidadesFuncionais[] = $unidade_funcional;
-                        //$unidadesFuncionais[$unidade_funcional] = is_numeric($unidadesFuncionais[$unidade_funcional]) ? $unidadesFuncionais[$unidade_funcional] + 1 : 1;
-                        //$situacoes[$situacao_leito] = is_numeric($situacoes[$situacao_leito]) ? $situacoes[$situacao_leito] + 1 : 1;
-                        $listaSituacoes[] = $situacao_leito;
-                        $nome = strlen($nome) > $MAX_LETRAS ? substr($nome, 0, $MAX_LETRAS - 3) . "..." : $nome;
-                        $procedimento = strlen($procedimento) > $MAX_LETRAS ? substr($procedimento, 0, $MAX_LETRAS - 3) . "..." : $procedimento;
-                        $uf = strlen($unidade_funcional) > $MAX_LETRAS ? substr($unidade_funcional, 0, $MAX_LETRAS - 3) . "..." : $unidade_funcional;
-                        $dias_a_maior = $dias_internados ?? 0 - $dias_media_permanencia ?? 0;
-                        if(!$idade && $nome){
-                            $idade = "0";
-                        }
-                        $municipio = $cidade; 
-                        if(!$municipio && !$nome){
-                            $municipio = "";
-                        }
-                        echo "        <tr class=\"visivel $parImpar\">\n";
-                        echo "            <td>$leito</td>\n";
-                        echo "            <td class=\"situacao\"><span class=\"" . strtolower($situacao_leito) . "\">$situacao_leito</span></td>\n";
-                        echo "            <td class=\"tipo\">$tipo_leito</td>\n";
-                        echo "            <td>$prontuario</td>\n";
-                        echo "            <td class=\"quebravel\" title=\"$nome\">$nome</td>\n";
-                        echo "            <td>$sexo</td>\n";
-                        echo "            <td>$idade</td>\n";
-                        echo "            <td>$municipio</td>";
-                        //echo "            <td>$clinica</td>\n";
-                        echo "            <td title=\"$unidade_funcional\" class=\"uf\">$uf</td>\n";
-                        echo "            <td>$data_internacao</td>";
-                        echo "            <td>$dias_internados</td>\n";
-                        echo "        </tr>\n";
-                    } //foreach ($dados)
-                    $listaSituacoes = array_unique($listaSituacoes);
-                    $listaUnidadesFuncionais = array_unique($listaUnidadesFuncionais);
-                    sort($listaSituacoes);
-                    sort($listaUnidadesFuncionais);
-                    ?>
-                </tbody>
-            </table>
+            <?php
+            $listaSituacoes = array();
+            $contadorLinhas = 0;
+            $listaTipos = array();
+            foreach ($tabela as $i => $t) {
+                ?>
+                <table class="bordered" style="margin-bottom: 25px;">
+                    <thead>
+                        <tr>
+                            <th class="titulo-tabela" colspan="11">Unidade Funcional: <?= $t[0]['unidade_funcional'] ?></th>
+                        </tr>
+                        <tr>
+                            <th colspan="3">Leito</th>
+                            <th colspan="4" class="mesclada">Paciente</th>
+                            <th rowspan="2" class="mesclada">Município</th>
+                            <th rowspan="2" class="mesclada">Data</th>
+                            <th rowspan="2" class="mesclada">Dias Int.</th>
+                            <th rowspan="2" class="mesclada" style="width: 100px;">Ações</th>
+                        </tr>
+                        <tr>
+                            <th>Número</th>
+                            <th>Situação</th>
+                            <th>Tipo</th>
+                            <th>Prontuário</th>
+                            <th>Nome</th>
+                            <th>Sexo</th>
+                            <th>Idade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        $listaUnidadesFuncionais = array();
+                        //$i = 0;
+                        foreach ($t as $indice => $linha) {
+                            $contadorLinhas++;
+                            //$i++;
+                            foreach ($linha as $campo => $valor) {
+                                $$campo = $valor == NULL ? "" : $valor;
+                            }
+                            $listaUnidadesFuncionais[] = $unidade_funcional;
+                            //$unidadesFuncionais[$unidade_funcional] = is_numeric($unidadesFuncionais[$unidade_funcional]) ? $unidadesFuncionais[$unidade_funcional] + 1 : 1;
+                            //$situacoes[$situacao_leito] = is_numeric($situacoes[$situacao_leito]) ? $situacoes[$situacao_leito] + 1 : 1;
+                            $listaSituacoes[$i][$situacao_leito] = isset($listaSituacoes[$i][$situacao_leito]) ? $listaSituacoes[$i][$situacao_leito] + 1 : 1;
+                            $listaTipos[$i][$tipo_leito] = isset($listaTipos[$i][$tipo_leito]) ? $listaTipos[$i][$tipo_leito] + 1 : 1;
+                            //$nome = strlen($nome) > $MAX_LETRAS ? substr($nome, 0, $MAX_LETRAS - 3) . "..." : $nome;
+                            $dias_a_maior = $dias_internados ?? 0 - $dias_media_permanencia ?? 0;
+                            if (!$idade && $nome) {
+                                $idade = "0";
+                            }
+                            $municipio = $cidade;
+                            if (!$municipio && !$nome) {
+                                $municipio = "";
+                            }
+                            ?>
+                            <tr id="<?= "linha-$contadorLinhas" ?>">
+                                <td class="leito"><?= $leito ?></td>
+                                <td class='situacao'><?= $situacao_leito ?></td>
+                                <td class='tipo'><?= $tipo_leito ?></td>
+                                <td class="prontuario"><?= $prontuario ?></td>
+                                <td class="nome"><?= $nome ?></td>
+                                <td class="sexo"><?= $sexo ?></td>
+                                <td class="idade"><?= $idade ?></td>
+                                <td class="municipio"><?= $municipio ?></td>
+                                <td class="data-internacao"><?= $data_internacao ?></td>
+                                <td class="dias-internados"><?= $dias_internados ?></td>
+                                <td>
+                                    <div class="acoes-pagina">
+                                        <a href="#" title="Remover linha" class="remover-linha"><i class="material-icons">delete_sweep</i></a>
+                                        <a href="#" title="Desocupar leito" class="desocupar-leito"><i class="material-icons">highlight_off</i></a>                                        
+                                    </div>
+                                </td>
+                            </tr>
+                            <?php
+                        } //foreach ($t)
+                        ?>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td class="total-geral" colspan="2">Total de registros: <span><?= count($tabela[$i]) ?></span></td>
+                            <td colspan="5" class="totais-situacoes">
+                                <ul>
+                                    <?php
+                                    foreach ($listaSituacoes[$i] as $situacao => $totalSituacao) {
+                                        echo "<li>$situacao: $totalSituacao</li>\n";
+                                    }//foreach
+                                    ?>
+                                </ul>
+                            </td>
+                            <td colspan="4" class="totais-tipos">
+                                <ul>
+                                    <?php
+                                    foreach ($listaTipos[$i] as $tipo => $totalTipo) {
+                                        echo "<li>$tipo: $totalTipo</li>\n";
+                                    }//foreach
+                                    ?>
+                                </ul>
+                            </td>                            
+                        </tr>
+                    </tfoot>
+                </table>
+            <?php } //foreach  ?>
         </fieldset>
     </div>
 </div>
 
-<div id="botao-topo" class="fixed-action-btn">
-    <a class="btn-floating btn-large <?php
-    global $corSistema;
-    echo $corSistema
-    ?>">
-        <i class="large material-icons">file_upload</i>
-    </a>
-</div>
 
 #{scriptPagina}
-<script type="text/javascript" src="/relator/view/Relatorios/layouts/mapa-leitos.js"></script>
-<script type="text/javascript" src="http://10.18.0.101/static/highcharts/code/highcharts.js"></script>
-<script type="text/javascript" src="http://10.18.0.101/static/tablesorter/jquery.tablesorter.min.js"></script>
 <script type="text/javascript">
-<?php
-echo '        var unidadesFuncionais = ' . json_encode($listaUnidadesFuncionais) . ";\n";
-echo '        var situacaosLeitos = ' . json_encode($listaSituacoes) . ";\n";
-echo '        var situacoes = ' . json_encode($listaSituacoes) . "; \n";
-?>
-    $(document).ready(function () {
-        var $optionsUnidadesFuncionais = "<option value=\"todos\">Todos</option>\n";
-        for (var uf in unidadesFuncionais) {
-            $optionsUnidadesFuncionais += "<option value=\"" + unidadesFuncionais[uf] + "\">" + unidadesFuncionais[uf] + "</option>\n";
+
+    atualizaContagens = function ($tabela) {
+        let situacoes = {};
+        let tipos = {};
+        $($tabela).find("tbody tr").each(function () {
+            let situacao = $(this).find("td.situacao").text();
+            let tipo = $(this).find("td.tipo").text();
+            situacoes[situacao] = situacoes[situacao] ? situacoes[situacao] + 1 : 1;
+            tipos[tipo] = tipos[tipo] ? tipos[tipo] + 1 : 1;
+        });
+        $optionsSituacoes = "";
+        for(s in situacoes){
+            $optionsSituacoes += "<li>" + s + ": <span>" + situacoes[s] + "</span></li>\n";
         }
-
-        var $optionsSituacoesLeito = "<option value=\"todos\">Todos</option>\n";
-        for (var sl in situacaosLeitos) {
-            $optionsSituacoesLeito += "<option value=\"" + situacaosLeitos[sl] + "\">" + situacaosLeitos[sl] + "</option>\n";
+        $optionsTipos = "";
+        for(t in tipos){
+            $optionsTipos += "<li>" + t + ": <span>" + tipos[t] + "</span></li>\n";
         }
+        
+        $totalLinhas = $tabela.find("tbody tr").length;
+        $ul = $($tabela).find("tfoot tr .totais-situacoes ul");
+        $($tabela).find("tfoot tr .total-geral span").html($totalLinhas);
+        $($tabela).find("tfoot tr .totais-tipos ul").html($optionsTipos);
+        
+        $rodape =  $ul.empty().html($optionsSituacoes);
+    }; //atualizarContagens
 
-        $("#unidades-funcionais").html($optionsUnidadesFuncionais);
-        $("#situacao-leitos").html($optionsSituacoesLeito);
-        $("#unidades-funcionais").val("todos");
-        $("#situacao-leitos").val("todos");
-
-        $("#botao-filtrar").click(function () { 
-            var $series = new Array();
-            var $seriesTipo = new Array();
-
-            valUF = $("#unidades-funcionais").val();
-            valSituacao = $("#situacao-leitos").val();
-            filtros = {
-                uf: valUF,
-                situacao: valSituacao
-            };
-            //esconde a tabela
-            $("table").fadeOut();
-            $("table tbody tr").removeClass("par impar visivel").fadeOut();
-            //adicionar classe 'visivel-{filtro}' para cada célula filtrada
-            for (var filtro in filtros) {
-                console.log("Filtro... " + filtro);
-                for (var i in filtros[filtro]) {
-                    console.log("    - i: " + i);
-                    valorFiltroAtual = filtros[filtro][i];
-                    console.log("    valorFiltroAtual: (" + filtro + ") => " + valorFiltroAtual);
-                    if (valorFiltroAtual === "todos") {
-                        $("." + filtro).closest("tr").addClass("visivel-" + filtro);
-                    } else {
-                        $("." + filtro)
-                                .filter(function () {
-                                    return $(this).text().indexOf(valorFiltroAtual) === 0;
-                                })
-                                .closest("tr")
-                                .addClass("visivel-" + filtro);
-                    }
-                }
-            } // for var filtro
-
-            $totalLinhas = $(".visivel-uf.visivel-situacao").length;
-            $("#total-linhas").text(
-                    $totalLinhas = 0 ? " - Nenhum registro" : ($totalLinhas === 1 ? (" - 1 registro") : (" - " + $totalLinhas + " registros"))
-                    );
-            $(".visivel-uf.visivel-situacao").addClass("visivel").removeClass("visivel-uf visivel-situacao");
-
-            $filtrados = {};
-            $tipos = {};
-
-            $(".visivel").each(function (i, e) {
-                //faz a contagem do total de linhas em cada situação
-                $(this).find(".situacao").each(function (i, e) {
-                    $nomeSituacao = $(this).text();
-                    //se for o primeiro encontrado para a situação atual
-                    if (typeof $filtrados[$nomeSituacao] === "undefined") {
-                        $filtrados[$nomeSituacao] = 1;
-                    } else {
-                        $filtrados[$nomeSituacao] = $filtrados[$nomeSituacao] + 1;
-                    }
-                });
-
-                //faz a contagem de cada tipo de leito
-                $(this).find(".tipo").each(function (i, e) {
-                    $nomeTipo = $(this).text();
-                    //se for o primeiro tipo encontrado
-                    if (typeof $tipos[$nomeTipo] === "undefined") {
-                        $tipos[$nomeTipo] = 1;
-                    } else {
-                        $tipos[$nomeTipo] = $tipos[$nomeTipo] + 1;
-                    }
-                }); // final da contegem de tipos
-            }); // $(".visivel").each()
-
-            for (var f in $filtrados) {
-                $classe = ("serie-" + f).toLowerCase();
-                $series.push({
-                    name: f,
-                    y: $filtrados[f],
-                    className: $classe
-                })
-            }
-
-            for (var t in $tipos){
-                $classe = ("tipo-" + t).toLowerCase();
-                $seriesTipo.push({
-                    name: t,
-                    y: $tipos[t],
-                    className: $classe
-                })
-            }
-            $("table").fadeIn();
-            if ($("table tbody tr.visivel").length === 0) {
-                $("table tbody").append("<tr><td colspan=\"14\"><span class=\"info-span\">Nenhum registro encontrado!</span></td></tr>");
-            } else {
-                $("table tbody tr.visivel").fadeIn();
-            } // else 
-            $(".visivel").each(function (i) {
-                if (i % 2 === 0) {
-                    $(this).addClass("par");
-                } else {
-                    $(this).addClass("impar");
-                }
-            });
-            //constriur gráficos
-//            Highcharts.chart('grafico-leitos', {
-//
-//                chart: {
-//                    plotBackgroundColor: null,
-//                    plotBorderWidth: null,
-//                    plotShadow: false,
-//                    type: 'pie'
-//                },
-//                title: {
-//                    text: null
-//                },
-//                tooltip: {
-//                    pointFormat: '{series.name}: <b>{point.y}</b>'
-//                },
-//                plotOptions: {
-//                    pie: {
-//                        allowPointSelect: true,
-//                        cursor: 'pointer',
-//                        //showInLegend: true,
-//                        dataLabels: {
-//                            enabled: true,
-//                            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-//                            style: {
-//                                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-//                            }
-//                        }
-//                    }
-//                },
-//                series: [{
-//                        name: 'Situação',
-//                        colorByPoint: true,
-//                        data: $series //Dados
-//                    }]
-//            }); // gráfico leitos
-
-            //gráfico tipo leitos
-//            Highcharts.chart('grafico-tipo-leitos', {
-//
-//                chart: {
-//                    plotBackgroundColor: null,
-//                    plotBorderWidth: null,
-//                    plotShadow: false,
-//                    type: 'pie'
-//                },
-//                title: {
-//                    text: null
-//                },
-//                tooltip: {
-//                    pointFormat: '{series.name}: <b>{point.y}</b>'
-//                },
-//                plotOptions: {
-//                    pie: {
-//                        allowPointSelect: true,
-//                        cursor: 'pointer',
-//                        //showInLegend: true,
-//                        dataLabels: {
-//                            enabled: true,
-//                            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-//                            style: {
-//                                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-//                            }
-//                        }
-//                    }
-//                },
-//                series: [{
-//                        name: 'Tipo',
-//                        colorByPoint: true,
-//                        data: $seriesTipo //Dados
-//                    }]
-//            });//fim gráficos
-        }); // #botao-filtrar.click()
-
-        $("#botao-limpar").click(function () {
-            $("#unidades-funcionais").val("todos");
-            $("#situacao-leitos").val("todos");
-             M.AutoInit();
-            $("#botao-filtrar").click();
-        });
-
-        $("table").tablesorter({
-            headers: {
-                0: {sorter: false},
-                1: {sorter: false},
-                2: {sorter: false},
-                3: {sorter: false},
-                4: {sorter: false}
+    $(".remover-linha").on('click', function (e) {
+        e.preventDefault();
+        $tabela = $(this).closest("table");
+        if (!confirm("Deseja realmente remover esta linha da listagem?")) {
+            return false;
+        }
+        $linha = $(this).closest("tr");
+        $(this).closest("tr").fadeOut({
+            complete: function(){
+                $linha.remove();
+                atualizaContagens($tabela);                
             }
         });
-        $("#botao-topo").click(function () {
-            $('html, body').animate({scrollTop: 0}, 1000);
-        });
-        $("fieldset").animate({"opacity": "1"});
-        window.setTimeout(function () {
-            $("#alerta-need-update").fadeIn();
-        }, 600);
-        $("#botao-limpar").click();
-        $(window).scroll(function () {
-            if ($(this).scrollTop() > $("table").position().top) {
-                $("#botao-topo").fadeIn();
-            } else {
-                $("#botao-topo").fadeOut();
-            }
-        });
-    });
-
+    }); //.remover-linha on click
+    
+    $(".desocupar-leito").on('click', function(e){
+        e.preventDefault();
+        $tabela = $(this).closest('table');
+        if(!confirm("Deseja realmente marcar esse leito como desocupado?")){
+            return false;
+        }
+        $linha = $(this).closest("tr");
+        $linha.find(".prontuario").html("");
+        $linha.find(".nome").html("");
+        $linha.find(".sexo").html("");
+        $linha.find(".idade").html("");
+        $linha.find(".municipio").html("");        
+        $linha.find(".dias-internados").html("");
+        $linha.find(".data-internacao").html("");
+        $linha.find(".situacao").html("DESOCUPADO");
+        
+        atualizaContagens($tabela);
+    }); //.desocupar-leito
 </script>
 #{/scriptPagina}

@@ -213,7 +213,9 @@ if (isset($formatos)) {
                                 <th></th>
                             </thead>
                             <tbody>
-                                <?php foreach($decoradores as $decorador){?>
+                                <?php 
+                                if($decoradores){
+                                    foreach($decoradores as $decorador){?>
                                 <tr>
                                     <input type="hidden" name="decoradores[<?=$decorador->id?>][id]" value="<?=$decorador->id?>" />
                                     <td>
@@ -254,7 +256,8 @@ if (isset($formatos)) {
                                         </div>
                                     </td>
                                 </tr>
-                                <?php }//foreach?>
+                                <?php }//foreach
+                                } //if?>
                                 <tr>
                                     <td>
                                         <div class="input-field inline">
@@ -304,7 +307,7 @@ if (isset($formatos)) {
                 </form>
             </div>
         </div>
-    </li>
+    </li> <!-- decoradores -->
 </ul>
 
 #{scriptPagina}
