@@ -17,6 +17,7 @@ $routes["/relatorio/{\d+:idRelatorio}/excluir"] = "Relatorios->excluir";
 $routes["/relatorio"] = "Relatorios->cadastro";
 $routes["/relatorio/{\d+:idRelatorio}"] = "Relatorios->cadastro";
 $routes["/relatorios/salvar"] = "Relatorios->salvar";
+$routes['/relatorios/gerado/{.+:datasource}/{.+:nomeRelatorio}'] = "Relatorios->gerado";
 $routes["/relatorios/{\d+:pagina}/{.+:busca}"] = "Relatorios->pagina";
 $routes["/relatorios/{\d+:pagina}/"] = "Relatorios->pagina";
 $routes["/relatorio/{\w+:datasource}/{.+:nomeRelatorio}/print"] = "Relatorios->toPDF";

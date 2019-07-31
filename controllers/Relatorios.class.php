@@ -21,6 +21,16 @@ class Relatorios extends Controller {
     function index() {
         $this->render();
     }
+    
+    function gerado($datasource, $nomeRelatorio){
+        if(isset($_SESSION['gerado']["$datasource/$nomeRelatorio"])){
+            $dados['gerado'] = $_SESSION['gerado']["$datasource/$nomeRelatorio"];
+            unset($_SESSION['gerado']["$datasource/$nomeRelatorio"]);
+        }else{
+            $dados['gerado']["$datasource/$nomeRelatorio"] = false;
+        }
+        $this->json($dados);
+    }
 
     function pagina($pagina = 1, $busca = " ") {
         $this->json($this->relatorio->pagina($pagina, $busca));
@@ -62,36 +72,36 @@ class Relatorios extends Controller {
         $this->mensagemSucesso("Formatos salvos com suscesso");
         $this->go2("Relatorios->propriedades($relatorioId)");
     }
-    
-    function salvarDecoradores($relatorioId){
+
+    function salvarDecoradores($relatorioId) {
         $relatorio = $this->buscaOuNulo($relatorioId);
         $oDecorador = new Decorador();
         $decoradores = $_POST['decoradores'] ?? array();
-        $novoDecorador = $_POST['novoDecorador'] ?? false;        
-        try{
+        $novoDecorador = $_POST['novoDecorador'] ?? false;
+        try {
             $this->relatorio->getConex()->transaction();
             $decorador['relatorio_id'] = $relatorio->id;
             foreach ($decoradores as $i => $decorador) {
-                $decorador['id'] = $i;                
-                if(!isset($decorador['ativo'])){
+                $decorador['id'] = $i;
+                if (!isset($decorador['ativo'])) {
                     $decorador['ativo'] = false;
                 }//if
                 $oDecorador->salvar($decorador);
             }//foreach
-            if($novoDecorador['nome_campo'] && $novoDecorador['parametro'] && $novoDecorador['tipo_decorador_id'] && $novoDecorador['ordem']){
+            if ($novoDecorador['nome_campo'] && $novoDecorador['parametro'] && $novoDecorador['tipo_decorador_id'] && $novoDecorador['ordem']) {
                 $novoDecorador['ativo'] = isset($novoDecorador['ativo']) ? $novoDecorador['ativo'] : false;
                 $novoDecorador['relatorio_id'] = $relatorio->id;
                 $id = $oDecorador->salvar($novoDecorador);
             }//if
             $this->relatorio->getConex()->commit();
-        } catch (Exception $e){
+        } catch (Exception $e) {
             $this->relatorio->getConex()->rollback();
             $this->erro("Relatorios->propriedades($relatorioId)", "Erro ao salvar ($e->getMessage())");
         }//catch
         $msgSalvo = $id ? "Decorador " . $novoDecorador['nome_campo'] . "salvo com sucesso #$id" : '';
         $this->sucesso("Relatorios->propriedades($relatorioId)", "Decoradores salvos com sucesso. $msgSalvo");
     }
-    
+
     function salvarTelaParametros($relatorioId) {
         $tela = $_POST['tela'];
         $this->relatorio->salvarTelaParametros($tela);
@@ -162,20 +172,21 @@ class Relatorios extends Controller {
         global $_ROTULO;
         $_ROTULO = "Relatório";
         $relatorio = $this->relatorio->selectByEquals("nome", $nomeRelatorio);
-        if(count($relatorio)!= 1){
+        if (count($relatorio) != 1) {
             throw new Exception("Esse relatório não existe!");
-        }else{
+        } else {
             $relatorio = $relatorio[0];
         }
+        $_SESSION['relatorioId'] = $relatorio->id;        
         if (!$relatorio->publico) {
             if (!isset($_SESSION['login'])) {
                 $url = $_SESSION['PAGINA'] = $_SERVER['REQUEST_URI'];
                 $a = new Acessos();
                 $a->login($url);
-            } else if($this->relatorio->checarAcesso($relatorio->id, $_SESSION['login'] ?? NULL) !== TRUE) {
-                    $this->mensagemInfo("Acesso não autorizado a este relatório.");
-                    $this->go2("Application->index");
-                    exit();
+            } else if ($this->relatorio->checarAcesso($relatorio->id, $_SESSION['login'] ?? NULL) !== TRUE) {
+                $this->mensagemInfo("Acesso não autorizado a este relatório.");
+                $this->go2("Application->index");
+                exit();
             }//else if
         }//if (public)
 
@@ -212,7 +223,7 @@ class Relatorios extends Controller {
         global $sisbase;
         $layout = $sisbase . "/view/Relatorios/layouts/$nomeRelatorio.php";
         $data['layout'] = false;
-        if(file_exists($layout)){
+        if (file_exists($layout)) {
             $data['layout'] = true;
         }
         if (!$data['relatorio']) {
@@ -264,7 +275,7 @@ class Relatorios extends Controller {
 //            header("Content-Disposition: attachment; filename=$nome.csv");
 //            echo $csv;
 //            exit(0);
-            $this->gerarCsv($datasource, $nomeRelatorio, $parametros);            
+            $this->gerarCsv($datasource, $nomeRelatorio, $parametros);
             exit(0);
         }
         if ($formato === "pdf") {
@@ -289,11 +300,21 @@ class Relatorios extends Controller {
         }
         $this->renderPDF($data);
     }
-    
-    function downloadHtmlAsPDF(){
+
+    function downloadHtmlAsPDF() {
+        $relatorioId = isset($_SESSION['relatorioId']) ? $_SESSION['relatorioId'] : FALSE;
+        if (!$relatorioId) {
+            throw new Exception("É necessário gerar o relatório antes.");
+        }
+        $relatorio = $this->buscaOuNulo($relatorioId);
+        unset($_SESSION['relatorioId']);
+        if ($this->relatorio->checarAcesso($relatorioId, $_SESSION['login'] ?? NULL) !== TRUE) {
+            $this->mensagemInfo("Acesso não autorizado a este relatório.");
+        }
         $dados['html'] = $_POST['html'];
         $dados['titulo'] = $_POST['titulo'] ?? "relatorio";
         $dados['filename'] = $_POST['filename'] ?? NULL;
+        $_SESSION['gerado']["$relatorio->datasource/$relatorio->nome"] = true;
         $this->renderRawHtmlAsPDF($dados, 'relatorio-tmpl');
     }
 
@@ -315,7 +336,7 @@ class Relatorios extends Controller {
         if (!$suportaCSV) {
             throw new Exception("Formato CSV não suportado para esse relatório.", 8);
         }
-        
+
         if ($parametros) {
             $p = $_SESSION['parametros'];
             unset($p['__ANONIMOS__']);
@@ -335,7 +356,9 @@ class Relatorios extends Controller {
         $data['nome_relatorio'] = $nomeRelatorio;
         echo $this->renderCsv($data);
         exit(0);
-    }//gerarCsv
+    }
+
+//gerarCsv
 
     private function toPulseira($datasource, $nomeRelatorio, $impressora) {
         $impressora = "/printers/$impressora";

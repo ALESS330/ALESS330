@@ -15,7 +15,7 @@ global $escondeBusca;
 $escondeBusca = true;
 $j = 0;
 date_default_timezone_set("America/Campo_Grande");
-$horaGerado = date('Y-m-d_H:i:s');
+$horaGerado = date('d-m-Y_H:i:s');
 $horaGeradoLegivel = date('d/m/Y à\s H:i:s');
 
 $codigoUFAtual = $dados[0]['codigo_unidade_funcional'];
@@ -28,7 +28,6 @@ foreach ($dados as $i => $linha) {
     $resumo['situacao'][$linha['situacao_leito']] = isset($resumo['situacao'][$linha['situacao_leito']]) ? $resumo['situacao'][$linha['situacao_leito']] + 1 : 1;
     foreach ($linha as $campo => $valor) {
         $tabela[$linha['codigo_unidade_funcional']][$j][$campo] = $valor;
-        //$unidades[$linha['codigo_unidade_funcional']]['nome'] = $linha['unidade_funcional'];
     }//foreach linha
     $j++;
 }//foreach dados
@@ -208,10 +207,10 @@ foreach ($dados as $i => $linha) {
     <div class="content">
         <div class="corpo">
             <fieldset>
-                <p class="center titulo-relatorio">Mapa de Leitos - Hospital Universitário da UFGD</p>
+                <p class="center titulo-relatorio" style="text-align: center; font-size: 14pt;">Mapa de Leitos - Hospital Universitário da UFGD</p>
                 <p>Relatório gerado em: <span id="hora-gerado"><?= $horaGeradoLegivel ?></span></p>
                 <div class="resumo">
-                    <div>Total de pacientes: <?= $resumo['tipo']['EXCEDENTE'] + $resumo['tipo']['NORMAL'] ?></div>
+                    <div>Total de pacientes: <span class="ocupado"><?= $resumo['situacao']['OCUPADO'] ?></span></div>
                     <p>Situação dos leitos: </p>
                     <ul class="resumo">
                     <?php 
@@ -219,7 +218,13 @@ foreach ($dados as $i => $linha) {
                     foreach ($resumo['situacao'] as $situacao => $total) {
                         $class = mb_strtolower(str_replace(" ", "_", $situacao));                        
                         $todasClassesSituacoes .= " $class";
-                        echo "<li class='$class'>$situacao: <span>$total</span></li>\n";
+                        if($situacao == "OCUPADO"){
+                            $excedente = $resumo['tipo']['EXCEDENTE'];
+                            $normal = $total - $excedente;
+                            echo "<li class='$class'>$situacao: <span>$total [Normal: $normal | Excedente: $excedente]</span></li>";
+                        }else{
+                            echo "<li class='$class'>$situacao: <span>$total</span></li>\n";
+                        }
                     }
                     ?>
                     </ul>                        
@@ -336,7 +341,7 @@ foreach ($dados as $i => $linha) {
     <h1>Aguarde...</h1>
 </div>
 
-<form action="@{Relatorios->downloadHtmlAsPDF()}" id="hidden-form" style="display: none" method="POST">
+<form action="@{Relatorios->downloadHtmlAsPDF()}" id="hidden-form" style="display: none" method="POST" target="_blank">
     <input id="hidden-html" type="hidden" name="html" />
     <input type="hidden" name="titulo" value="Mapa de Leitos" />
     <input type="hidden" name="filename" value="MapaDeLeitos<?=$horaGerado?>" />
@@ -345,6 +350,7 @@ foreach ($dados as $i => $linha) {
 #{scriptPagina}
 <script type="text/javascript">
     $todasClasses = "<?= $todasClassesSituacoes ?>";
+    $interval = null;
     atualizaContagens = function ($tabela) {
         let situacoes = {};
         let tipos = {};
@@ -364,6 +370,10 @@ foreach ($dados as $i => $linha) {
                 $(this).find("span").text($total);
             }
         });
+        $excedente = $("tr.excedente").length;
+        $ocupados = $("tr.ocupado").length
+        $normal = $ocupados - $excedente;
+        $("li.ocupado span").text(`${$ocupados} [Normal: ${$normal} | Excedente ${$excedente}]`);
         
         $optionsSituacoes = "";
         for (s in situacoes) {
@@ -416,15 +426,31 @@ foreach ($dados as $i => $linha) {
 
         atualizaContagens($tabela);
     }); //.desocupar-leito
-
+    $i = 0;
     $("#bt-pdf").on('click', function (e) {
         e.preventDefault();
+        $interval = window.setInterval(function(){
+            $i++;
+            if($i >= 20){
+                window.clearInterval($interval);
+            }
+            console.log("Buscado... ", new Date().toLocaleString());
+            fetch("/relator/relatorios/gerado/aghu/resumo-leitos")
+            .then(function(response){
+                response.json().then(function(gerado){
+                    if(gerado){
+                        window.clearInterval($interval);
+                        location.reload();
+                    }
+                });
+            })
+        }, 300);
         $(".content").fadeOut();
         $("#aguardar").fadeIn();
         $(".remover").remove();
         $html = $(".content").html();
         $("#hidden-html").val($html);
-        $("#hidden-form").submit();
+        $("#hidden-form").submit();        
     });
 </script>
 #{/scriptPagina}

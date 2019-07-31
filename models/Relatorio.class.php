@@ -9,6 +9,25 @@ class Relatorio extends Model {
         parent::__construct();
         $this->nomeTabela = "relatorios.relatorios";
     }
+    
+    function get($relatorioId){
+        $sql = 
+"
+SELECT 
+    r.*
+    , d.nome datasource
+FROM 
+    relatorios.relatorios r 
+    JOIN relatorios.datasources d on r.datasource_id = d.id
+WHERE 
+    r.id = $relatorioId
+";
+        $l = $this->db->consulta($sql);
+        if(count($l) != 1){
+            return false;
+        }
+        return $l[0];
+    }
 
     public function getGrupos($relatorioId) {
         $rg = new RelatorioGrupo();
