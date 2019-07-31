@@ -28,6 +28,8 @@ $routes["/relatorio/{\w+:datasource}/{.+:nomeRelatorio}"] = "Relatorios->gerar";
 $routes["/parametro/{\d+:parametroId}"] = "Parametros->ver";
 $routes["/parametros/salvar"] = "Parametros->salvar";
 
+$routes['/relatorio/download-html-pdf'] = "Relatorios->downloadHtmlAsPDF";
+
 $routes["/datasources"] = "Datasources->index";
 $routes["/datasource"] = "Datasources->cadastro";
 $routes["/datasource/{\d+:id}"] = "Datasources->cadastro";

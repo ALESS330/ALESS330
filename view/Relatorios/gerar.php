@@ -11,6 +11,8 @@
     $linkPdf =  $uPdf; 
     $linkCsv = $uCsv;
 ?>
+<?php if(!$layout){ ?>
+
 #{botoes}
 <div class="fixed-action-btn">
     <a class="btn-floating btn-large red">
@@ -23,6 +25,7 @@
     </ul>
 </div>
 #{/botoes}
+<?php }//if ?>
 
 <?php
 echo $relatorio;

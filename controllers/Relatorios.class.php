@@ -209,6 +209,12 @@ class Relatorios extends Controller {
 
         $construtor = new ConstrutorRelatorios();
         $data['relatorio'] = $construtor->getRelatorio($nomeRelatorio, $datasource);
+        global $sisbase;
+        $layout = $sisbase . "/view/Relatorios/layouts/$nomeRelatorio.php";
+        $data['layout'] = false;
+        if(file_exists($layout)){
+            $data['layout'] = true;
+        }
         if (!$data['relatorio']) {
             $dados = array();
             $dados['mensagem'] = "Dados não encontrados. Verifique os parâmetros";
@@ -282,6 +288,13 @@ class Relatorios extends Controller {
             $this->renderPDFview($layout, $data, NULL);
         }
         $this->renderPDF($data);
+    }
+    
+    function downloadHtmlAsPDF(){
+        $dados['html'] = $_POST['html'];
+        $dados['titulo'] = $_POST['titulo'] ?? "relatorio";
+        $dados['filename'] = $_POST['filename'] ?? NULL;
+        $this->renderRawHtmlAsPDF($dados, 'relatorio-tmpl');
     }
 
     function gerarExcel($datasource, $nomeRelatorio) {
