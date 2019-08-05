@@ -1,5 +1,6 @@
 <?php
 
+global $db;
 //$contexto = "/ensino";
 //Apenas configurações de banco de dados
 $db["server"]   = "10.18.0.101";
