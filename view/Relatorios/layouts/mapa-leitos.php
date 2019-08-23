@@ -229,7 +229,29 @@ foreach ($dados as $i => $linha) {
         .titulo-relatorio{
             font-size: 14pt;
         }
+        
+        tr.linha-conferida{
+            background-color: #ddffdd !important;
+        }
 
+        tr.linha-conferida .acoes-pagina{
+            display: none;
+        }
+        tr.linha-conferida .acoes-conferida{
+            display: block;
+        }
+        
+        div.acoes-conferida{
+            display: none;
+        }
+        
+        label.conferido{
+            display: block;
+            width: 18px;
+            margin: 0 auto;
+            padding: 0px;
+        }
+        
         @media print{
             .no-print{
                 display: none !important;
@@ -272,9 +294,10 @@ foreach ($dados as $i => $linha) {
                     <table cellspacing="0" cellpadding="0" class="bordered" style="margin-bottom: 25px;">
                         <thead>
                             <tr>
-                                <th class="titulo-tabela texto-esquerdo" colspan="11">Unidade Funcional: <?= $t[0]['unidade_funcional'] ?></th>
+                                <th class="titulo-tabela texto-esquerdo" colspan="12">Unidade Funcional: <?= $t[0]['unidade_funcional'] ?></th>
                             </tr>
                             <tr>
+                                <th rowspan="2" class="mesclada remover">Conferido</th>
                                 <th colspan="3">Leito</th>
                                 <th colspan="4" class="mesclada">Paciente</th>
                                 <th rowspan="2" class="mesclada">Município</th>
@@ -325,6 +348,12 @@ foreach ($dados as $i => $linha) {
                                 $cTipo = mb_strtolower(str_replace(" ", "_",$tipo_leito));
                                 ?>
                                 <tr id="<?= "linha-$contadorLinhas" ?>" class="<?php echo "$cSituacao $cTipo"; ?>">
+                                    <td class="conferido remover">
+                                        <label class="conferido">
+                                            <input class="conferido" type="checkbox" id="conferido-<?=$contadorLinhas?>" />
+                                            <span></span>
+                                        </label>
+                                    </td>
                                     <td class="leito"><?=  $leito ?></td>
                                     <td class='situacao'><?= $situacao_leito ?></td>
                                     <td class='tipo'><?= $tipo_leito ?></td>
@@ -340,6 +369,7 @@ foreach ($dados as $i => $linha) {
                                             <a href="#" title="Remover linha" class="remover-linha"><i class="material-icons">delete_sweep</i></a>
                                             <a href="#" title="Desocupar leito" class="desocupar-leito"><i class="material-icons">highlight_off</i></a>                                        
                                         </div>
+                                        <div class="acoes-conferida"><i class="material-icons" title="Registro já conferido">check</i></div>
                                     </td>
                                 </tr>
                                 <?php
@@ -387,13 +417,13 @@ foreach ($dados as $i => $linha) {
 </div>
 
 <div id="aguardar" style="display: none">
-    <h1>Aguarde...</h1>
+    <h1>Aguarde... O relatório está sendo gerado.</h1>
 </div>
 
 <form action="@{Relatorios->downloadHtmlAsPDF()}" id="hidden-form" style="display: none" method="POST" target="_blank">
     <input id="hidden-html" type="hidden" name="html" />
     <input type="hidden" name="titulo" value="Mapa de Leitos" />
-    <input type="hidden" name="filename" value="MapaDeLeitos<?=$horaGerado?>" />
+    <input type="hidden" name="filename" value="MapaDeLeitos[<?=$horaGerado?>].pdf" />
 </form>
 
 #{scriptPagina}
@@ -441,6 +471,17 @@ foreach ($dados as $i => $linha) {
         $rodape = $ul.empty().html($optionsSituacoes);
     }; //atualizarContagens
 
+    $("label.conferido").on('change', function(e){
+        let $minhaLinha = $(this).closest("tr");
+        let $meuCheck = $(this).find(":checkbox");
+        let $meuCheckStatus = $meuCheck.prop("checked");
+        if($meuCheckStatus){
+            $minhaLinha.addClass("linha-conferida");
+        }else{
+            $minhaLinha.removeClass("linha-conferida");
+        }
+    });
+    
     $(".remover-linha").on('click', function (e) {
         e.preventDefault();
         $tabela = $(this).closest("table");
