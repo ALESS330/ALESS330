@@ -99,6 +99,9 @@ class Decorador extends Model {
             case "data";
                 $decorado = $this->decoraComData($valorCampo, $decorador->parametro, $linha);
                 break;
+            case "data-hora";
+                $decorado = $this->decoraComDataHora($valorCampo, $decorador->parametro, $linha);
+                break;            
             default:
                 $decorado = "Falha na decoração desse valor: $valorCampo";
                 break;
@@ -152,9 +155,17 @@ class Decorador extends Model {
             return $formated;
         }
         return "";
-    }
-
-//decoraComData
+    }//decoraComData
+    
+    public function decoraComDataHora($valorDecorar, $parametro, $linha) {
+        if (trim($valorDecorar)) {
+            $parsed = date_parse($valorDecorar);
+            $miliseconds = mktime($parsed['hour'], $parsed['minute'], $parsed['second'], $parsed['month'], $parsed['day'], $parsed['year']);
+            $formated = date($parametro, $miliseconds);
+            return $formated;
+        }
+        return "";
+    }    
 }
 
 //class

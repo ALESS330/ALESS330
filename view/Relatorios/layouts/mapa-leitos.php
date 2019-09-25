@@ -23,31 +23,31 @@ $codigoUFAtual = $dados[0]['codigo_unidade_funcional'];
 $leitosObservados = ["0001A", "0001B", "0001C", "0001D", "0009A", "0009B", "0009C", "0009D", "0010A", "0010B", "0010C", "0010D"];
 
 /*
-0 - DESOCUPADO                            
-10 - BLOQUEIO FAMILIARES                  
-14 - BLOQUEIO ACOMPANHANTE                
-16 - OCUPADO                              
-21 - LIMPEZA                              
-22 - MANUTENCAO                           
-23 - INFECCAO                             
-24 - BLOQUEIO ADMINISTRATIVO              
-25 - DESATIVADO                           
-29 - TECNICO                              
-30 - PATOLOGIA                            
-31 - RESERVADO                            
-32 - ALOCACAO TEMPORARIA                  
-33 - BLOQUEIO RADIATIVO                   
-34 - PERTENCES PACIENTE                   
-35 - RESERVADO CIRURGIA ELETIVA           
-36 - VAGA AUTORIZADA CRLD                 
-37 - RESERVADO ALTA UTI                   
-38 - DIALISE PERITONEAL INTERMITENTE - DPI
-39 - ISOLAMENTO DE CONTATO                
-40 - ISOLAMENTO RESPIRATÓRIO              
-50 - BLOQUEIO MÉDICO                      
-60 - LEITO LIBERADO POR ALTA              
+  0 - DESOCUPADO
+  10 - BLOQUEIO FAMILIARES
+  14 - BLOQUEIO ACOMPANHANTE
+  16 - OCUPADO
+  21 - LIMPEZA
+  22 - MANUTENCAO
+  23 - INFECCAO
+  24 - BLOQUEIO ADMINISTRATIVO
+  25 - DESATIVADO
+  29 - TECNICO
+  30 - PATOLOGIA
+  31 - RESERVADO
+  32 - ALOCACAO TEMPORARIA
+  33 - BLOQUEIO RADIATIVO
+  34 - PERTENCES PACIENTE
+  35 - RESERVADO CIRURGIA ELETIVA
+  36 - VAGA AUTORIZADA CRLD
+  37 - RESERVADO ALTA UTI
+  38 - DIALISE PERITONEAL INTERMITENTE - DPI
+  39 - ISOLAMENTO DE CONTATO
+  40 - ISOLAMENTO RESPIRATÓRIO
+  50 - BLOQUEIO MÉDICO
+  60 - LEITO LIBERADO POR ALTA
  */
-$situacaoMostrarNome = [0,22,24,50,31,35,36,37];
+$situacaoMostrarNome = [0, 22, 24, 50, 31, 35, 36, 37];
 
 $observacoes[3]['leito'] = "* O Leito é um berço";
 
@@ -63,7 +63,6 @@ foreach ($dados as $i => $linha) {
     }//foreach linha
     $j++;
 }//foreach dados
-
 ?>
 <div  id="conteudo-mapa">
 
@@ -192,14 +191,14 @@ foreach ($dados as $i => $linha) {
             top: 0;
             left: 0;
         }
-        
+
         div.splash-aguardar h1{
             font-family: Arial;
             font-size: 30pt;
             text-align: center;
             padding-top: 100px;
         }
-        
+
         .remover-linha{
             background-color: #b71c1c;
         }
@@ -225,11 +224,11 @@ foreach ($dados as $i => $linha) {
         table tbody tr:hover td div.acoes-pagina{
             opacity: 1;
         }
-        
+
         .titulo-relatorio{
             font-size: 14pt;
         }
-        
+
         tr.linha-conferida{
             background-color: #ddffdd !important;
         }
@@ -240,57 +239,80 @@ foreach ($dados as $i => $linha) {
         tr.linha-conferida .acoes-conferida{
             display: block;
         }
-        
+
         div.acoes-conferida{
             display: none;
         }
-        
+
         label.conferido{
             display: block;
             width: 18px;
             margin: 0 auto;
             padding: 0px;
         }
+
+        #progresso{
+           position: fixed;
+           top: 64px;
+           left: 0px;
+           height: 2px;
+           width: 100%;
+           background-color: red;
+        }
         
         @media print{
             .no-print{
                 display: none !important;
+            }
+            table ul{
+                font-size: 8pt !important;
+            }
+            
+            ul, li{
+                list-style: none;
+            }
+
+            div.resumo{
+                margin-top: 5mm !important;
+            }
+            
+            p.titulo-relatorio{
+                margin-bottom: 5mm !important;
             }
         }
     </style>
     <div class="content">
         <div class="corpo">
             <fieldset>
-                <p class="center titulo-relatorio" style="text-align: center; font-size: 14pt;">Mapa de Leitos - Hospital Universitário da UFGD</p>
+                <p class="center titulo-relatorio" style="text-align: center; font-size: 16pt; font-weight: bold">Mapa de Leitos - Hospital Universitário da UFGD</p>
                 <p>Relatório gerado em: <span id="hora-gerado"><?= $horaGeradoLegivel ?></span></p>
                 <div class="resumo">
                     <div>Total de pacientes: <span class="ocupado"><?= $resumo['situacao']['OCUPADO'] ?></span></div>
                     <p>Situação dos leitos: </p>
                     <ul class="resumo">
-                    <?php 
-                    
-                    foreach ($resumo['situacao'] as $situacao => $total) {
-                        $class = mb_strtolower(str_replace(" ", "_", $situacao));                        
-                        $todasClassesSituacoes .= " $class";
-                        if($situacao == "OCUPADO"){
-                            $excedente = $resumo['tipo']['EXCEDENTE'];
-                            $normal = $total - $excedente;
-                            echo "<li class='$class'>$situacao: <span>$total [Normal: $normal | Excedente: $excedente]</span></li>";
-                        }else{
-                            echo "<li class='$class'>$situacao: <span>$total</span></li>\n";
+                        <?php
+                        foreach ($resumo['situacao'] as $situacao => $total) {
+                            $class = mb_strtolower(str_replace(" ", "_", $situacao));
+                            $todasClassesSituacoes .= " $class";
+                            if ($situacao == "OCUPADO") {
+                                $excedente = $resumo['tipo']['EXCEDENTE'];
+                                $normal = $total - $excedente;
+                                echo "<li class='$class'>$situacao: <span>$total [Normal: $normal | Excedente: $excedente]</span></li>";
+                            } else {
+                                echo "<li class='$class'>$situacao: <span>$total</span></li>\n";
+                            }
                         }
-                    }
-                    ?>
+                        ?>
                     </ul>                        
                 </div>
             </fieldset>
             <fieldset>
-                <?php
-                $listaSituacoes = array();
-                $contadorLinhas = 0;
-                $listaTipos = array();
-                foreach ($tabela as $i => $t) {
-                    ?>
+<?php
+$listaSituacoes = array();
+$contadorLinhas = 0;
+$listaTipos = array();
+foreach ($tabela as $i => $t) {
+    ?>
                     <table cellspacing="0" cellpadding="0" class="bordered" style="margin-bottom: 25px;">
                         <thead>
                             <tr>
@@ -316,45 +338,46 @@ foreach ($dados as $i => $linha) {
                             </tr>
                         </thead>
                         <tbody>
-                            <?php
-                            //$i = 0;
-                            foreach ($t as $indice => $linha) {
-                                $contadorLinhas++;
-                                //$i++;
-                                foreach ($linha as $campo => $valor) {
-                                    $$campo = $valor == NULL ? "" : $valor;
-                                }
-                                $listaSituacoes[$i][$situacao_leito] = isset($listaSituacoes[$i][$situacao_leito]) ? $listaSituacoes[$i][$situacao_leito] + 1 : 1;
-                                $listaTipos[$i][$tipo_leito] = isset($listaTipos[$i][$tipo_leito]) ? $listaTipos[$i][$tipo_leito] + 1 : 1;
-                                //$nome = strlen($nome) > $MAX_LETRAS ? substr($nome, 0, $MAX_LETRAS - 3) . "..." : $nome;
-                                $dias_a_maior = $dias_internados ?? 0 - $dias_media_permanencia ?? 0;
-                                if (!$idade && ($situacao_leito == "OCUPADO")) {
-                                    $idade = "0";
-                                }
-                                if(array_search($linha['codigo_situacao'], $situacaoMostrarNome) || $situacao_leito =='OCUPADO'){
-                                }else{
-                                    $nome = "";
-                                }
-                                $municipio = $cidade;
-                                if (!$municipio && !$nome) {
-                                    $municipio = "";
-                                }
-                                
-                                if(isset($observacoes[$i]['leito'])){
-                                    $leito = array_search(trim($leito), $leitosObservados) !== FALSE ? "$leito *" : $leito;
-                                }
-                                
-                                $cSituacao = mb_strtolower(str_replace(" ", "_",$situacao_leito));
-                                $cTipo = mb_strtolower(str_replace(" ", "_",$tipo_leito));
-                                ?>
+    <?php
+    //$i = 0;
+    foreach ($t as $indice => $linha) {
+        $contadorLinhas++;
+        //$i++;
+        foreach ($linha as $campo => $valor) {
+            $$campo = $valor == NULL ? "" : $valor;
+        }
+        $listaSituacoes[$i][$situacao_leito] = isset($listaSituacoes[$i][$situacao_leito]) ? $listaSituacoes[$i][$situacao_leito] + 1 : 1;
+        $listaTipos[$i][$tipo_leito] = isset($listaTipos[$i][$tipo_leito]) ? $listaTipos[$i][$tipo_leito] + 1 : 1;
+        //$nome = strlen($nome) > $MAX_LETRAS ? substr($nome, 0, $MAX_LETRAS - 3) . "..." : $nome;
+        $dias_a_maior = $dias_internados ?? 0 - $dias_media_permanencia ?? 0;
+        if (!$idade && ($situacao_leito == "OCUPADO")) {
+            $idade = "0";
+        }
+        if (array_search($linha['codigo_situacao'], $situacaoMostrarNome) || $situacao_leito == 'OCUPADO') {
+            
+        } else {
+            $nome = "";
+        }
+        $municipio = $cidade;
+        if (!$municipio && !$nome) {
+            $municipio = "";
+        }
+
+        if (isset($observacoes[$i]['leito'])) {
+            $leito = array_search(trim($leito), $leitosObservados) !== FALSE ? "$leito *" : $leito;
+        }
+
+        $cSituacao = mb_strtolower(str_replace(" ", "_", $situacao_leito));
+        $cTipo = mb_strtolower(str_replace(" ", "_", $tipo_leito));
+        ?>
                                 <tr id="<?= "linha-$contadorLinhas" ?>" class="<?php echo "$cSituacao $cTipo"; ?>">
                                     <td class="conferido remover">
                                         <label class="conferido">
-                                            <input class="conferido" type="checkbox" id="conferido-<?=$contadorLinhas?>" />
+                                            <input class="conferido" type="checkbox" id="conferido-<?= $contadorLinhas ?>" />
                                             <span></span>
                                         </label>
                                     </td>
-                                    <td class="leito"><?=  $leito ?></td>
+                                    <td class="leito"><?= $leito ?></td>
                                     <td class='situacao'><?= $situacao_leito ?></td>
                                     <td class='tipo'><?= $tipo_leito ?></td>
                                     <td class="prontuario"><?= $prontuario ?></td>
@@ -369,7 +392,7 @@ foreach ($dados as $i => $linha) {
                                             <a href="#" title="Remover linha" class="remover-linha"><i class="material-icons">delete_sweep</i></a>
                                             <a href="#" title="Desocupar leito" class="desocupar-leito"><i class="material-icons">highlight_off</i></a>                                        
                                         </div>
-                                        <div class="acoes-conferida"><i class="material-icons" title="Registro já conferido">check</i></div>
+                                        <div class="acoes-conferida"><small>Conferido</small></div>
                                     </td>
                                 </tr>
                                 <?php
@@ -380,14 +403,15 @@ foreach ($dados as $i => $linha) {
                             <tr>
                                 <td class="total-geral" colspan="2">
                                     <div>Total de registros: <span><?= count($tabela[$i]) ?></span></div>
-                                    <?php if (isset($observacoes[$i])) {
-                                    echo "<div>";
+                                    <?php
+                                    if (isset($observacoes[$i])) {
+                                        echo "<div>";
                                         foreach ($observacoes[$i] as $obs) {
                                             echo "<span>" . $obs . "</span>";
-                                                                            
                                         }
-                                    echo "</div>";
-                                    }?>
+                                        echo "</div>";
+                                    }
+                                    ?>
                                 </td>
                                 <td colspan="5" class="totais-situacoes">
                                     <ul>
@@ -398,7 +422,7 @@ foreach ($dados as $i => $linha) {
                                         ?>
                                     </ul>
                                 </td>
-                                <td colspan="4" class="totais-tipos">
+                                <td colspan="5" class="totais-tipos">
                                     <ul>
                                         <?php
                                         foreach ($listaTipos[$i] as $tipo => $totalTipo) {
@@ -416,6 +440,10 @@ foreach ($dados as $i => $linha) {
     </div>
 </div>
 
+<!-- div id="progresso">
+    
+</div -->
+
 <div id="aguardar" style="display: none">
     <h1>Aguarde... O relatório está sendo gerado.</h1>
 </div>
@@ -423,7 +451,7 @@ foreach ($dados as $i => $linha) {
 <form action="@{Relatorios->downloadHtmlAsPDF()}" id="hidden-form" style="display: none" method="POST" target="_blank">
     <input id="hidden-html" type="hidden" name="html" />
     <input type="hidden" name="titulo" value="Mapa de Leitos" />
-    <input type="hidden" name="filename" value="MapaDeLeitos[<?=$horaGerado?>].pdf" />
+    <input type="hidden" name="filename" value="MapaDeLeitos[<?= $horaGerado ?>].pdf" />
 </form>
 
 #{scriptPagina}
@@ -439,13 +467,13 @@ foreach ($dados as $i => $linha) {
             situacoes[situacao] = situacoes[situacao] ? situacoes[situacao] + 1 : 1;
             tipos[tipo] = tipos[tipo] ? tipos[tipo] + 1 : 1;
         });
-        
-        $("ul.resumo li").each(function(){
+
+        $("ul.resumo li").each(function () {
             $class = $(this).attr("class");
             $total = $("tr." + $class).length;
-            if($total === 0){
+            if ($total === 0) {
                 $(this).remove();
-            }else{
+            } else {
                 $(this).find("span").text($total);
             }
         });
@@ -453,7 +481,7 @@ foreach ($dados as $i => $linha) {
         $ocupados = $("tr.ocupado").length
         $normal = $ocupados - $excedente;
         $("li.ocupado span").text(`${$ocupados} [Normal: ${$normal} | Excedente ${$excedente}]`);
-        
+
         $optionsSituacoes = "";
         for (s in situacoes) {
             $optionsSituacoes += "<li>" + s + ": <span>" + situacoes[s] + "</span></li>\n";
@@ -471,17 +499,17 @@ foreach ($dados as $i => $linha) {
         $rodape = $ul.empty().html($optionsSituacoes);
     }; //atualizarContagens
 
-    $("label.conferido").on('change', function(e){
+    $("label.conferido").on('change', function (e) {
         let $minhaLinha = $(this).closest("tr");
         let $meuCheck = $(this).find(":checkbox");
         let $meuCheckStatus = $meuCheck.prop("checked");
-        if($meuCheckStatus){
+        if ($meuCheckStatus) {
             $minhaLinha.addClass("linha-conferida");
-        }else{
+        } else {
             $minhaLinha.removeClass("linha-conferida");
         }
     });
-    
+
     $(".remover-linha").on('click', function (e) {
         e.preventDefault();
         $tabela = $(this).closest("table");
@@ -504,7 +532,7 @@ foreach ($dados as $i => $linha) {
             return false;
         }
         $linha = $(this).closest("tr");
-        $linha.removeClass($todasClasses).addClass("desocupado");        
+        $linha.removeClass($todasClasses).addClass("desocupado");
         $linha.find(".prontuario").html("");
         $linha.find(".nome").html("");
         $linha.find(".sexo").html("");
@@ -517,33 +545,41 @@ foreach ($dados as $i => $linha) {
         atualizaContagens($tabela);
     }); //.desocupar-leito
     $i = 0;
-    
-    
+
+
     $("#bt-pdf").on('click', function (e) {
         e.preventDefault();
-        $interval = window.setInterval(function(){
+        $interval = window.setInterval(function () {
             $i++;
-            if($i >= 20){
+            if ($i >= 20) {
                 window.clearInterval($interval);
             }
             console.log("Buscado... ", new Date().toLocaleString());
             fetch("/relator/relatorios/gerado/aghu/mapa-leitos")
-            .then(function(response){
-                response.json().then(function(gerado){
-                    if(gerado){
-                        window.clearInterval($interval);
-                        location.reload();
-                    }
-                });
-            })
+                    .then(function (response) {
+                        response.json().then(function (gerado) {
+                            if (gerado) {
+                                window.clearInterval($interval);
+                                location.reload();
+                            }
+                        });
+                    })
         }, 300);
+//        fetch("/relator/relatorios/gerado/aghu/mapa-leitos")
+//        .then(function(response){
+//            response.json().then(function(gerado){
+//                if(!gerado["aghu/mapa-leitos"]){
+//                }
+//            })//resonse then
+//        }//then
+//        );
         $(".content").fadeOut();
         $("#aguardar").fadeIn();
         $(".remover").remove();
         $html = $(".content").html();
         $("#hidden-html").val($html);
-        $("#hidden-form").submit();        
-        
+        $("#hidden-form").submit();
+
     });
 </script>
 #{/scriptPagina}

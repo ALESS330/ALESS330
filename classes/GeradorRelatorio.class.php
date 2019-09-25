@@ -141,6 +141,9 @@ class GeradorRelatorio {
         $rotulos["data_fim_acompanhamento"] = "Fim acompanhamento";
         $rotulos["nome_acompanhante"] = "Nome do acompanhante";
         $rotulos["rg_acompanhante"] = "RG do acompanhante";
+        $rotulos["descricao"] = "Descrição";
+        $rotulos["lto_id"] = "Leito";
+        $rotulos["dias_leito"] = "Dias no leito";
 
         return isset($rotulos[$campo]) ? $rotulos[$campo] : $campo;
     }

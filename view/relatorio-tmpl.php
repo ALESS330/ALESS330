@@ -9,8 +9,14 @@
                 size: 210mm 297mm;
                 footer: html_footer;
             }
-            html{
+            html, p, table, ul, li, div, span{
                 font-family: Roboto, Arial;
+            }
+            p{
+                margin: 0;
+                padding: 0;
+                border: none;
+                line-height: 100%;
             }
             .header{
                 width: 118mm;

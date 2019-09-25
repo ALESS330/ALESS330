@@ -10,7 +10,7 @@ $db["database"] = "teste";
 $db['porta']    = 5432; 
 
 
-//$db["server"]   = "10.18.0.58";
+//$db["server"]   = "10.18.0.87";
 //$db["user"]     = "relator";
 //$db["password"] = 'R&l$t0r.Pr0D';
 //$db["database"] = "huufgd_bd";

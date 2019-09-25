@@ -1,7 +1,8 @@
 <?php
-global $corSistemaRGB;
+global $corSistemaRGB, $escondeBusca;
 $grupoAtual = "";
 $coresIcones = array();
+$escondeBusca = true;
 ?>
 <style>
     .lista-relatorios{   

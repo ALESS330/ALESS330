@@ -231,6 +231,7 @@ class Relatorios extends Controller {
             $dados['mensagem'] = "Dados não encontrados. Verifique os parâmetros";
             $erro = new Erro();
             $erro->generico($dados);
+            exit();
             //$this->go2("Erro->generico");
         } else {
             //unset($_SESSION['mensagem']['info']);
@@ -243,19 +244,30 @@ class Relatorios extends Controller {
             if (!$impressora) {
                 $this->mensagemAlerta("Selecione a impressora");
             } else {
-                $r = $this->toPulseira($datasource, $nomeRelatorio, $impressora);
-                if ($r) {
-                    $this->mensagemSucesso("Relatório impresso com sucesso!");
-                } else {
-                    $s = $_SESSION['erro-pulseira'];
-                    unset($_SESSION['erro-pulseira']);
-                    $this->mensagemErro("Falha ao imprimir o relatório! ($s)");
-                }
-            }
+                if($nomeRelatorio === "etiquetas-farmacia"){
+                    $r = $this->toEtiqueta($datasource, $nomeRelatorio, $impressora);
+                    if($r){
+                        $this->mensagemSucesso("Etiqueta impressa com sucesso!");
+                    }else{
+                        $s = $_SESSION['erro-etiqueta'];
+                        unset($_SESSION['erro-etiqueta']);
+                        $this->mensagemErro("Falha ao imprimir etiqueta! ($s)");
+                    }//else
+                }else{
+                    $r = $this->toPulseira($datasource, $nomeRelatorio, $impressora);
+                    if ($r) {
+                        $this->mensagemSucesso("Relatório impresso com sucesso!");
+                    } else {
+                        $s = $_SESSION['erro-pulseira'];
+                        unset($_SESSION['erro-pulseira']);
+                        $this->mensagemErro("Falha ao imprimir o relatório! ($s)");
+                    }//else
+                }//else
+            }//else
             $this->go2("$u");
         }
         $this->render($data);
-    }
+    }//gerar
 
     private function forcaDownload($formato, $datasource, $nomeRelatorio, $parametros = NULL) {
         $nome = "";
@@ -287,6 +299,7 @@ class Relatorios extends Controller {
         $data = array();
         global $sisbase, $filename;
         $filename = $nomePDFDownload;
+        $data['template'] = "relatorio-tmpl";
         $construtor = new ConstrutorRelatorios();
         $data['html'] = $construtor->getRelatorio($nomeRelatorio, $datasource);
         $estrutura = $construtor->getEstruturaRelatorio($nomeRelatorio)[0];
@@ -296,7 +309,7 @@ class Relatorios extends Controller {
         $layout = "Relatorios/layouts/$nomeRelatorio";
         $arquivoLayout = "$sisbase/view/$layout.php";
         if (file_exists($arquivoLayout)) {
-            $this->renderPDFview($layout, $data, NULL);
+            $this->renderPDFview($layout, $data, NULL, 'template-pdf');
         }
         $this->renderPDF($data);
     }
@@ -318,6 +331,11 @@ class Relatorios extends Controller {
         $this->renderRawHtmlAsPDF($dados, 'relatorio-tmpl');
     }
 
+    function printHTML(){
+        $html = $_POST['html'];
+        $this->downloadHtml($html);
+    }
+    
     function gerarExcel($datasource, $nomeRelatorio) {
         $data = array();
         $construtor = new ConstrutorRelatorios();
@@ -406,4 +424,48 @@ DATA_NASC: $pulseira->data_nascimento
         return FALSE;
     }
 
+    private function toEtiqueta($datasource, $nomeRelatorio, $impressora) {
+        error_reporting(E_ALL ^ E_DEPRECATED);
+        $impressora = "/printers/$impressora";
+        $construtor = new ConstrutorRelatorios();
+        $dados = $construtor->getDados($nomeRelatorio, $datasource);
+        
+        $etiquetas = $dados;
+        
+//        for($i=1;$i<=3;$i++){
+//            $nome = "etiqueta$i";
+//            $$nome = new stdClass();
+//            $$nome->prontuario = "";
+//            $$nome->nome = "";
+//            $$nome->nascimento = "";
+//        }
+//        
+//        foreach ($dados as $i => $etiqueta){
+//            $nome = "etiqueta" . ($i+1);
+//            $$nome = new stdClass();
+//            foreach ($etiqueta as $n => $valor){
+//                $$nome->$n = $valor;
+//            }
+//        }
+        
+        require_once dirname(__FILE__) . '/../classes/lib/print-ipp/PrintIPP.php';
+        require_once dirname(__FILE__) . '/../classes/lib/zplimg/image2zpl.inc.php';
+        require_once dirname(__FILE__) . '/../classes/lib/phpqrcode/qrlib.php';
+
+        $ipp = new PrintIPP();
+        $ipp->setHost('10.18.0.38');
+        $ipp->setPrinterURI($impressora);
+        $ipp->setMimeMediaType("application/vnd.cups-raw");
+
+        require_once dirname("..") . "/view/Relatorios/layouts/$nomeRelatorio.prn.php";
+
+        $ipp->setData($layout);
+        $s = $ipp->printJob();
+        error_reporting(E_ALL);       
+        if ($s == "successfull-ok") {
+            return TRUE;
+        }
+        $_SESSION['erro-pulseira'] = $s;
+        return FALSE;
+    }    
 }

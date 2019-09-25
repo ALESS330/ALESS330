@@ -30,6 +30,7 @@ $routes["/parametro/{\d+:parametroId}"] = "Parametros->ver";
 $routes["/parametros/salvar"] = "Parametros->salvar";
 
 $routes['/relatorio/download-html-pdf'] = "Relatorios->downloadHtmlAsPDF";
+$routes['/relatorio/download-html'] = "Relatorios->printHTML";
 
 $routes["/datasources"] = "Datasources->index";
 $routes["/datasource"] = "Datasources->cadastro";
