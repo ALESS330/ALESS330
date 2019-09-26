@@ -97,15 +97,14 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
     }
 
     #logo-hu img{
-        width: 200px !important;
-        height: 80px !important;
-        margin-top: 10px !important;
+        width: 140px !important;
+        margin-top: 12px !important;
     }
 
     #logo-ebserh img{
-        height: 56px;
-        width: 215px;
-        margin-top: 22px;        
+        width: 189px !important;
+        margin-top: 22px;
+        margin-left: 36px;
     }
 
     div.opcoes{
@@ -204,13 +203,13 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
 <div id="painel-beira-leito">
     <div id="titulo">
         <div id="logo-hu">
-            <img src="http://<?= $server ?>/relator/assets/img/logo-hu.png"/>
+            <img src="http://<?= $server ?>/relator/assets/img/logo-hu-alt-80.png"/>
         </div>
         <div id="texto-titulo">
-            <h3>Identificação Pediátrica</h3>
+            <h3>IDENTIFICAÇÃO PEDIÁTRICA</h3>
         </div>
         <div id="logo-ebserh">
-            <img src="http://<?= $server ?>/relator/assets/img/logo-ebserh.jpg"/>
+            <img src="http://<?= $server ?>/relator/assets/img/logo-ebserh-alt-80.png"/>
         </div>
     </div> <!-- #titulo -->
 
@@ -225,7 +224,7 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
             <h4><?= $paciente['data_nascimento'] ?></h4>
         </div>
         <div id="idade">
-            <span>Idade</span>
+            <span style="margin-right: 410px;">Idade</span>
             <h4><?= $paciente['idade'] ?></h4>
         </div>
         <div id="sexo">
