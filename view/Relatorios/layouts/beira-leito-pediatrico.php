@@ -61,8 +61,8 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
     #painel-beira-leito div:not(.multipla-escolha):not(.opcoes){
         height: 100px;
     }
-    #prontuario-paciente, #admissao, #rue{
-        width: 33%;
+    #prontuario-paciente, #admissao, #rue, #peso-admissional{
+        width: 25%;
         float: left;
     }
 
@@ -140,7 +140,11 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
         margin-top: 10px;
     }
     @media print{
-
+        @page { 
+            margin: 0mm; 
+            size: 297mm 210mm;
+        }
+        
         * {
             font-family: "Google Sans" !important;
         }
@@ -149,19 +153,16 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
             font-size: 2.93rem;
             line-height: 110%;
         }
+        
         h4{
             font-size: 2.28rem;
             line-height: 110%;        
         }
 
-
         li{
             list-style: none;
         }
-        @page { 
-            margin: 0mm; 
-            size: 297mm 210mm;
-        }
+
         body{
             margin: 5mm;
         }
@@ -206,7 +207,7 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
             <img src="http://<?= $server ?>/relator/assets/img/logo-hu.png"/>
         </div>
         <div id="texto-titulo">
-            <h3>Identificação Adulto</h3>
+            <h3>Identificação Pediátrica</h3>
         </div>
         <div id="logo-ebserh">
             <img src="http://<?= $server ?>/relator/assets/img/logo-ebserh.jpg"/>
@@ -244,6 +245,10 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
         <div id="admissao">
             <span>Data de admissão</span>
             <h4><?= $paciente['data_internacao'] ?></h4>
+        </div>
+        <div id="peso-admissional">
+            <span>Peso admissional</span>
+            <h4>____________</h4>
         </div>
         <div id="rue">
             <?php if ($mostrarRUE) { ?>
@@ -284,9 +289,9 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
                         <div class="multipla-escolha"><span class="quadrado">&square;</span> Médio</div>
                     </div>                    
                 </li>
-                <li style="border-bottom: solid 1px silver;">Risco de dano grave por queda</li>
+                <li>Risco de dano grave por queda</li>
                 <li>
-                    <div class="opcoes">
+                    <div class="opcoes" style="border-bottom: solid 1px silver;">
                         <div class="multipla-escolha"><span class="quadrado">&square;</span> SIM</div>
                         <div class="multipla-escolha"><span class="quadrado">&square;</span> NÃO</div>
                     </div>                    

@@ -43,15 +43,28 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
         padding: 7mm;
     }
 
-    #titulo, #nome-paciente, #prontuario-internacao, #nome-mae{
+    #titulo, #nome-paciente, #prontuario-internacao{
         width: 100%;
     }
 
+    #nome-mae{
+        width: 65%;
+        float: left;
+    }
+    
+    #tipo-parto{
+        width: 35%;
+        float: left;        
+    }
+    
     #logo-hu, #logo-ebserh, #nascimento, #sexo{
         width: 20%;
         float: left;
     }
 
+    #texto-titulo{
+        
+    }
     #texto-titulo, #idade{
         width: 59%;
         float: left;
@@ -59,29 +72,12 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
     }
 
     #painel-beira-leito div:not(.multipla-escolha):not(.opcoes){
-        height: 100px;
+        height: 95px;
     }
-    #prontuario-paciente, #admissao, #rue{
+    
+    #prontuario-paciente, #admissao, #rue, #peso-ao-nascer, #idade-gestacional, #hora-nascimento{
         width: 33%;
         float: left;
-    }
-
-    #alergia, #risco{
-        width: 50%;
-        float: left;
-        height: 250px !important;
-        border: solid 1px silver !important;
-        padding: 2mm !important;
-    }        
-    #risco{
-        border-left: none !important;
-        border-top-right-radius: 10px;
-        border-bottom-right-radius: 10px;
-    }
-
-    #alergia{
-        border-top-left-radius: 10px;
-        border-bottom-left-radius: 10px;
     }
 
     ul{
@@ -139,8 +135,33 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
         float: right;
         margin-top: 10px;
     }
+    
+    #cuidados-especiais{
+        border: solid 1px silver !important;
+        border-radius: 10px !important;
+    }
+    #cuidados-especiais ul{
+        width: 49% !important;
+        float: left;
+    }
+    #cuidados-especiais h4{
+        font-size: 1.5rem !important;
+        text-align: center;
+        font-weight: bold;
+    }
+    
+    #cuidados-especiais li{
+        font-size: 12.5px !important;
+        list-style-type: circle !important;
+        list-style-position: inside !important;
+    }
+    
     @media print{
-
+        @page { 
+            margin: 0mm; 
+            size: 297mm 210mm;
+        }
+        
         * {
             font-family: "Google Sans" !important;
         }
@@ -149,19 +170,16 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
             font-size: 2.93rem;
             line-height: 110%;
         }
+        
         h4{
             font-size: 2.28rem;
             line-height: 110%;        
         }
 
-
         li{
             list-style: none;
         }
-        @page { 
-            margin: 0mm; 
-            size: 297mm 210mm;
-        }
+
         body{
             margin: 5mm;
         }
@@ -180,23 +198,6 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
             box-shadow: none;
             padding: 7mm;
         }
-        #alergia, #risco{
-            width: 50%;
-            float: left;
-            height: 250px !important;
-            border: solid 1px silver !important;
-            padding: 2mm !important;
-        }        
-        #risco{
-            border-left: none !important;
-            border-top-right-radius: 10px;
-            border-bottom-right-radius: 10px;
-        }
-
-        #alergia{
-            border-top-left-radius: 10px;
-            border-bottom-left-radius: 10px;
-        }
     } /*media print*/
 </style>
 
@@ -206,7 +207,7 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
             <img src="http://<?= $server ?>/relator/assets/img/logo-hu.png"/>
         </div>
         <div id="texto-titulo">
-            <h3>Identificação Adulto</h3>
+            <h3>Identificação do Bebê</h3>
         </div>
         <div id="logo-ebserh">
             <img src="http://<?= $server ?>/relator/assets/img/logo-ebserh.jpg"/>
@@ -232,9 +233,22 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
             <h4><?= $paciente['sexo'] ?></h4>
         </div>
     </div>
-    <div id="nome-mae">
-        <span>Nome da mãe</span>
-        <h4><?= $paciente['nome_mae'] ?></h4>
+    <div id="nome-mae-tipo-parto">
+        <div id="nome-mae">
+            <span>Nome da mãe</span>
+            <h4><?= $paciente['nome_mae'] ?></h4>
+        </div>
+        <div id="tipo-parto">
+            <span>Tipo de parto</span>
+            <ul>
+                <li>
+                    <div class="opcoes">
+                        <div class="multipla-escolha"> <h4><span style="font-size: 42px;">&square;</span> Cesárea &nbsp;&nbsp;<span style="font-size: 42px;">&square;</span> Normal</div>
+                        
+                    </div>                    
+                </li>
+            </ul>
+        </div>
     </div>
     <div id="prontuario-internacao">
         <div id="prontuario-paciente">
@@ -252,51 +266,43 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
             <?php } //mostrarRUE ?>
         </div>
     </div>
-    <div id="alergias-risco">
-        <div id="alergia">
-            <ul>
-                <img src="http://<?= $server ?>/relator/assets/img/icone-exclamacao.png" id="icone-exclamacao">
-                <li>ALERGIA a quê?__________________  </li>
-                <li>Risco de Broncoaspiração</li>
-                <li>
-                    <div class="opcoes" style="border-bottom: solid 1px silver;">
-                        <div class="multipla-escolha"> <span class="quadrado">&square;</span> SIM</div>
-                        <div class="multipla-escolha"> <span class="quadrado">&square;</span> NÃO</div>
-                    </div>
-                </li>
-                <li>Risco de Lesão por Pressão</li>
-                <li>
-                    <div class="opcoes">
-                        <div class="multipla-escolha"><span class="quadrado">&square;</span> ALTO</div>
-                        <div class="multipla-escolha"><span class="quadrado">&square;</span> Moderado</div>
-                        <div class="multipla-escolha"><span class="quadrado">&square;</span> Baixo</div>
-                    </div>
-                </li>
-            </ul>
-        </div> <!-- alergia -->
-        <div id="risco">
-            <ul>
-                <img src="http://<?= $server ?>/relator/assets/img/icone-queda.png" id="icone-queda">                
-                <li>Risco de Queda</li>
-                <li>
-                    <div class="opcoes">
-                        <div class="multipla-escolha"><span class="quadrado">&square;</span> Alto</div>
-                        <div class="multipla-escolha"><span class="quadrado">&square;</span> Médio</div>
-                    </div>                    
-                </li>
-                <li style="border-bottom: solid 1px silver;">Risco de dano grave por queda</li>
-                <li>
-                    <div class="opcoes">
-                        <div class="multipla-escolha"><span class="quadrado">&square;</span> SIM</div>
-                        <div class="multipla-escolha"><span class="quadrado">&square;</span> NÃO</div>
-                    </div>                    
-                </li>
-                <img src="http://<?= $server ?>/relator/assets/img/icone-fratura.png" id="icone-fratura">                                     
-                <li><span class="quadrado">&square;</span> Discrasia sanguínea/anticoagulante</li>
-                <li><span class="quadrado">&square;</span> Osteoporose/fraturas anteriores   </li>
-            </ul>
+    <div id="dados-neonato">
+        <div id="peso-ao-nascer">
+            <span>Peso ao nascer</span>
+            <h4>____________</h4>
         </div>
+        <div id="idade-gestacional">
+            <span>IG</span>
+            <h4>____________</h4>
+        </div>
+        <div id="hora-nascimento">
+            <span>Hora do nascimento</span>
+            <h4>_______:_______</h4>
+        </div>        
     </div>
+    <div id="cuidados-especiais" style="height: 178px; padding: 4px">
+        <div style="margin: 0 auto">
+            <h4>Cuidados especiais</h4>
+            <ul>
+                <li>Manter PULSEIRA DE IDENTIFICAÇÃO do seu bebê até a alta</li>
+                <li>CONFERIR se os dados da pulseira estão corretos</li>
+                <li>NUNCA deixar o bebê sobre a cama, pois o berço é o mais seguro</li>
+                <li>NUNCA permitir que seu bebê seja amamentado por outra mãe, pelo risco de doenças</li>
+                <li>SEMPRE lavar as mãos antes e após o cuidado com o bebê</li>
+                <li>NUNCA transportar bebê no colo, e sim no berço</li>
+                <li>EVITE uso de celular durante a internação</li>
+            </ul>
+            <ul style="float: right">
+                <li>Lembrar da VACINAÇÃO do bebê</li>
+                <li>Acompanhante deve SEMPRE auxiliar a mãe durante o cuidado e o seu repouso</li>
+                <li>NUNCA dormir na cama com o bebê pelo risco de asfixia ou queda</li>
+                <li>Acompanhante NUNCA dormir na cama da paciente</li>
+                <li>SOLICITE ajuda dos profissionais para auxílio na amamentação</li>
+                <li>NUNCA deixe seu bebê com estranhos</li>
+                <li>As orientações sobre o bebê serão dadas pela manhã</li>            
+            </ul>
+        </div> <!-- margin 0 auto-->
+    </div><!-- #cuidados-especiais -->
 </div>
 
 #{scriptPagina}
