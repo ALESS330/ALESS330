@@ -481,7 +481,7 @@ foreach ($tabela as $i => $t) {
         $ocupados = $("tr.ocupado").length
         $normal = $ocupados - $excedente;
         $("li.ocupado span").text(`${$ocupados} [Normal: ${$normal} | Excedente ${$excedente}]`);
-
+        $("span.ocupado").text($ocupados);
         $optionsSituacoes = "";
         for (s in situacoes) {
             $optionsSituacoes += "<li>" + s + ": <span>" + situacoes[s] + "</span></li>\n";
