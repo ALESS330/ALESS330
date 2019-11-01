@@ -56,18 +56,18 @@ class Relatorios extends Controller {
             $tp = $this->relatorio->getTelaParametros($idRelatorio);
             $objFormulario = new Formulario();
             if ($tp) {
-                $f = $objFormulario->get($tp[0]->formulario_id);
+                $f = $objFormulario->get($tp->formulario_id);
             } else {
                 $f = NULL;
             }
-            $dados['telaParametros'] = $f;
+            $dados['telaParametros'] = $tp;
             $dados['telas'] = $objFormulario->listaTelas();
         }
         $this->render($dados);
     }
 
     function salvarFormatos($relatorioId) {
-        $formatos = $_POST['formatos'];
+        $formatos = isset($_POST['formatos']) ? $_POST['formatos'] : NULL;
         $this->relatorio->salvarFormatos($relatorioId, $formatos);
         $this->mensagemSucesso("Formatos salvos com suscesso");
         $this->go2("Relatorios->propriedades($relatorioId)");
@@ -349,7 +349,7 @@ class Relatorios extends Controller {
 
     function gerarCsv($datasource, $nomeRelatorio, $parametros = NULL) {
         $construtor = new ConstrutorRelatorios();
-        $estrutura = $construtor->getEstruturaRelatorio($nomeRelatorio)[0];
+        $estrutura = $construtor->getEstruturaRelatorio($nomeRelatorio);
         $suportaCSV = $this->relatorio->checaFormato($estrutura['relatorio_id'], 'csv')->suporta;
         if (!$suportaCSV) {
             throw new Exception("Formato CSV não suportado para esse relatório.", 8);

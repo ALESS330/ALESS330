@@ -9,10 +9,9 @@ class Relatorio extends Model {
         parent::__construct();
         $this->nomeTabela = "relatorios.relatorios";
     }
-    
-    function get($relatorioId){
-        $sql = 
-"
+
+    function get($relatorioId) {
+        $sql = "
 SELECT 
     r.*
     , d.nome datasource
@@ -23,7 +22,7 @@ WHERE
     r.id = $relatorioId
 ";
         $l = $this->db->consulta($sql);
-        if(count($l) != 1){
+        if (count($l) != 1) {
             return false;
         }
         return $l[0];
@@ -36,7 +35,7 @@ WHERE
         $grupos = array();
         if ($listaRG) {
             foreach ($listaRG as $relatorioGrupo) {
-                $oGrupo = new Grupo; 
+                $oGrupo = new Grupo;
                 $g = $oGrupo->get($relatorioGrupo->grupo_id);
                 $grupos[] = $grupo->get($relatorioGrupo->grupo_id);
             }//foreach
@@ -48,8 +47,8 @@ WHERE
         $rf = new RelatorioFormato();
         return $rf->selectBy(array("relatorio_id" => $relatorioId));
     }
-    
-    public function getDecoradores($relatorioId){
+
+    public function getDecoradores($relatorioId) {
         $d = new Decorador();
         return $d->decoradores($relatorioId);
     }
@@ -140,17 +139,23 @@ ORDER BY
 
     public function getTelaParametros($relatorioId) {
         $relatorioTela = new RelatorioTela();
-        return $relatorioTela->selectBy(array('relatorio_id' => $relatorioId));
+        $rt = $relatorioTela->selectBy(array('relatorio_id' => $relatorioId));
+        if (count($rt) === 1) {
+            return $rt[0];
+        }
+        return NULL;
     }
 
     public function salvarTelaParametros($tela) {
         $objTP = new RelatorioTela();
-        $objTP->deleta($tela);
-        //verificando se existe essa tela de parâmetros
-        if (isset($tela['relatorio_id']) && isset($tela['formulario_id']) && $tela['relatorio_id'] && $tela['formulario_id']) {
-            $objTP->salvar($tela);            
+        if (isset($tela['id'])) {
+            $objTP->deleta($tela['id']);
+            unset($tela['id']);            
         }
-        return true;
+        if(isset($tela['formulario_id']) && $tela['formulario_id']){
+            $objTP->salvar($tela);
+        }
+        
     }
 
     public function pagina($pagina, $busca) {
@@ -214,7 +219,7 @@ WHERE
                 return true;
             }
         }
-        
+
         $relatorioGrupo = $rg->selectByEquals("relatorio_id", $relatorioId);
         if ($r->publico) {
             return TRUE;
@@ -243,12 +248,17 @@ WHERE
             }//if
         }//foreach 
         return $isInGroup;
-    }// function checarAcesso
+    }
+
+// function checarAcesso
 
     public function salvarFormatos($relatorioId, $formatos) {
         $rf = new RelatorioFormato();
         $sql = "DELETE FROM relatorios.relatorio_formato WHERE relatorio_id = $relatorioId";
         $r = $this->db->executa($sql);
+        if (!$formatos) {
+            return TRUE;
+        }
         foreach ($formatos as $value) {
             $novoRF['relatorio_id'] = $relatorioId;
             $novoRF['formato'] = $value;
@@ -268,4 +278,6 @@ WHERE
         return $oDatasource->get($oRelatorio->get($idRelatorio)->datasource_id);
     }
 
-}// classe
+}
+
+// classe

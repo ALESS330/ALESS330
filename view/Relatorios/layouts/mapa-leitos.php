@@ -350,9 +350,23 @@ foreach ($tabela as $i => $t) {
         $listaTipos[$i][$tipo_leito] = isset($listaTipos[$i][$tipo_leito]) ? $listaTipos[$i][$tipo_leito] + 1 : 1;
         //$nome = strlen($nome) > $MAX_LETRAS ? substr($nome, 0, $MAX_LETRAS - 3) . "..." : $nome;
         $dias_a_maior = $dias_internados ?? 0 - $dias_media_permanencia ?? 0;
+        
         if (!$idade && ($situacao_leito == "OCUPADO")) {
             $idade = "0";
         }
+        
+        $textoIdade = "";
+        if($idade_anos > 0){
+            $textoIdade = $idade_anos;
+        }else {
+            if($idade_meses > 0){
+                $textoIdade .= $idade_meses."M ";
+            }//meses
+            if($idade_dias > 0){
+                $textoIdade .= $idade_dias."D";
+            }//dias
+        }
+        
         if (array_search($linha['codigo_situacao'], $situacaoMostrarNome) || $situacao_leito == 'OCUPADO') {
             
         } else {
@@ -383,7 +397,7 @@ foreach ($tabela as $i => $t) {
                                     <td class="prontuario"><?= $prontuario ?></td>
                                     <td class="nome texto-esquerdo" style="text-align: left"><?= $nome ?></td>
                                     <td class="sexo"><?= $sexo ?></td>
-                                    <td class="idade"><?= $idade ?></td>
+                                    <td class="idade"><?= $textoIdade ?></td>
                                     <td class="municipio"><?= $municipio ?></td>
                                     <td class="data-internacao"><?= $data_internacao ?></td>
                                     <td class="dias-internados"><?= $dias_internados ?></td>

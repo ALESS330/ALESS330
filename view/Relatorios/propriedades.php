@@ -177,7 +177,10 @@ if (isset($formatos)) {
                                 <option value="">Selecione a tela de parâmetros</option>
                                 <?php
                                 foreach ($telas as $tela) {
-                                    $selected = $tela->id == $telaParametros->id ? " selected " : " ";
+                                    $selected = ""; 
+                                    if(isset($telaParametros)){
+                                        $selected = $tela->id === $telaParametros->formulario_id  ? " selected " : " ";
+                                    }
                                     echo "<option value='$tela->id' $selected>$tela->nome</option>";
                                 }
                                 ?>

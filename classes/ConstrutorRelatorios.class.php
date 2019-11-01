@@ -16,7 +16,7 @@ class ConstrutorRelatorios {
     }
 
     public function getDados($nome, $datasource) {
-        $dadosRelatorio = $this->getEstruturaRelatorio($nome)[0];        
+        $dadosRelatorio = $this->getEstruturaRelatorio($nome);
         $parametros = $_SESSION['parametros'];
         $sqlBanco = $dadosRelatorio["codigo_sql"];
         $conexaoRelatorio = $this->conector->getConexao($datasource);
@@ -31,7 +31,7 @@ class ConstrutorRelatorios {
 
     function getRelatorio($nome, $datasource) {
         global $sisbase;
-        $dadosRelatorio = $this->getEstruturaRelatorio($nome)[0];
+        $dadosRelatorio = $this->getEstruturaRelatorio($nome);
         $layout = $sisbase . "/view/Relatorios/layouts/$nome.php";
         $colunaGrupo = $dadosRelatorio["coluna_grupo"];
         $nomeFilho = $dadosRelatorio["nome_filho"];
@@ -80,11 +80,20 @@ WHERE r.nome = '$nome'";
             throw new Exception("Relatório Inexistente!");
         }
 
-        return $dadosRelatorio;
+        return $dadosRelatorio[0];
     }
 
     public function getTituloRelatorio($nomeTitulo, $parametro) {
         $estruturaRelatorio = $this->getEstruturaRelatorio($nomeTitulo);
+        // /*
+        echo "<pre>";
+        echo "\nprint_r:\n";
+        print_r($estruturaRelatorio);
+        echo "\nvar_dump\n";
+        var_dump($estruturaRelatorio);
+        echo "</pre>";
+        die("concluido...");
+// */
         $sql = str_replace(":parametro", $parametro, $estruturaRelatorio["codigo_sql"]);
         $dados = $this->conector->getDados($sql, $this->conector->getConexao($estruturaRelatorio["nome_datasource"]));
         return $dados["titulo"];

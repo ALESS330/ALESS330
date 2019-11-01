@@ -4,6 +4,7 @@ $admin['tooltip'] = "Administração"; // [action] = "rotulo"
 $admin['Datasources->index'] = "Datasources";
 $admin['Relatorios->index'] = "Relatórios";
 $admin['separador'] = "-";
+$admin['Pessoas->index'] = "Pessoas";
 $admin['Usuarios->index'] = "Usuários";
 $admin['Grupos->index'] = "Grupos";
 $admin['Sistemas->index'] = "Sistemas";

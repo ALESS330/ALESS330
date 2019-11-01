@@ -2,7 +2,7 @@
 
 $corSistema = " blue-grey darken-3 ";
 $corSistemaRGB = "#37474f";
-$corBasicaSistema = " blue-grey ";
+$corBasicaSistema = " blue-grey white-text";
 $nomeSistema = 'relator';
 $tituloSistema = 'Relatórios';
 $descricaoSistema = 'Sistema de Geração de Relatórios';
