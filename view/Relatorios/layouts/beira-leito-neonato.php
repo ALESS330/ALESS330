@@ -229,7 +229,7 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
     <div id="dados-paciente">
         <div id="nascimento">
             <span>Data de Nascimento</span>
-            <h4><?= $paciente['data_nascimento'] ?></h4>
+            <h4><strong><?= $paciente['data_nascimento'] ?></strong></h4>
         </div>
         <div id="idade">
             <span style="margin-right: 84px;">Idade</span>
