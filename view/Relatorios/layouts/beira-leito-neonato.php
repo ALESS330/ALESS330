@@ -51,19 +51,19 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
         width: 65%;
         float: left;
     }
-    
+
     #tipo-parto{
         width: 35%;
-        float: left;        
+        float: left;
     }
-    
+
     #logo-hu, #logo-ebserh, #nascimento, #sexo{
         width: 20%;
         float: left;
     }
 
     #texto-titulo{
-        
+
     }
     #texto-titulo, #idade{
         width: 59%;
@@ -74,7 +74,7 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
     #painel-beira-leito div:not(.multipla-escolha):not(.opcoes){
         height: 95px;
     }
-    
+
     #prontuario-paciente, #admissao, #rue, #peso-ao-nascer, #idade-gestacional, #hora-nascimento{
         width: 33%;
         float: left;
@@ -92,17 +92,6 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
         margin: 4px !important;
     }
 
-    #logo-hu img{
-        width: 140px !important;
-        margin-top: 12px !important;
-    }
-
-    #logo-ebserh img{
-        width: 189px !important;
-        margin-top: 22px;
-        margin-left: 36px;
-    }
-    
     span.quadrado{
         font-size: 24px;
         line-height: 26px;
@@ -115,13 +104,13 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
     #icone-exclamacao{
         width: 48px;
         height: 44px;
-        float: right        
+        float: right
     }
 
     #icone-queda{
         width: 48px;
         height: 43px;
-        float: right;        
+        float: right;
     }
 
     #icone-fratura{
@@ -130,7 +119,7 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
         float: right;
         margin-top: 10px;
     }
-    
+
     #cuidados-especiais{
         border: solid 1px silver !important;
         border-radius: 10px !important;
@@ -144,19 +133,48 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
         text-align: center;
         font-weight: bold;
     }
-    
+
     #cuidados-especiais li{
         font-size: 12.5px !important;
         list-style-type: circle !important;
         list-style-position: inside !important;
     }
-    
+
+    #logos {
+        position: relative;
+        left: 820px;
+    }
+
+    #logo-hu img {
+        width: 40% !important;
+        margin-top: 8px !important;
+    }
+
+    #logo-ebserh img {
+        width: 68% !important;
+        margin-top: 8px;
+        margin-left: -110px;
+    }
+
+    #nome-paciente {
+        height: 160px !important;
+        text-align: center;
+    }
+
+    .nome-paciente {
+        font-weight: bolder;
+        font-size: 68px;
+        height: 160px;
+        overflow : hidden;
+        text-overflow: ellipsis;
+    }
+
     @media print{
-        @page { 
-            margin: 0mm; 
+        @page {
+            margin: 0mm;
             size: 297mm 210mm;
         }
-        
+
         * {
             font-family: "Google Sans" !important;
         }
@@ -165,10 +183,10 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
             font-size: 2.93rem;
             line-height: 110%;
         }
-        
+
         h4{
             font-size: 2.28rem;
-            line-height: 110%;        
+            line-height: 110%;
         }
 
         li{
@@ -192,20 +210,19 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
 </style>
 
 <div id="painel-beira-leito">
-    <div id="titulo">
-        <div id="logo-hu">
-            <img src="http://<?= $server ?>/relator/assets/img/logo-hu-alt-80.png"/>
-        </div>
-        <div id="texto-titulo">
-            <h3>IDENTIFICAÇÃO DO BEBÊ</h3>
-        </div>
-        <div id="logo-ebserh">
-            <img src="http://<?= $server ?>/relator/assets/img/logo-ebserh-alt-80.png"/>
-        </div>
-    </div> <!-- #titulo -->
+    <!--    <div id="titulo">
+            <div id="logo-hu">
+                <img src="http://<?= $server ?>/relator/assets/img/logo-hu-alt-80.png"/>
+            </div>
+            <div id="texto-titulo">
+                <h3>IDENTIFICAÇÃO DO BEBÊ</h3>
+            </div>
+            <div id="logo-ebserh">
+                <img src="http://<?= $server ?>/relator/assets/img/logo-ebserh-alt-80.png"/>
+            </div>
+        </div>  #titulo -->
 
     <div id="nome-paciente">
-        <span>Nome do paciente</span>
         <h4 class="nome-paciente"><?= $paciente['nome'] ?></h4>
     </div> <!-- #nome-paciente -->
 
@@ -234,8 +251,8 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
                 <li>
                     <div class="opcoes">
                         <div class="multipla-escolha"> <h4><span style="font-size: 42px;">&square;</span> Cesárea &nbsp;&nbsp;<span style="font-size: 42px;">&square;</span> Normal</div>
-                        
-                    </div>                    
+
+                    </div>
                 </li>
             </ul>
         </div>
@@ -243,7 +260,7 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
     <div id="prontuario-internacao">
         <div id="prontuario-paciente">
             <span>N° Prontuário</span>
-            <h4><?= $paciente['prontuario'] ?></h4>            
+            <h4><?= $paciente['prontuario'] ?></h4>
         </div>
         <div id="admissao">
             <span>Data de admissão</span>
@@ -252,7 +269,7 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
         <div id="rue">
             <?php if ($mostrarRUE) { ?>
                 <span><?= $paciente['origem'] ?></span>
-                <h4>RUE</h4>                
+                <h4>RUE</h4>
             <?php } //mostrarRUE ?>
         </div>
     </div>
@@ -268,7 +285,7 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
         <div id="hora-nascimento">
             <span>Hora do nascimento</span>
             <h4>_______:_______</h4>
-        </div>        
+        </div>
     </div>
     <div id="cuidados-especiais" style="height: 178px; padding: 4px">
         <div style="margin: 0 auto">
@@ -289,14 +306,42 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
                 <li>Acompanhante NUNCA dormir na cama da paciente</li>
                 <li>SOLICITE ajuda dos profissionais para auxílio na amamentação</li>
                 <li>NUNCA deixe seu bebê com estranhos</li>
-                <li>As orientações sobre o bebê serão dadas pela manhã</li>            
+                <li>As orientações sobre o bebê serão dadas pela manhã</li>
             </ul>
         </div> <!-- margin 0 auto-->
     </div><!-- #cuidados-especiais -->
+    <div id="logos">
+        <div id="logo-hu">
+            <img src="http://<?= $server ?>/relator/assets/img/logo-hu-alt-80.png"/>
+        </div>
+        <div id="logo-ebserh">
+            <img src="http://<?= $server ?>/relator/assets/img/logo-ebserh-alt-80.png"/>
+        </div>
+    </div>
 </div>
 
 #{scriptPagina}
 <script type="text/javascript">
+    str = $("#nome-paciente-h4").text();
+    if (str.length >= 25) {
+        $(".nome-paciente").css({
+            'font-size': '68px',
+            'position': 'absolute',
+            'top': '19%',
+            'left': '50%',
+            '-ms-transform': 'translate(-50%, -50%)',
+            'transform': 'translate(-50%, -50%)'
+        });
+    } else {
+        $(".nome-paciente").css({
+            'font-size': '75px',
+            'position': 'absolute',
+            'top': '20%',
+            'left': '50%',
+            '-ms-transform': 'translate(-50%, -50%)',
+            'transform': 'translate(-50%, -50%)'
+        });
+    }
 
     function gerarTermo() {
         window.print();

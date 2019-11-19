@@ -72,7 +72,7 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
         height: 250px !important;
         border: solid 1px silver !important;
         padding: 2mm !important;
-    }        
+    }
     #risco{
         border-left: none !important;
         border-top-right-radius: 10px;
@@ -96,15 +96,44 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
         margin: 4px !important;
     }
 
-    #logo-hu img{
-        width: 140px !important;
-        margin-top: 12px !important;
+    /*    #logo-hu img{
+            width: 140px !important;
+            margin-top: 12px !important;
+        }
+
+        #logo-ebserh img{
+            width: 189px !important;
+            margin-top: 22px;
+            margin-left: 36px;
+        }*/
+
+    #logos {
+        position: relative;
+        left: 820px;
     }
 
-    #logo-ebserh img{
-        width: 189px !important;
-        margin-top: 22px;
-        margin-left: 36px;
+    #logo-hu img {
+        width: 40% !important;
+        margin-top: 14px !important;
+    }
+
+    #logo-ebserh img {
+        width: 68% !important;
+        margin-top: 14px;
+        margin-left: -110px;
+    }
+
+    #nome-paciente {
+        height: 150px !important;
+        text-align: center;
+    }
+
+    .nome-paciente {
+        font-weight: bolder;
+        font-size: 68px;
+        height: 150px;
+        overflow : hidden;
+        text-overflow: ellipsis;
     }
 
     div.opcoes{
@@ -116,20 +145,16 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
         line-height: 26px;
     }
 
-    .nome-paciente{
-        font-weight: bolder;
-    }
-
     #icone-exclamacao{
         width: 48px;
         height: 44px;
-        float: right        
+        float: right
     }
 
     #icone-queda{
         width: 48px;
         height: 43px;
-        float: right;        
+        float: right;
     }
 
     #icone-fratura{
@@ -139,11 +164,11 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
         margin-top: 10px;
     }
     @media print{
-        @page { 
-            margin: 0mm; 
+        @page {
+            margin: 0mm;
             size: 297mm 210mm;
         }
-        
+
         * {
             font-family: "Google Sans" !important;
         }
@@ -152,10 +177,10 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
             font-size: 2.93rem;
             line-height: 110%;
         }
-        
+
         h4{
             font-size: 2.28rem;
-            line-height: 110%;        
+            line-height: 110%;
         }
 
         li{
@@ -186,7 +211,7 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
             height: 250px !important;
             border: solid 1px silver !important;
             padding: 2mm !important;
-        }        
+        }
         #risco{
             border-left: none !important;
             border-top-right-radius: 10px;
@@ -201,27 +226,27 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
 </style>
 
 <div id="painel-beira-leito">
-    <div id="titulo">
-        <div id="logo-hu">
-            <img src="http://<?= $server ?>/relator/assets/img/logo-hu-alt-80.png"/>
-        </div>
-        <div id="texto-titulo">
-            <h3>IDENTIFICAÇÃO PEDIÁTRICA</h3>
-        </div>
-        <div id="logo-ebserh">
-            <img src="http://<?= $server ?>/relator/assets/img/logo-ebserh-alt-80.png"/>
-        </div>
-    </div> <!-- #titulo -->
+    <!--    <div id="titulo">
+            <div id="logo-hu">
+                <img src="http://<?= $server ?>/relator/assets/img/logo-hu-alt-80.png"/>
+            </div>
+            <div id="texto-titulo">
+                <h3>IDENTIFICAÇÃO PEDIÁTRICA</h3>
+            </div>
+            <div id="logo-ebserh">
+                <img src="http://<?= $server ?>/relator/assets/img/logo-ebserh-alt-80.png"/>
+            </div>
+        </div>  #titulo -->
 
     <div id="nome-paciente">
-        <span>Nome do paciente</span>
+<!--        <span>Nome do paciente</span>-->
         <h4 class="nome-paciente"><?= $paciente['nome'] ?></h4>
     </div> <!-- #nome-paciente -->
 
     <div id="dados-paciente">
         <div id="nascimento">
             <span>Data de Nascimento</span>
-            <h4><?= $paciente['data_nascimento'] ?></h4>
+            <h4><strong><?= $paciente['data_nascimento'] ?></strong></h4>
         </div>
         <div id="idade">
             <span style="margin-right: 410px;">Idade</span>
@@ -239,7 +264,7 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
     <div id="prontuario-internacao">
         <div id="prontuario-paciente">
             <span>N° Prontuário</span>
-            <h4><?= $paciente['prontuario'] ?></h4>            
+            <h4><?= $paciente['prontuario'] ?></h4>
         </div>
         <div id="admissao">
             <span>Data de admissão</span>
@@ -252,7 +277,7 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
         <div id="rue">
             <?php if ($mostrarRUE) { ?>
                 <span><?= $paciente['origem'] ?></span>
-                <h4>RUE</h4>                
+                <h4>RUE</h4>
             <?php } //mostrarRUE ?>
         </div>
     </div>
@@ -263,7 +288,7 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
                 <li>ALERGIA a quê?__________________  </li>
                 <li>Risco de Broncoaspiração</li>
                 <li>
-                    <div class="opcoes" style="border-bottom: solid 1px silver;">
+                    <div class="opcoes" style="border-bottom: solid 1px silver !important;">
                         <div class="multipla-escolha"> <span class="quadrado">&square;</span> SIM</div>
                         <div class="multipla-escolha"> <span class="quadrado">&square;</span> NÃO</div>
                     </div>
@@ -280,31 +305,59 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
         </div> <!-- alergia -->
         <div id="risco">
             <ul>
-                <img src="http://<?= $server ?>/relator/assets/img/icone-queda.png" id="icone-queda">                
+                <img src="http://<?= $server ?>/relator/assets/img/icone-queda.png" id="icone-queda">
                 <li>Risco de Queda</li>
                 <li>
                     <div class="opcoes">
                         <div class="multipla-escolha"><span class="quadrado">&square;</span> Alto</div>
                         <div class="multipla-escolha"><span class="quadrado">&square;</span> Médio</div>
-                    </div>                    
+                    </div>
                 </li>
                 <li>Risco de dano grave por queda</li>
                 <li>
-                    <div class="opcoes" style="border-bottom: solid 1px silver;">
+                    <div class="opcoes" style="border-bottom: solid 1px silver !important;">
                         <div class="multipla-escolha"><span class="quadrado">&square;</span> SIM</div>
                         <div class="multipla-escolha"><span class="quadrado">&square;</span> NÃO</div>
-                    </div>                    
+                    </div>
                 </li>
-                <img src="http://<?= $server ?>/relator/assets/img/icone-fratura.png" id="icone-fratura">                                     
+                <img src="http://<?= $server ?>/relator/assets/img/icone-fratura.png" id="icone-fratura">
                 <li><span class="quadrado">&square;</span> Discrasia sanguínea/anticoagulante</li>
                 <li><span class="quadrado">&square;</span> Osteoporose/fraturas anteriores   </li>
             </ul>
+        </div>
+    </div>
+    <div id="logos">
+        <div id="logo-hu">
+            <img src="http://<?= $server ?>/relator/assets/img/logo-hu-alt-80.png"/>
+        </div>
+        <div id="logo-ebserh">
+            <img src="http://<?= $server ?>/relator/assets/img/logo-ebserh-alt-80.png"/>
         </div>
     </div>
 </div>
 
 #{scriptPagina}
 <script type="text/javascript">
+    str = $("#nome-paciente-h4").text();
+    if (str.length >= 25) {
+        $(".nome-paciente").css({
+            'font-size': '68px',
+            'position': 'absolute',
+            'top': '19%',
+            'left': '50%',
+            '-ms-transform': 'translate(-50%, -50%)',
+            'transform': 'translate(-50%, -50%)'
+        });
+    } else {
+        $(".nome-paciente").css({
+            'font-size': '75px',
+            'position': 'absolute',
+            'top': '20%',
+            'left': '50%',
+            '-ms-transform': 'translate(-50%, -50%)',
+            'transform': 'translate(-50%, -50%)'
+        });
+    }
 
     function gerarTermo() {
         window.print();
