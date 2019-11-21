@@ -38,7 +38,7 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
         height: 210mm;
         box-shadow: 0 0.5px 3px 0.5px grey;
         margin: 0 auto;
-        margin-bottom: 5mm;
+        margin-bottom: 1mm;
         box-sizing: border-box;
         padding: 7mm;
     }
@@ -94,22 +94,6 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
 
     h4{
         margin: 4px !important;
-    }
-
-    /*    #logo-hu img{
-            width: 140px !important;
-            margin-top: 12px !important;
-        }
-
-        #logo-ebserh img{
-            width: 189px !important;
-            margin-top: 22px;
-            margin-left: 36px;
-        }*/
-
-    #logos {
-        position: relative;
-        left: 820px;
     }
 
     #logo-hu img {
@@ -198,27 +182,28 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
             padding-left: 20px;
         }
 
-        #painel-beira-leito{
+        #painel-beira-leito {
             width: 100%;
             height: 100%;
             box-sizing: border-box;
             box-shadow: none;
             padding: 7mm;
+            margin-bottom: 1mm;
         }
-        #alergia, #risco{
+        #alergia, #risco {
             width: 50%;
             float: left;
             height: 250px !important;
             border: solid 1px silver !important;
             padding: 2mm !important;
         }
-        #risco{
+        #risco {
             border-left: none !important;
             border-top-right-radius: 10px;
             border-bottom-right-radius: 10px;
         }
 
-        #alergia{
+        #alergia {
             border-top-left-radius: 10px;
             border-bottom-left-radius: 10px;
         }
@@ -226,20 +211,7 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
 </style>
 
 <div id="painel-beira-leito">
-    <!--    <div id="titulo">
-            <div id="logo-hu">
-                <img src="http://<?= $server ?>/relator/assets/img/logo-hu-alt-80.png"/>
-            </div>
-            <div id="texto-titulo">
-                <h3>IDENTIFICAÇÃO PEDIÁTRICA</h3>
-            </div>
-            <div id="logo-ebserh">
-                <img src="http://<?= $server ?>/relator/assets/img/logo-ebserh-alt-80.png"/>
-            </div>
-        </div>  #titulo -->
-
     <div id="nome-paciente">
-<!--        <span>Nome do paciente</span>-->
         <h4 class="nome-paciente"><?= $paciente['nome'] ?></h4>
     </div> <!-- #nome-paciente -->
 
@@ -340,23 +312,25 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
 <script type="text/javascript">
     str = $("#nome-paciente-h4").text();
     if (str.length >= 25) {
-        $(".nome-paciente").css({
-            'font-size': '68px',
-            'position': 'absolute',
-            'top': '19%',
-            'left': '50%',
-            '-ms-transform': 'translate(-50%, -50%)',
-            'transform': 'translate(-50%, -50%)'
-        });
+        $(".nome-paciente").css('font-size', '68px;');
+//        $(".nome-paciente").css({
+//            'font-size': '68px',
+//            'position': 'absolute',
+//            'top': '19%',
+//            'left': '50%',
+//            '-ms-transform': 'translate(-50%, -50%)',
+//            'transform': 'translate(-50%, -50%)'
+//        });
     } else {
-        $(".nome-paciente").css({
-            'font-size': '75px',
-            'position': 'absolute',
-            'top': '20%',
-            'left': '50%',
-            '-ms-transform': 'translate(-50%, -50%)',
-            'transform': 'translate(-50%, -50%)'
-        });
+        $(".nome-paciente").css('font-size', '75px;');
+//        $(".nome-paciente").css({
+//            'font-size': '75px',
+//            'position': 'absolute',
+//            'top': '20%',
+//            'left': '50%',
+//            '-ms-transform': 'translate(-50%, -50%)',
+//            'transform': 'translate(-50%, -50%)'
+//        });
     }
 
     function gerarTermo() {

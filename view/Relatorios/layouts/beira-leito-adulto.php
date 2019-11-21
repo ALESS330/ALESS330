@@ -110,11 +110,6 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
         margin: 4px !important;
     }
 
-    #logos {
-        position: relative;
-        left: 820px;
-    }
-
     #logo-hu img {
         width: 40% !important;
         margin-top: 14px !important;
@@ -320,23 +315,25 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
 <script type="text/javascript">
     str = $("#nome-paciente-h4").text();
     if (str.length >= 25) {
-        $(".nome-paciente").css({
-            'font-size': '68px',
-            'position': 'absolute',
-            'top': '19%',
-            'left': '50%',
-            '-ms-transform': 'translate(-50%, -50%)',
-            'transform': 'translate(-50%, -50%)'
-        });
+        $(".nome-paciente").css('font-size', '68px');
+//        $(".nome-paciente").css({
+//            'font-size': '68px',
+//            'position': 'absolute',
+//            'top': '19%',
+//            'left': '50%',
+//            '-ms-transform': 'translate(-50%, -50%)',
+//            'transform': 'translate(-50%, -50%)'
+//        });
     } else {
-        $(".nome-paciente").css({
-            'font-size': '75px',
-            'position': 'absolute',
-            'top': '20%',
-            'left': '50%',
-            '-ms-transform': 'translate(-50%, -50%)',
-            'transform': 'translate(-50%, -50%)'
-        });
+        $(".nome-paciente").css('font-size', '75px');
+//        $(".nome-paciente").css({
+//            'font-size': '75px',
+//            'position': 'absolute',
+//            'top': '20%',
+//            'left': '50%',
+//            '-ms-transform': 'translate(-50%, -50%)',
+//            'transform': 'translate(-50%, -50%)'
+//        });
     }
 ////    str = $("#nome-paciente-h4").text();
 //            function contaPalavras(str) {

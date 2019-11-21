@@ -140,19 +140,14 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
         list-style-position: inside !important;
     }
 
-    #logos {
-        position: relative;
-        left: 820px;
-    }
-
     #logo-hu img {
         width: 40% !important;
-        margin-top: 8px !important;
+        margin-top: 6px !important;
     }
 
     #logo-ebserh img {
         width: 68% !important;
-        margin-top: 8px;
+        margin-top: 6px;
         margin-left: -110px;
     }
 
@@ -206,22 +201,15 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
             box-shadow: none;
             padding: 7mm;
         }
+
+        #nome-paciente {
+            height: 160px !important;
+            text-align: center;
+        }
     } /*media print*/
 </style>
 
 <div id="painel-beira-leito">
-    <!--    <div id="titulo">
-            <div id="logo-hu">
-                <img src="http://<?= $server ?>/relator/assets/img/logo-hu-alt-80.png"/>
-            </div>
-            <div id="texto-titulo">
-                <h3>IDENTIFICAÇÃO DO BEBÊ</h3>
-            </div>
-            <div id="logo-ebserh">
-                <img src="http://<?= $server ?>/relator/assets/img/logo-ebserh-alt-80.png"/>
-            </div>
-        </div>  #titulo -->
-
     <div id="nome-paciente">
         <h4 class="nome-paciente"><?= $paciente['nome'] ?></h4>
     </div> <!-- #nome-paciente -->
@@ -232,7 +220,7 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
             <h4><strong><?= $paciente['data_nascimento'] ?></strong></h4>
         </div>
         <div id="idade">
-            <span style="margin-right: 84px;">Idade</span>
+            <span style="margin-right: 260px;">Idade</span>
             <h4><?= $paciente['idade'] ?></h4>
         </div>
         <div id="sexo">
@@ -324,23 +312,25 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
 <script type="text/javascript">
     str = $("#nome-paciente-h4").text();
     if (str.length >= 25) {
-        $(".nome-paciente").css({
-            'font-size': '68px',
-            'position': 'absolute',
-            'top': '19%',
-            'left': '50%',
-            '-ms-transform': 'translate(-50%, -50%)',
-            'transform': 'translate(-50%, -50%)'
-        });
+        $(".nome-paciente").css('font-size', '68px');
+//        $(".nome-paciente").css({
+//            'font-size': '68px',
+//            'position': 'absolute',
+//            'top': '19%',
+//            'left': '50%',
+//            '-ms-transform': 'translate(-50%, -50%)',
+//            'transform': 'translate(-50%, -50%)'
+//        });
     } else {
-        $(".nome-paciente").css({
-            'font-size': '75px',
-            'position': 'absolute',
-            'top': '20%',
-            'left': '50%',
-            '-ms-transform': 'translate(-50%, -50%)',
-            'transform': 'translate(-50%, -50%)'
-        });
+        $(".nome-paciente").css('font-size', '75px');
+//        $(".nome-paciente").css({
+//            'font-size': '75px',
+//            'position': 'absolute',
+//            'top': '20%',
+//            'left': '50%',
+//            '-ms-transform': 'translate(-50%, -50%)',
+//            'transform': 'translate(-50%, -50%)'
+//        });
     }
 
     function gerarTermo() {
