@@ -31,68 +31,116 @@ $mostrarRUE = false;
 if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
     $mostrarRUE = TRUE;
 }
+
+$idade = $idadeAnos = $idadeMeses = $idadeDias = "";
+
+$totalCamposIdade = 0;
+if($paciente['idade_anos'] > 0){
+    $idadeAnos = $paciente['idade_anos'] == 1 ? "1 ano " : $paciente['idade_anos']. " anos";
+    $totalCamposIdade++;
+}
+
+if($paciente['idade_meses'] > 0){
+    $idadeMeses = $paciente['idade_meses'] == 1 ? "1 mês " : $paciente['idade_meses']. " meses";
+    $totalCamposIdade++;    
+}
+
+if($paciente['idade_dias'] > 0){
+    $idadeDias = $paciente['idade_dias'] == 1 ? "1 dia" : $paciente['idade_dias'] . " dias";
+    $totalCamposIdade++;
+}
+
+if($totalCamposIdade === 3){
+    $idade = "$idadeAnos, $idadeMeses e $idadeDias";
+}else if($totalCamposIdade === 1){
+    $idade = "$idadeAnos$idadeMeses$idadeDias";
+}else{
+    if($idadeAnos){
+        if($idadeMeses){
+            $idade = "$idadeAnos e $idadeMeses";
+        }else{
+            $idade = "$idadeAnos e $idadeDias";
+        }
+    }else{
+        $idade = "$idadeMeses e $idadeDias";
+    }
+}
 ?>
 <style type="text/css">
-    #painel-beira-leito{
+    #painel-beira-leito {
         width: 297mm;
         height: 210mm;
         box-shadow: 0 0.5px 3px 0.5px grey;
         margin: 0 auto;
-        margin-bottom: 1mm;
+        margin-bottom: 5mm;
         box-sizing: border-box;
         padding: 7mm;
     }
 
-    #titulo, #nome-paciente, #prontuario-internacao, #nome-mae{
+    #nome-paciente, #prontuario-internacao, #nome-mae {
         width: 100%;
     }
 
-    #logo-hu, #logo-ebserh, #nascimento, #sexo{
+    #logo-hu, #logo-ebserh, #nascimento, #sexo {
         width: 20%;
         float: left;
     }
 
-    #texto-titulo, #idade{
+    #texto-titulo, #idade {
         width: 59%;
         float: left;
         text-align: center;
     }
 
-    #painel-beira-leito div:not(.multipla-escolha):not(.opcoes){
+    #painel-beira-leito div:not(.multipla-escolha):not(.opcoes) {
         height: 100px;
     }
-    #prontuario-paciente, #admissao, #rue, #peso-admissional{
-        width: 25%;
+
+    #logo-hu, #logo-ebserh {
+        height: 70px !important;
+    }
+
+    #prontuario-paciente, #admissao, #rue {
+        width: 33%;
         float: left;
     }
 
-    #alergia, #risco{
+    #alergia, #risco {
         width: 50%;
         float: left;
         height: 250px !important;
         border: solid 1px silver !important;
         padding: 2mm !important;
     }
-    #risco{
+    #risco {
         border-left: none !important;
         border-top-right-radius: 10px;
         border-bottom-right-radius: 10px;
     }
 
-    #alergia{
+    #alergia {
         border-top-left-radius: 10px;
         border-bottom-left-radius: 10px;
     }
 
-    ul{
+    ul {
         margin: 3px;
     }
 
-    ul li{
+    ul li {
         font-size: 14pt !important;
     }
 
-    h4{
+    div.opcoes {
+        padding-left: 20px !important;
+    }
+
+    span.quadrado {
+        font-size: 24px;
+        line-height: 26px;
+    }
+
+    h4 {
         margin: 4px !important;
     }
 
@@ -120,38 +168,26 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
         text-overflow: ellipsis;
     }
 
-    div.opcoes{
-        padding-left: 20px !important;
-    }
-
-    span.quadrado{
-        font-size: 24px;
-        line-height: 26px;
-    }
-
-    #icone-exclamacao{
+    #icone-exclamacao {
         width: 48px;
         height: 44px;
-        float: right
+        float: right;
     }
 
-    #icone-queda{
+    #icone-queda {
         width: 48px;
         height: 43px;
         float: right;
     }
 
-    #icone-fratura{
+    #icone-fratura {
         width: 48px;
         height: 44px;
         float: right;
         margin-top: 10px;
     }
-    @media print{
-        @page {
-            margin: 0mm;
-            size: 297mm 210mm;
-        }
+
+    @media print {
 
         * {
             font-family: "Google Sans" !important;
@@ -161,24 +197,27 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
             font-size: 2.93rem;
             line-height: 110%;
         }
-
-        h4{
+        h4 {
             font-size: 2.28rem;
             line-height: 110%;
         }
 
-        li{
+
+        li {
             list-style: none;
         }
-
-        body{
+        @page {
+            margin: 0mm;
+            size: 297mm 210mm;
+        }
+        body {
             margin: 5mm;
         }
-        .no-print{
+        .no-print {
             display: none;
         }
 
-        div.opcoes{
+        div.opcoes {
             padding-left: 20px;
         }
 
@@ -188,7 +227,6 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
             box-sizing: border-box;
             box-shadow: none;
             padding: 7mm;
-            margin-bottom: 1mm;
         }
         #alergia, #risco {
             width: 50%;
@@ -208,12 +246,14 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
             border-bottom-left-radius: 10px;
         }
     } /*media print*/
+
+    @media
 </style>
 
 <div id="painel-beira-leito">
     <div id="nome-paciente">
-        <h4 class="nome-paciente"><?= $paciente['nome'] ?></h4>
-    </div> <!-- #nome-paciente -->
+        <h4 class="nome-paciente" id="nome-paciente-h4"><?= $paciente['nome'] ?></h4>
+    </div>
 
     <div id="dados-paciente">
         <div id="nascimento">
@@ -221,8 +261,8 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
             <h4><strong><?= $paciente['data_nascimento'] ?></strong></h4>
         </div>
         <div id="idade">
-            <span style="margin-right: 410px;">Idade</span>
-            <h4><?= $paciente['idade'] ?></h4>
+            <span style="">Idade</span>
+            <h4><?= $idade ?></h4>
         </div>
         <div id="sexo">
             <span>Sexo</span>
@@ -242,10 +282,6 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
             <span>Data de admissão</span>
             <h4><?= $paciente['data_internacao'] ?></h4>
         </div>
-        <div id="peso-admissional">
-            <span>Peso admissional</span>
-            <h4>____________</h4>
-        </div>
         <div id="rue">
             <?php if ($mostrarRUE) { ?>
                 <span><?= $paciente['origem'] ?></span>
@@ -257,7 +293,7 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
         <div id="alergia">
             <ul>
                 <img src="http://<?= $server ?>/relator/assets/img/icone-exclamacao.png" id="icone-exclamacao">
-                <li>ALERGIA a quê?__________________  </li>
+                <li>ALERGIA a quê? __________________</li>
                 <li>Risco de Broncoaspiração</li>
                 <li>
                     <div class="opcoes" style="border-bottom: solid 1px silver !important;">
@@ -308,11 +344,12 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
     </div>
 </div>
 
+
 #{scriptPagina}
 <script type="text/javascript">
     str = $("#nome-paciente-h4").text();
     if (str.length >= 25) {
-        $(".nome-paciente").css('font-size', '68px;');
+        $(".nome-paciente").css('font-size', '68px');
 //        $(".nome-paciente").css({
 //            'font-size': '68px',
 //            'position': 'absolute',
@@ -322,7 +359,7 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
 //            'transform': 'translate(-50%, -50%)'
 //        });
     } else {
-        $(".nome-paciente").css('font-size', '75px;');
+        $(".nome-paciente").css('font-size', '75px');
 //        $(".nome-paciente").css({
 //            'font-size': '75px',
 //            'position': 'absolute',
@@ -332,6 +369,19 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
 //            'transform': 'translate(-50%, -50%)'
 //        });
     }
+////    str = $("#nome-paciente-h4").text();
+//            function contaPalavras(str) {
+//                str = str.replace(/(^\s*)|(\s*$)/gi, "");
+//                str = str.replace(/[ ]{2,}/gi, " ");
+//                str = str.replace(/\n /, "\n");
+//                return str.split(' ').length;
+//            }
+//
+//    if (contaPalavras(str) >= 4) {
+//        $(".nome-paciente").css('font-size', '68px');
+//    } else {
+//        $(".nome-paciente").css('font-size', '80px');
+//    }
 
     function gerarTermo() {
         window.print();

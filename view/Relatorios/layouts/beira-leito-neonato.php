@@ -31,6 +31,40 @@ $mostrarRUE = false;
 if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
     $mostrarRUE = TRUE;
 }
+
+$idade = $idadeAnos = $idadeMeses = $idadeDias = "";
+
+$totalCamposIdade = 0;
+if($paciente['idade_anos'] > 0){
+    $idadeAnos = $paciente['idade_anos'] == 1 ? "1 ano " : $paciente['idade_anos']. " anos";
+    $totalCamposIdade++;
+}
+
+if($paciente['idade_meses'] > 0){
+    $idadeMeses = $paciente['idade_meses'] == 1 ? "1 mês " : $paciente['idade_meses']. " meses";
+    $totalCamposIdade++;    
+}
+
+if($paciente['idade_dias'] > 0){
+    $idadeDias = $paciente['idade_dias'] == 1 ? "1 dia" : $paciente['idade_dias'] . " dias";
+    $totalCamposIdade++;
+}
+
+if($totalCamposIdade === 3){
+    $idade = "$idadeAnos, $idadeMeses e $idadeDias";
+}else if($totalCamposIdade === 1){
+    $idade = "$idadeAnos$idadeMeses$idadeDias";
+}else{
+    if($idadeAnos){
+        if($idadeMeses){
+            $idade = "$idadeAnos e $idadeMeses";
+        }else{
+            $idade = "$idadeAnos e $idadeDias";
+        }
+    }else{
+        $idade = "$idadeMeses e $idadeDias";
+    }
+}
 ?>
 <style type="text/css">
     #painel-beira-leito{
@@ -221,7 +255,7 @@ if (array_search($paciente['seq_origem'], $origensRUE) !== FALSE) {
         </div>
         <div id="idade">
             <span style="margin-right: 260px;">Idade</span>
-            <h4><?= $paciente['idade'] ?></h4>
+            <h4><?= $idade ?></h4>
         </div>
         <div id="sexo">
             <span>Sexo</span>
