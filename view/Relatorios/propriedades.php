@@ -312,14 +312,3 @@ if (isset($formatos)) {
         </div>
     </li> <!-- decoradores -->
 </ul>
-
-#{scriptPagina}
-<script type="text/javascript">
-    $(document).ready(function () {
-
-        $("select").material_select();
-
-    });
-
-</script>
-#{/scriptPagina}
