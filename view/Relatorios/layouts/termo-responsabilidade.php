@@ -1,3 +1,10 @@
+#{botoes}
+<div class="fixed-action-btn no-print">
+    <button class="btn-floating btn-large red" id="bt-imprimir" title="Imprimir" onclick="window.print();">
+        <i class="material-icons">local_printshop</i>
+    </button>
+</div>
+#{/botoes}
 <?php
 $termo = $dados[0];
 setlocale(LC_ALL, 'pt_BR.UTF-8');
@@ -190,6 +197,9 @@ function titleCase($string, $delimiters = array(" ", "-", ".", "'", "O'", "Mc"),
         }
         .hospital-rodape {
             font-weight: bold !important;
+        }
+        .no-print{
+            display: none;
         }
     } 
 
