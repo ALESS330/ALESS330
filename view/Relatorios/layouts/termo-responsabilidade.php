@@ -198,7 +198,7 @@ function titleCase($string, $delimiters = array(" ", "-", ".", "'", "O'", "Mc"),
         .hospital-rodape {
             font-weight: bold !important;
         }
-        .no-print{
+        .no-print {
             display: none;
         }
     } 
@@ -209,7 +209,7 @@ function titleCase($string, $delimiters = array(" ", "-", ".", "'", "O'", "Mc"),
     <h4 class="titulo-termo">TERMO DE RESPONSABILIDADE</h4>
     <h5 class="titulo-termo">USO DE RECURSOS DE TIC E CONFIDENCIALIDADE</h5>
     <div class="texto">    
-        <p>Pelo presente instrumento, eu <strong><?= $termo['nome'] ?></strong>, CPF <strong><?= $cpfResultante ?></strong>, identidade <strong><?= $termo['nro_identidade'] ?> - <?= $termo['orgao_emissor'] ?>/<?= $termo['uf_orgao'] ?></strong>, <!-- lotado no(a) <strong><?= $termo['lotacao'] ?></strong>,--> com vínculo <strong><?= $termo['vinculo'] ?></strong> e ocupação <strong><?= $termo['ocupacao'] ?></strong> no Hospital Universitário da Universidade Federal da Grande Dourados, DECLARO, sob pena das sanções cabíveis nos termos da POSIC/Sede estendida para o Hospital Universitário da Universidade Federal da Grande Dourados, publicada por meio da Portaria n.0 35, de 6 de março de 2017 da Ebserh, e instituída no HU-UFGD por meio da Resolução n.0 26, de 26 de abril de 2018, assumo a responsabilidade por:</p>            
+        <p>Pelo presente instrumento, eu <strong><?= $termo['nome'] ?></strong>, CPF <strong><?= $cpfResultante ?></strong>, identidade <strong><?= $termo['nro_identidade'] ?> - <?= $termo['orgao_emissor'] ?>/<?= $termo['uf_orgao'] ?></strong>, <!-- lotado no(a) <strong><?= $termo['lotacao'] ?></strong>,--> com vínculo <strong><?= $termo['vinculo'] ?></strong> e ocupação <strong><?= $termo['ocupacao'] ?></strong> no Hospital Universitário da Universidade Federal da Grande Dourados, DECLARO, sob pena das sanções cabíveis nos termos da POSIC/Sede estendida para o Hospital Universitário da Universidade Federal da Grande Dourados, publicada por meio da Portaria n.0 35, de 6 de março de 2017 da Ebserh, e instituída no HU-UFGD por meio da Resolução n. 026, de 26 de abril de 2018, assumo a responsabilidade por:</p>            
     </div>
 
     <ol type="I">
