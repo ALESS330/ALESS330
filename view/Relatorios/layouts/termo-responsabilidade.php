@@ -25,7 +25,7 @@ function titleCase($string, $delimiters = array(" ", "-", ".", "'", "O'", "Mc"),
             } elseif (!in_array($word, $exceptions)) {
                 $word = ucfirst($word);
             }
-            array_push($newwords, $word);
+            array_push($newwords, $word); 
         }
         $string = join($delimiter, $newwords);
     } // foreach

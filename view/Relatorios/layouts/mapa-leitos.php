@@ -350,9 +350,22 @@ foreach ($tabela as $i => $t) {
         $listaTipos[$i][$tipo_leito] = isset($listaTipos[$i][$tipo_leito]) ? $listaTipos[$i][$tipo_leito] + 1 : 1;
         //$nome = strlen($nome) > $MAX_LETRAS ? substr($nome, 0, $MAX_LETRAS - 3) . "..." : $nome;
         $dias_a_maior = $dias_internados ?? 0 - $dias_media_permanencia ?? 0;
-        if (!$idade && ($situacao_leito == "OCUPADO")) {
-            $idade = "0";
+        
+        
+        $textoIdade = "";
+        if($idade_anos > 0){
+            $textoIdade = $idade_anos;
+        }else {
+            if($idade_meses < 1){
+                $textoIdade = ($idade_dias == 1 ? "1 dia" : "$idade_dias dias");
+            }else{ 
+                $textoIdade = ($idade_meses == 1 ? "1 mês" : "$idade_meses meses");
+            }
         }
+        if ($situacao_leito !== "OCUPADO") {
+            $textoIdade  = "";
+        }        
+        
         if (array_search($linha['codigo_situacao'], $situacaoMostrarNome) || $situacao_leito == 'OCUPADO') {
             
         } else {
@@ -383,7 +396,7 @@ foreach ($tabela as $i => $t) {
                                     <td class="prontuario"><?= $prontuario ?></td>
                                     <td class="nome texto-esquerdo" style="text-align: left"><?= $nome ?></td>
                                     <td class="sexo"><?= $sexo ?></td>
-                                    <td class="idade"><?= $idade ?></td>
+                                    <td class="idade"><?= $textoIdade ?></td>
                                     <td class="municipio"><?= $municipio ?></td>
                                     <td class="data-internacao"><?= $data_internacao ?></td>
                                     <td class="dias-internados"><?= $dias_internados ?></td>
@@ -481,7 +494,7 @@ foreach ($tabela as $i => $t) {
         $ocupados = $("tr.ocupado").length
         $normal = $ocupados - $excedente;
         $("li.ocupado span").text(`${$ocupados} [Normal: ${$normal} | Excedente ${$excedente}]`);
-
+        $("span.ocupado").text($ocupados);
         $optionsSituacoes = "";
         for (s in situacoes) {
             $optionsSituacoes += "<li>" + s + ": <span>" + situacoes[s] + "</span></li>\n";

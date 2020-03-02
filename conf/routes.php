@@ -37,6 +37,12 @@ $routes["/datasource"] = "Datasources->cadastro";
 $routes["/datasource/{\d+:id}"] = "Datasources->cadastro";
 $routes["/datasource/salvar"] = "Datasources->salvar";
 
+$routes["/rotulos"] = "Rotulos->index";
+$routes["/rotulo"] = "Rotulos->cadastro";
+$routes["/rotulo/{\d+:id}"] = "Rotulos->cadastro";
+$routes["/rotulo/salvar"] = "Rotulos->salvar";
+
+
 $routes["/espelho"] = "Application->espelha";
 
 $routes["/login"] = "Acessos->login";
