@@ -32,10 +32,6 @@ function titleCase($string, $delimiters = array(" ", "-", ".", "'", "O'", "Mc"),
     return $string;
 }
 ?>
-<!--<head>
-    <title>Termo de Responsabilidade: <?= $termo['nome'] ?></title>
-</head>
-<body>-->
 
 <style>
     body {
@@ -96,7 +92,7 @@ function titleCase($string, $delimiters = array(" ", "-", ".", "'", "O'", "Mc"),
     }
 
     .assinatura-chefia {
-        padding-bottom: 50px;
+        padding-bottom: 50px !important;
     }
 
     .assinatura-rede {
@@ -116,6 +112,7 @@ function titleCase($string, $delimiters = array(" ", "-", ".", "'", "O'", "Mc"),
 
     ol {
         text-align: justify !important;
+        padding-inline-start: 40px !important;
     }
 
     fieldset.fieldset-cadastradores {
@@ -147,13 +144,9 @@ function titleCase($string, $delimiters = array(" ", "-", ".", "'", "O'", "Mc"),
         }
         body {
             font-family: Roboto !important;
-            margin-top: 10mm;
-            margin-bottom: 10mm;
+            /* margin-top: 1mm;
+            margin-bottom: 5mm; */
         }
-        /*fieldset.fidlset-cadastradores {
-            width: 95% !important;
-            margin: 0 auto !important;
-        } */
         fieldset.fieldset-cadastradores {
             border: solid 1px grey !important;
             box-shadow: none !important;
@@ -162,15 +155,14 @@ function titleCase($string, $delimiters = array(" ", "-", ".", "'", "O'", "Mc"),
             padding: 20px;
             padding-top: 1.8cm;
         }
-
         fieldset.fieldset-cadastradores legend {
             font-size: 11pt !important;
             margin-bottom: 20px !important;
             top: 0;
         }
         .conteudo {
-            /* padding-top: 25mm !important; */
             box-shadow: none;
+            margin-top: 0px;
         }
         h4, h5 {
             margin: 0.5mm;
@@ -183,6 +175,13 @@ function titleCase($string, $delimiters = array(" ", "-", ".", "'", "O'", "Mc"),
         }
         div.texto {
             margin-top: 10px;
+        }
+        .texto p {
+            font-size: 12pt;
+        }
+        ol {
+            padding-inline-start: 40px !important;
+            font-size: 12pt !important;
         }
         .rodape-documento {
             display: block;
@@ -200,7 +199,7 @@ function titleCase($string, $delimiters = array(" ", "-", ".", "'", "O'", "Mc"),
     <h4 class="titulo-termo">TERMO DE RESPONSABILIDADE</h4>
     <h5 class="titulo-termo">USO DE RECURSOS DE TIC E CONFIDENCIALIDADE</h5>
     <div class="texto">    
-        <p>Pelo presente instrumento, eu <strong><?= $termo['nome'] ?></strong>, CPF <strong><?= $cpfResultante ?></strong>, identidade <strong><?= $termo['nro_identidade'] ?> - <?= $termo['orgao_emissor'] ?>/<?= $termo['uf_orgao'] ?></strong>, lotado no(a) <strong><?= $termo['lotacao'] ?></strong>, com vínculo <strong><?= $termo['vinculo'] ?></strong> e ocupação <strong><?= $termo['ocupacao'] ?></strong> no Hospital Universitário da Universidade Federal da Grande Dourados, DECLARO, sob pena das sanções cabíveis nos termos da POSIC/Sede estendida para o Hospital Universitário da Universidade Federal da Grande Dourados, publicada por meio da Portaria n.0 35, de 6 de março de 2017 da Ebserh, e instituída no HU-UFGD por meio da Resolução n.0 26, de 26 de abril de 2018, assumo a responsabilidade por:</p>            
+        <p>Pelo presente instrumento, eu <strong><?= $termo['nome'] ?></strong>, CPF <strong><?= $cpfResultante ?></strong>, identidade <strong><?= $termo['nro_identidade'] ?> - <?= $termo['orgao_emissor'] ?>/<?= $termo['uf_orgao'] ?></strong>, <!-- lotado no(a) <strong><?= $termo['lotacao'] ?></strong>,--> com vínculo <strong><?= $termo['vinculo'] ?></strong> e ocupação <strong><?= $termo['ocupacao'] ?></strong> no Hospital Universitário da Universidade Federal da Grande Dourados, DECLARO, sob pena das sanções cabíveis nos termos da POSIC/Sede estendida para o Hospital Universitário da Universidade Federal da Grande Dourados, publicada por meio da Portaria n.0 35, de 6 de março de 2017 da Ebserh, e instituída no HU-UFGD por meio da Resolução n.0 26, de 26 de abril de 2018, assumo a responsabilidade por:</p>            
     </div>
 
     <ol type="I">
