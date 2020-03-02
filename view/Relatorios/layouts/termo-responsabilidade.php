@@ -42,16 +42,16 @@ function titleCase($string, $delimiters = array(" ", "-", ".", "'", "O'", "Mc"),
         font-family: 'Google Sans' !important;
     }
 
-    h4 {
+    /* h4 {
         font-size: 21pt;
-    }
+    } */
 
     h5 {
         font-size: 14pt;
     }
 
     div.texto {
-        margin-top: 40px;
+        margin-top: 40px !important;
     }
 
     .texto, h5 {
@@ -62,7 +62,7 @@ function titleCase($string, $delimiters = array(" ", "-", ".", "'", "O'", "Mc"),
 
     .texto p {
         text-align: justify;
-        text-indent: 1cm;
+        text-indent: 1cm !important;
         font-size: 11pt;
         /*            line-height: 1.1em;*/
     }
@@ -72,14 +72,8 @@ function titleCase($string, $delimiters = array(" ", "-", ".", "'", "O'", "Mc"),
     }
 
     .titulo-termo {
-        margin-top: 0.5cm;
-        line-height: 0.5em;
-    }
-
-    .assinaturas div {
-        text-align: center;
-        margin: 1.5cm 2cm 0 2cm;
-        border-top: solid 1px black;
+        margin-top: 0.5cm !important;
+        line-height: 0.5em !important;
     }
 
     .conteudo {
@@ -95,42 +89,48 @@ function titleCase($string, $delimiters = array(" ", "-", ".", "'", "O'", "Mc"),
         padding-top: 0;
     }
 
+    .assinaturas div {
+        text-align: center;
+        margin: 1.5cm 2cm 0 2cm;
+        border-top: solid 1px black !important;
+    }
+
     .assinatura-chefia {
         padding-bottom: 50px;
-    }
-
-    ol {
-        text-align: justify;
-    }
-
-    fieldset {
-        border: solid 1px grey;
-        box-shadow: none;
-        border-radius: 4px;
-        margin: 0 auto;
-        padding: 20px;
-        padding-top: 1.8cm;
-    }
-
-    fieldset legend {
-        font-size: 11pt;
-        margin-bottom: 20px;
-        top: 0;
     }
 
     .assinatura-rede {
         float: left;
         padding-right: 10px;
-        border-top: solid 1px black;
+        border-top: solid 1px black !important;
         width: 45%;
         text-align: center;
     }
 
     .assinatura-perfil {
         float: right;
-        border-top: solid 1px black;
+        border-top: solid 1px black !important;
         width: 45%;
         text-align: center;
+    }
+
+    ol {
+        text-align: justify !important;
+    }
+
+    fieldset.fieldset-cadastradores {
+        border: solid 1px grey !important;
+        box-shadow: none !important;
+        border-radius: 4px;
+        margin: 0 auto;
+        padding: 20px !important;
+        padding-top: 1.8cm !important;
+    }
+
+    fieldset.fieldset-cadastradores legend {
+        font-size: 11pt !important;
+        margin-bottom: 20px !important;
+        top: 0;
     }
 
     .dados li {
@@ -143,40 +143,54 @@ function titleCase($string, $delimiters = array(" ", "-", ".", "'", "O'", "Mc"),
 
     @media print {
         @page { 
-            margin: 0;
+            margin: 0 !important;
         }
         body {
             font-family: Roboto !important;
             margin-top: 10mm;
             margin-bottom: 10mm;
         }
-        fieldset {
-            width: 95%;
+        /*fieldset.fidlset-cadastradores {
+            width: 95% !important;
+            margin: 0 auto !important;
+        } */
+        fieldset.fieldset-cadastradores {
+            border: solid 1px grey !important;
+            box-shadow: none !important;
+            border-radius: 4px;
             margin: 0 auto;
+            padding: 20px;
+            padding-top: 1.8cm;
+        }
+
+        fieldset.fieldset-cadastradores legend {
+            font-size: 11pt !important;
+            margin-bottom: 20px !important;
+            top: 0;
         }
         .conteudo {
-            padding-top: 25mm;
+            /* padding-top: 25mm !important; */
             box-shadow: none;
         }
         h4, h5 {
             margin: 0.5mm;
         }
         h4 {
-            font-size: 18pt;
+            font-size: 24pt !important;
         }
         h5 {
-            font-size: 12pt;
+            font-size: 12pt !important;
         }
         div.texto {
             margin-top: 10px;
         }
         .rodape-documento {
             display: block;
-            margin-left: 10mm;
-            font-size: 7pt;
+            margin-left: 10mm !important;
+            font-size: 7pt !important;
         }
         .hospital-rodape {
-            font-weight: bold;
+            font-weight: bold !important;
         }
     } 
 
@@ -202,30 +216,20 @@ function titleCase($string, $delimiters = array(" ", "-", ".", "'", "O'", "Mc"),
 
     <div class="assinaturas">
         <div><strong><?= $termo['nome'] ?></strong></div>
-        <div class="assinatura-chefia"><strong><?= $termo['chefia_imediata'] ?></strong></div>
+        <div class="assinatura-chefia"><strong>Chefia imediata <small>(carimbo e assinatura)</small></strong></div>
+        <!-- <div class="assinatura-chefia"><strong><?= $termo['chefia_imediata'] ?></strong></div> -->
     </div>
-    <fieldset>
-        <legend>USO EXCLUSIVO DO SETOR DE GESTÃO DE PROCESSOS E TECNOLOGIA DA INFORMAÇÃO</legend>
+    <fieldset class="fieldset-cadastradores">
+        <legend>USO EXCLUSIVO DOS CADASTRADORES</legend>
         <div class="assinatura-rede"><small>Assinatura do responsável pela criação da conta</small></div>
         <div class="assinatura-perfil"><small>Assinatura do responsável pela atribuição de perfil</small></div>
     </fieldset>
 </div>
 
-<footer class="rodape-documento">
+<!-- <footer class="rodape-documento">
     <strong class="hospital-rodape">Hospital Universitário da Universidade Federal da Grande Dourados – HU-UFGD</strong>
     <br />CNPJ: 07.775.847/0002-78
     <br />Rua Ivo Alves da Rocha, 558 – Altos do Indaiá
     <br />CEP 79.823-501 – Dourados/MS, Brasil
-    <br />67 3410-3000
-</footer>
-<!--<footer>
-    <address>
-        <ul>
-            <li><strong>Hospital Universitário da Universidade Federal da Grande Dourados – HU-UFGD</strong></li>
-            <li>CNPJ: 07.775.847/0002-78</li>
-            <li>Rua Ivo Alves da Rocha, 558 – Altos do Indaiá</li>
-            <li>CEP 79.823-501 – Dourados/MS, Brasil</li>
-            <li>67 3410-3000</li>
-        </ul>
-    </address>
-</footer>-->
+        <br />67 3410-3000
+</footer> -->
