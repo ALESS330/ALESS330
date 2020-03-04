@@ -8,7 +8,26 @@
 <?php
 $termo = $dados[0];
 setlocale(LC_ALL, 'pt_BR.UTF-8');
-$data = strftime('%d de %B de %Y');
+
+$meses['01'] = "janeiro";
+$meses['02'] = "fevereiro";
+$meses['03'] = "março";
+$meses['04'] = "abril";
+$meses['05'] = "maio";
+$meses['06'] = "junho";
+$meses['07'] = "julho";
+$meses['08'] = "agosto";
+$meses['09'] = "setembro";
+$meses['10'] = "outubro";
+$meses['11'] = "novembro";
+$meses['12'] = "dezembro";
+
+$dia = strftime('%d de ');
+$mes = $meses[strftime('%m')];
+$ano = strftime(' de %Y');
+
+$data = $dia . $mes . $ano;
+
 global $filename;
 $filename = "termo-responsabilidade-" . $termo['nome'];
 
@@ -170,6 +189,7 @@ function titleCase($string, $delimiters = array(" ", "-", ".", "'", "O'", "Mc"),
         .conteudo {
             box-shadow: none;
             margin-top: 0px;
+            padding-top: 2.5mm !important;
         }
         h4, h5 {
             margin: 0.5mm;
