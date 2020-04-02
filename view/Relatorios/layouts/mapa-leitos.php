@@ -20,7 +20,8 @@ $horaGeradoLegivel = date('d/m/Y à\s H:i:s');
 
 $codigoUFAtual = $dados[0]['codigo_unidade_funcional'];
 
-$leitosObservados = ["0001A", "0001B", "0001C", "0001D", "0009A", "0009B", "0009C", "0009D", "0010A", "0010B", "0010C", "0010D"];
+$leitosObservadosBerco = ["0001A", "0001B", "0001C", "0001D", "0009A", "0009B", "0009C", "0009D", "0010A", "0010B", "0010C", "0010D"];
+$leitosObservadosIsolamentoRespiratorio = ["0063C", "0063D", "0064G", "0065I", "0065J", "0050A", "0051A","0004A", "0005A", "0006A"];
 
 /*
   0 - DESOCUPADO
@@ -50,6 +51,11 @@ $leitosObservados = ["0001A", "0001B", "0001C", "0001D", "0009A", "0009B", "0009
 $situacaoMostrarNome = [0, 22, 24, 50, 31, 35, 36, 37];
 
 $observacoes[3]['leito'] = "* O Leito é um berço";
+$observacoes[3]['isolamento-respiratorio'] = "** Leito de isolamento respiratório</br>\n";
+$observacoes[11]['isolamento-respiratorio'] = "** Leito de isolamento respiratório</br>\n";
+$observacoes[12]['isolamento-respiratorio'] = "** Leito de isolamento respiratório</br>\n";
+$observacoes[13]['isolamento-respiratorio'] = "** Leito de isolamento respiratório</br>\n";
+$observacoes[16]['isolamento-respiratorio'] = "** Leito de isolamento respiratório</br>\n";
 
 foreach ($dados as $i => $linha) {
     if ($codigoUFAtual !== $linha['codigo_unidade_funcional']) {
@@ -377,9 +383,12 @@ foreach ($tabela as $i => $t) {
         }
 
         if (isset($observacoes[$i]['leito'])) {
-            $leito = array_search(trim($leito), $leitosObservados) !== FALSE ? "$leito *" : $leito;
+            $leito = array_search(trim($leito), $leitosObservadosBerco) !== FALSE ? "$leito *" : $leito;
         }
-
+        if (isset($observacoes[$i]['isolamento-respiratorio'])) {
+            $leito = array_search(trim($leito), $leitosObservadosIsolamentoRespiratorio) !== FALSE ? "$leito **" : $leito;
+        }
+         
         $cSituacao = mb_strtolower(str_replace(" ", "_", $situacao_leito));
         $cTipo = mb_strtolower(str_replace(" ", "_", $tipo_leito));
         ?>
@@ -420,7 +429,7 @@ foreach ($tabela as $i => $t) {
                                     if (isset($observacoes[$i])) {
                                         echo "<div>";
                                         foreach ($observacoes[$i] as $obs) {
-                                            echo "<span>" . $obs . "</span>";
+                                            echo "<span>" . $obs . "</span></br>";
                                         }
                                         echo "</div>";
                                     }

@@ -1,4 +1,4 @@
-<?php
+    <?php
 
 $corSistema = " blue-grey darken-3 ";
 $corSistemaRGB = "#37474f";

@@ -6,7 +6,7 @@ global $db;
 $db["server"]   = "10.18.0.101";
 $db["user"]     = "teste";
 $db["password"] = "teste";
-$db["database"] = "teste";
+$db["database"] = "teste"; 
 $db['porta']    = 5432; 
 
 
