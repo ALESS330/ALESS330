@@ -20,10 +20,12 @@ class Datasources extends Controller {
         $this->render($dados);
     }
 
-    function cadastro($idDatasource){
+    function cadastro($idDatasource = NULL){
         $d = new Datasource();
         $dados = array();
-        $dados['datasource'] = $d->get($idDatasource);
+        if($idDatasource){
+            $dados['datasource'] = $d->get($idDatasource);
+        }
         $this->render($dados);
     }
     

@@ -1,6 +1,6 @@
 <form class="form-horizontal" rol="form" id="form-cadastro-datasource" action="@{Datasources->salvar()}" method="POST" >
     
-    <?php if ($datasource->id) { ?>
+    <?php if (isset($datasource) && isset($datasource->id)) { ?>
         <input type="hidden" name="datasource[id]" value="<?= $datasource->id ?>">
     <?php } ?>
     

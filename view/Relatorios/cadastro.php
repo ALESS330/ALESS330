@@ -72,13 +72,14 @@
                 <option>Selecione o tipo do relatório</option>
                 <option value="simples" <?php echo $tipo == 'simples' ? "selected" : ""; ?>>Simples</option>
                 <option value="agrupado" <?php echo $tipo == 'agrupado' ? "selected" : ""; ?>>Agrupado</option>
+                <option value="conjugado" <?php echo $tipo == 'conjugado' ? "selected" : ""; ?>>Conjugado</option>
                 <option value="titulo-relatorio" <?php echo $tipo == 'titulo-relatorio' ? "selected" : ""; ?>>Título de outro relatório</option>
             </select>
             <label>Tipo do relatorio</label>
         </div>
     </div>
 
-    <div class="row">
+<!--    <div class="row">
         <div class="input-field col s12">
             <input type="text" class="form-control" id="coluna-grupo-relatorio" name="relatorio[coluna_grupo]" value="<?php echo $coluna_grupo; ?>">
             <label for="coluna-grupo-relatorio">Coluna grupo</label>
@@ -90,7 +91,7 @@
             <input type="text" class="form-control" id="coluna-grupo-relatorio" name="relatorio[relatorio_pai_id]" value="<?php echo $relatorio_pai; ?>">
             <label for="coluna-grupo-relatorio">Relatório Pai</label>
         </div>
-    </div>
+    </div>-->
 
     <div class="row">
         <div class="input-field col s12">
@@ -155,7 +156,7 @@
 <script type="text/javascript" src="/static/codemirror/addon/hint/show-hint.js"></script>
 <script type="text/javascript">
     $(document).ready(function() {
-        const editorTextArea = document.getElementById('codigo-sql-relatorio');
+        const editorTextArea = $('#codigo-sql-relatorio')[0];
         var editor = CodeMirror.fromTextArea(editorTextArea, {
             lineNumbers: true,
             theme: 'monokai',
