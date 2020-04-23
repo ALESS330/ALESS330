@@ -4,7 +4,7 @@ $_CONTROLE = 'Relatorio';
 $_ROTULO = 'Relatório';
 
 class Relatorio extends Model {
-
+    
     public function __construct() {
         parent::__construct();
         $this->nomeTabela = "relatorios.relatorios";
@@ -276,6 +276,30 @@ WHERE
         $oDatasource = new Datasource();
         $oRelatorio = new Relatorio();
         return $oDatasource->get($oRelatorio->get($idRelatorio)->datasource_id);
+    }
+
+    function listaAtivos() {
+        $sql = 
+"
+select 
+    r.id 
+    , r.nome
+    , r.descricao
+from 
+    relatorios.relatorios r 
+    join relatorios.datasources d on r.datasource_id = d.id
+where true 
+    and r.ativo = true 
+    and d.ativo = true 
+order by 
+    r.nome
+";
+        return $this->db->consulta($sql);
+    }
+
+    function getComposicao($relatorioId) {
+        $oCamposicao = new Composicao();
+        return $oCamposicao->getByRelatorioPrincipalId($relatorioId);
     }
 
 }

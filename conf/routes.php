@@ -8,14 +8,16 @@ $routes['/pdf'] = "Application->pdf_me";
 
 $routes["/relatorios"] = "Relatorios->index";
 $routes["/relatorio/{\d+:idRelatorio}/tela-parametros/salvar"]  = "Relatorios->salvarTelaParametros";
+$routes["/relatorio/{\d+:idRelatorio}/composicao/salvar"]  = "Relatorios->salvarComposicao";
+$routes["/relatorio/{\d+:idRelatorio}/composicao/{\d+:idComposicao}/excluir"]  = "Relatorios->excluirComposicao";
 $routes['/relatorio/{\d+:idRelatorio}/formatos/salvar'] = "Relatorios->salvarFormatos";
 $routes['/relatorio/{\d+:idRelatorio}/decoradores/salvar'] = "Relatorios->salvarDecoradores";
 $routes['/relatorio/{\d+:idRealtorio}/grupo/{\d+:idGrupo}/associa'] = "Relatorios->associaGrupo";
 $routes['/relatorio/{\d+:idRealtorio}/grupo/{\d+:idGrupo}/remove'] = "Relatorios->removeGrupo";
 $routes["/relatorio/{\d+:idRelatorio}/propriedades"] = "Relatorios->propriedades";
 $routes["/relatorio/{\d+:idRelatorio}/excluir"] = "Relatorios->excluir";
-$routes["/relatorio"] = "Relatorios->cadastro";
 $routes["/relatorio/{\d+:idRelatorio}"] = "Relatorios->cadastro";
+$routes["/relatorio"] = "Relatorios->cadastro";
 $routes["/relatorios/salvar"] = "Relatorios->salvar";
 $routes['/relatorios/gerado/{.+:datasource}/{.+:nomeRelatorio}'] = "Relatorios->gerado";
 $routes["/relatorios/{\d+:pagina}/{.+:busca}"] = "Relatorios->pagina";

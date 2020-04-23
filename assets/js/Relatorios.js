@@ -7,8 +7,8 @@ Relatorios = {
             if ($(window).scrollTop() + $(window).height() >= $(document).height()) {
                 Relatorios.loadPagina();
             }
-        });
-
+        }); 
+ 
     },
     loadPagina: function () {
         var busca = $("#search").val();

@@ -18,6 +18,11 @@ date_default_timezone_set("America/Campo_Grande");
 $horaGerado = date('d-m-Y_H:i:s');
 $horaGeradoLegivel = date('d/m/Y à\s H:i:s');
 
+$pago_co_psa[20] = true;
+$pago_co_psa[27] = true;
+$pago_co_psa[32] = true;
+$total_pago_co_psa = 0;
+
 $codigoUFAtual = $dados[0]['codigo_unidade_funcional'];
 
 $leitosObservadosBerco = ["0001A", "0001B", "0001C", "0001D", "0009A", "0009B", "0009C", "0009D", "0010A", "0010B", "0010C", "0010D"];
@@ -70,13 +75,19 @@ foreach ($dados as $i => $linha) {
         $j = 0;
         $codigoUFAtual = $linha['codigo_unidade_funcional'];
     }
+    if($pago_co_psa[$codigoUFAtual] ?? false){
+        $total_pago_co_psa += 1;
+    }
     $resumo['tipo'][$linha['tipo_leito']] = isset($resumo['tipo'][$linha['tipo_leito']]) ? $resumo['tipo'][$linha['tipo_leito']] + 1 : 1;
     $resumo['situacao'][$linha['situacao_leito']] = isset($resumo['situacao'][$linha['situacao_leito']]) ? $resumo['situacao'][$linha['situacao_leito']] + 1 : 1;
+    $resumo['covid'][$linha['situacao_covid']] = isset($resumo['covid'][$linha['situacao_covid']]) ? $resumo['covid'][$linha['situacao_covid']] + 1 : 1;
+    
     foreach ($linha as $campo => $valor) {
         $tabela[$linha['codigo_unidade_funcional']][$j][$campo] = $valor;
     }//foreach linha
     $j++;
 }//foreach dados
+unset($resumo['covid']['']);
 ?>
 <div  id="conteudo-mapa">
 
@@ -300,7 +311,7 @@ foreach ($dados as $i => $linha) {
             <fieldset>
                 <p class="center titulo-relatorio" style="text-align: center; font-size: 16pt; font-weight: bold">Mapa de Leitos - Hospital Universitário da UFGD</p>
                 <p>Relatório gerado em: <span id="hora-gerado"><?= $horaGeradoLegivel ?></span></p>
-                <div class="resumo">
+                <div class="resumo col s6" style="width: 50%; float: left">
                     <div>Total de pacientes: <span class="ocupado"><?= $resumo['situacao']['OCUPADO'] ?></span></div>
                     <p>Situação dos leitos: </p>
                     <ul class="resumo">
@@ -308,16 +319,26 @@ foreach ($dados as $i => $linha) {
                         foreach ($resumo['situacao'] as $situacao => $total) {
                             $class = mb_strtolower(str_replace(" ", "_", $situacao));
                             $todasClassesSituacoes .= " $class";
-                            if ($situacao == "OCUPADO") {
+                            if ((strpos($situacao, "OCUPADO") !== FALSE) && (strpos($situacao, "DESOCUPADO") === FALSE)) {
                                 $excedente = $resumo['tipo']['EXCEDENTE'];
                                 $normal = $total - $excedente;
-                                echo "<li class='$class'>$situacao: <span>$total [Normal: $normal | Excedente: $excedente]</span></li>";
+                                $total_sem_pagoecia = $total - $total_pago_co_psa;
+                                echo "<li class='$class'>$situacao: <span>$total [Leitos Ativos: $normal | Excedente: $excedente]</span></li>";
+                                echo "<li class='$class'>OCUPADO (exceto PAGO, CO e PSA): <span>$total_sem_pagoecia</span></li>";
                             } else {
                                 echo "<li class='$class'>$situacao: <span>$total</span></li>\n";
                             }
                         }
                         ?>
-                    </ul>                        
+                    </ul>   
+                </div>
+                <div style="width: 49%; float: left">
+                    <p><strong>Covid 19</strong></p>
+                    <ul class="resumo">
+                        <li>Confirmados: <?=$resumo['covid']['confirmado'] ?? 0?></li>
+                        <li>Suspeitos: <?=$resumo['covid']['suspeito'] ?? 0?></li>
+                        <li>Descartados: <?=$resumo['covid']['descartado'] ?? 0?></li>
+                    </ul>
                 </div>
             </fieldset>
             <fieldset>
@@ -325,6 +346,7 @@ foreach ($dados as $i => $linha) {
 $listaSituacoes = array();
 $contadorLinhas = 0;
 $listaTipos = array();
+$listaCovid = array();
 foreach ($tabela as $i => $t) {
     ?>
                     <table cellspacing="0" cellpadding="0" class="bordered" style="margin-bottom: 25px;">
@@ -335,9 +357,9 @@ foreach ($tabela as $i => $t) {
                             <tr>
                                 <th rowspan="2" class="mesclada remover">Conferido</th>
                                 <th colspan="3">Leito</th>
-                                <th colspan="4" class="mesclada">Paciente</th>
+                                <th colspan="4" class="mesclada">Paciente<br></th>
                                 <th rowspan="2" class="mesclada">Município</th>
-                                <th rowspan="2" class="mesclada">Data</th>
+                                <th rowspan="2" class="mesclada">Data Int.</th>
                                 <th rowspan="2" class="mesclada">Dias Int.</th>
                                 <th rowspan="2" class="mesclada">COVID 19</th>
                                 <th rowspan="2" class="mesclada remover" style="width: 100px;">Ações</th>
@@ -361,8 +383,19 @@ foreach ($tabela as $i => $t) {
         foreach ($linha as $campo => $valor) {
             $$campo = $valor == NULL ? "" : $valor;
         }
+        $covid = "";
+        $classCovid = "";
+        if(isset($situacao_covid)){
+            if($situacao_covid !== ''){
+                $covid = $situacoesCovid[$situacao_covid];
+                $listaCovid[$i][$situacao_covid] = isset($listaCovid[$i][$situacao_covid]) ? $listaCovid[$i][$situacao_covid] + 1 : 1;
+                $classCovid = $classesCovid[$situacao_covid];
+            }
+            unset($situacao_covid); 
+        }
         $listaSituacoes[$i][$situacao_leito] = isset($listaSituacoes[$i][$situacao_leito]) ? $listaSituacoes[$i][$situacao_leito] + 1 : 1;
         $listaTipos[$i][$tipo_leito] = isset($listaTipos[$i][$tipo_leito]) ? $listaTipos[$i][$tipo_leito] + 1 : 1;
+        
         //$nome = strlen($nome) > $MAX_LETRAS ? substr($nome, 0, $MAX_LETRAS - 3) . "..." : $nome;
         $dias_a_maior = $dias_internados ?? 0 - $dias_media_permanencia ?? 0;
         
@@ -380,9 +413,11 @@ foreach ($tabela as $i => $t) {
         if ($situacao_leito !== "OCUPADO") {
             $textoIdade  = "";
         }        
-        
+        $dadosCartaoSUS = '';
         if (array_search($linha['codigo_situacao'], $situacaoMostrarNome) || $situacao_leito == 'OCUPADO') {
-            
+            if($textoIdade ?? false){
+                $dadosCartaoSUS = "<strong>CNS: " . ($cartao_sus ?: ' - ') . "</strong>";
+            }
         } else {
             $nome = "";
         } 
@@ -390,17 +425,6 @@ foreach ($tabela as $i => $t) {
         if (!$municipio && !$nome) {
             $municipio = "";
         }
-        $covid = "";
-        $classCovid = "";
-        if(isset($situacao_covid)){
-            if($situacao_covid !== ''){
-                $covid = $situacoesCovid[$situacao_covid];
-                $classCovid = $classesCovid[$situacao_covid];
-            }
-            unset($situacao_covid); 
-        }
-
-
         if (isset($observacoes[$i]['leito'])) {
             $leito = array_search(trim($leito), $leitosObservadosBerco) !== FALSE ? "$leito *" : $leito;
         }
@@ -422,7 +446,7 @@ foreach ($tabela as $i => $t) {
                                     <td class='situacao'><?= $situacao_leito ?></td>
                                     <td class='tipo'><?= $tipo_leito ?></td>
                                     <td class="prontuario"><?= $prontuario ?></td>
-                                    <td class="nome texto-esquerdo" style="text-align: left"><?= $nome ?></td>
+                                    <td class="nome texto-esquerdo" style="text-align: left"><?= $nome ?><br><?= $dadosCartaoSUS?></strong></td>
                                     <td class="sexo"><?= $sexo ?></td>
                                     <td class="idade"><?= $textoIdade ?></td>
                                     <td class="municipio"><?= $municipio ?></td>
@@ -443,8 +467,8 @@ foreach ($tabela as $i => $t) {
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td class="total-geral" colspan="2">
-                                    <div>Total de registros: <span><?= count($tabela[$i]) ?></span></div>
+                                <td class="total-geral" colspan="2"  style="border: 1px solid silver">
+                                    <div>Leitos Operacionais: <span><?= count($tabela[$i]) ?></span></div>
                                     <?php
                                     if (isset($observacoes[$i])) {
                                         echo "<div>";
@@ -455,7 +479,7 @@ foreach ($tabela as $i => $t) {
                                     }
                                     ?>
                                 </td>
-                                <td colspan="5" class="totais-situacoes">
+                                <td colspan="4" class="totais-situacoes" style="border: 1px solid silver">
                                     <ul>
                                         <?php
                                         foreach ($listaSituacoes[$i] as $situacao => $totalSituacao) {
@@ -464,7 +488,7 @@ foreach ($tabela as $i => $t) {
                                         ?>
                                     </ul>
                                 </td>
-                                <td colspan="5" class="totais-tipos">
+                                <td colspan="3" class="totais-tipos" style="border: 1px solid silver">
                                     <ul>
                                         <?php
                                         foreach ($listaTipos[$i] as $tipo => $totalTipo) {
@@ -472,7 +496,21 @@ foreach ($tabela as $i => $t) {
                                         }//foreach
                                         ?>
                                     </ul>
-                                </td>                            
+                                </td>
+                                <td colspan="4" class="totais-covid" style="border: 1px solid silver">
+                                    <strong>Situação da COVID 19 na unidade</strong>
+                                    <ul>
+                                    <?php
+                                        if(isset($listaCovid[$i])){
+                                            foreach ($listaCovid[$i] as $situacaoCovid => $totalCovid) {
+                                                echo "<li>". $situacoesCovid[$situacaoCovid ] . ": $totalCovid</li>\n";
+                                        }   //foreach   
+                                        }else {
+                                            echo "<li>Nenhuma ocorrência</li>\n";
+                                        }
+                                        ?>
+                                    </ul>
+                                </td>   
                             </tr>
                         </tfoot>
                     </table>

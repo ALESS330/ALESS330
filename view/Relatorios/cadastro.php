@@ -95,7 +95,7 @@
 
     <div class="row">
         <div class="input-field col s12">
-            <textarea required id="codigo-sql-relatorio" class=".no-autoinit" name="relatorio[codigo_sql]"><?php echo $sql; ?></textarea>
+            <textarea id="codigo-sql-relatorio" class=".no-autoinit" name="relatorio[codigo_sql]"><?php echo $sql; ?></textarea>
             <label for="codigo-sql-relatorio">Código SQL</label>
         </div>
     </div>
@@ -171,6 +171,7 @@
                 "Ctrl-Space": "autocomplete"
             }
         });
+
     });
 </script>
 #{/scriptPagina}

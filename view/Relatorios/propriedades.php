@@ -33,8 +33,14 @@ if (isset($formatos)) {
 #{botoes}
 <div class="fixed-action-btn">
     <a class="btn-floating btn-large" href="@{Relatorios->index()}">
-        <i class="large material-icons">arrow_back</i>
+        <i class="large material-icons">menu</i>
     </a>
+    <ul>
+        <li><a href="@{Relatorios->excluir(<?=$relatorio->id?>)}" class="btn-floating red bt-excluir"><i class="material-icons">delete</i></a></li>
+        <li><a href="@{Relatorios->cadastro(<?=$relatorio->id?>)}" class="btn-floating yellow darken-1"><i class="material-icons">edit</i></a></li>
+        <li><a href="@{Relatorios->gerar(<?=$relatorio->datasource.",".$relatorio->nome?>)}" class="btn-floating green"><i class="material-icons">remove_red_eye</i></a></li>
+        <li><a href="@{Relatorios->index()}" class="btn-floating blue"><i class="material-icons">arrow_back</i></a></li>
+    </ul>
 </div>
 #{/botoes}
 
@@ -308,6 +314,93 @@ if (isset($formatos)) {
                         </div>
                     </div>
                 </form>
+            </div>
+        </div>
+    </li> <!-- decoradores -->
+    
+    <li> <!-- Composições -->
+        <div class="collapsible-header">
+            <i class="material-icons">input</i>Composições
+        </div>
+        <div class="collapsible-body">
+            <div class="col s12">
+                <?php if ($composicao ?? false){ ?>
+                <h5>Composição atual</h5>
+                <blockquote>
+                    <ul>
+                        <li><strong>#: </strong><?= $composicao->id?></li>
+                        <li><strong>Campo de identificação principal: </strong><?= $composicao->campo_identificador_principal?></li>
+                        <li><strong>Relatório componente: </strong><?= $composicao->nome?></li>
+                        <li><strong>Campo de identificação componente: </strong><?= $composicao->campo_identificador_componente?></li>
+                        <li><strong>Obrigatória: </strong><?= $composicao->obrigatoria ? 'Sim' : 'Não'?></li>
+                    </ul>
+                </blockquote>
+                
+                <form action="@{Relatorios->excluirComposicao(<?=$relatorio->id.",".$composicao->id?>)}">
+                    <div class="row"> 
+                        <div class="col s12">
+                            <button type="submit" class="btn red bt-excluir">Excluir composição</button>
+                        </div>
+                    </div>                    
+                </form>
+                <?php } else { ?>
+                <form action="@{Relatorios->salvarComposicao(<?=$relatorio->id?>)}" role="form" method="POST" >
+                    <input type="hidden" name="composicao[relatorio_principal_id]" value="<?= $relatorio->id ?>" />
+                    <div class="row">
+                        <div class="col s12">
+                            <select name="composicao[tipo_composicao_id]">
+                                <option value="">Selecione o tipo de coposição</option>
+                                <?php foreach ($tipos_composicoes as $tc) {
+                                    echo "<option value='$tc->id'>$tc->titulo ($tc->descricao)</option>\n";
+                                }?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12">
+                            <div class="input-field">
+                                <input id="campo-identificador-principal" name="composicao[campo_identificador_principal]" tipo="text" required />
+                                <label class="active" for="campo-identificador-principal">Campo identificar no relatório principal</label>
+                                <span class="helper-text">O nome do campo no relatório principal que identifica cada registro para composição</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12">
+                            <select name="composicao[relatorio_componente_id]">
+                                <option value="">Selecione o relatório componente</option>
+                                <?php foreach ($listaRelatorios as $lr) {
+                                    if($lr->id == $relatorio->id){
+                                        continue;
+                                    }
+                                    echo "<option value='$lr->id'>$lr->nome ($lr->descricao)</option>\n";
+                                }?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12">
+                            <div class="input-field">
+                                <input id="campo-identificador-componente" name="composicao[campo_identificador_componente]" tipo="text" required />
+                                <label class="active" for="campo-identificador-componente">Campo identificar no relatório coponente</label>
+                                <span class="helper-text">O nome do campo no relatório coponente que identifica cada registro para composição</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label for="composicao-obrigatoria">
+                            <input type="checkbox" class="form-control" id="composicao-obrigatoria" name="composicao[obrigatoria]" value="true" >
+                            <span>Obrigatória</span>
+                        </label>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="input-field">
+                            <button class="btn btn-primary" type="submit" >Salvar</button>
+                        </div>
+                    </div>
+                </form>
+                <?php } ?>
             </div>
         </div>
     </li> <!-- decoradores -->

@@ -10,11 +10,13 @@ class Relatorios extends Controller {
 
     private $relatorio;
     private $construtor;
-
+    private $composicao;
+    
     public function __construct() {
         parent::__construct();
         $this->relatorio = new Relatorio();
         $this->construtor = new ConstrutorRelatorios();
+        $this->composicao = new Composicao();
         $this->setObjeto($this->relatorio);
     }
 
@@ -38,20 +40,23 @@ class Relatorios extends Controller {
 
     function propriedades($idRelatorio) {
         $relatorio = $this->buscaOuNulo($idRelatorio);
-        $objRelatorio = new Relatorio();
         $dados['relatorio'] = $relatorio;
-        $dados['datasource'] = $objRelatorio->getDatasource($idRelatorio);
+        $dados['listaRelatorios'] = $this->relatorio->listaAtivos();
+        $dados['datasource'] = $this->relatorio->getDatasource($idRelatorio);
         $dados['gruposRelatorio'] = $this->relatorio->getGrupos($idRelatorio);
-        $dados['grupos'] = $objRelatorio->listaGruposPossiveis($relatorio->id);
-        $lFormatos = $objRelatorio->getFormatos($relatorio->id);
+        $dados['grupos'] = $this->relatorio->listaGruposPossiveis($relatorio->id);
+        $lFormatos = $this->relatorio->getFormatos($relatorio->id);
         $formatos = array();
         foreach ($lFormatos as $value) {
             $formatos[$value->formato] = TRUE;
         }
         $dados['formatos'] = $formatos;
-        $dados['decoradores'] = $objRelatorio->getDecoradores($idRelatorio);
+        $dados['decoradores'] = $this->relatorio->getDecoradores($idRelatorio);
         $oTipoDecorador = new TipoDecorador();
+        $oTipoComposicao = new TipoComposicao();
         $dados['tipos_decoradores'] = $oTipoDecorador->lista();
+        $dados['tipos_composicoes'] = $oTipoComposicao->lista();
+        $dados['composicao'] = $this->relatorio->getComposicao($relatorio->id);
         if ($relatorio->parametrizado) {
             $tp = $this->relatorio->getTelaParametros($idRelatorio);
             $objFormulario = new Formulario();
@@ -108,7 +113,20 @@ class Relatorios extends Controller {
         $this->mensagemSucesso("Tela de Parâmetros associada com sucesso");
         $this->go2("Relatorios->propriedades($relatorioId)");
     }
+    
+    function salvarComposicao(){
+        $dadosComposicao = $_POST['composicao'];
+        $dadosComposicao['obrigatoria'] = isset($dadosComposicao['obrigadoria']) ? $dadosComposicao['obrigatoria'] : false;
+        $this->composicao->salvar($dadosComposicao);
+        $this->sucesso("Relatorios->propriedades(" . $dadosComposicao['relatorio_principal_id'] . ")", "Componente salvo com sucesso.");        
+    }
 
+    function excluirComposicao($relatorioId, $composicaoId){
+        $relatorio = $this->buscaOuNulo($relatorioId);
+        $this->composicao->deleta($composicaoId);
+        $this->sucesso("Relatorios->propriedades($relatorioId)", "Componente para o relatório $relatorio->nome excluído com sucesso.");
+    }
+    
     function associaGrupo($relatorioId, $grupoId) {
         $objRG = new RelatorioGrupo();
         $dadosRG['grupo_id'] = $grupoId;

@@ -76,18 +76,26 @@ class ConstrutorRelatorios {
         return $r;
     }
 
-    function anexaDados($dados, $estruturaPrincipal) {
+    function anexaDados($dados, $estruturaPrincipal) { 
         $nc = $estruturaPrincipal['nome_componente']; // nc significa nome do componente
         $ec = $this->getEstruturaRelatorio($nc); // ec significa estrutura do componente
         $identificadorPrincipal = $estruturaPrincipal['campo_identificador_principal'];
         $identificadorComponente = $estruturaPrincipal['campo_identificador_componente'];
         $dadosComponente = $this->getDados($nc, $ec['nome_datasource']);
-
         $dadosIndexadosComponente = array();
         foreach ($dadosComponente as $indiceComponente => $linhaComponente) {
             $dadosIndexadosComponente[$linhaComponente[$identificadorComponente]] = $linhaComponente;
         }
         
+        if(count($dadosComponente) == 0){
+            if($estruturaPrincipal['composicao_obrigatoria']){
+                throw new Exception("O relatório componente ($nc) está vazio e esta composição é obrigatória. ");
+            }
+            else {
+                
+            }
+            
+        }
         $colunas = array_keys($dadosComponente[0]);
         $colunasArrayVazio = [];
         foreach ($colunas as $c) {
@@ -125,6 +133,7 @@ select
     , tc.nome nome_composicao
     , tc.descricao
     , c.*
+    , c.obrigatoria composicao_obrigatoria
     , rc.nome nome_componente
 from 
     relatorios.relatorios r 
@@ -134,9 +143,8 @@ from
     left join relatorios.tipos_composicoes tc on c.tipo_composicao_id = tc.id 
     left join relatorios.relatorios rc on rc.id = c.relatorio_componente_id 
 where true 
-	and r.nome = '$nome'";
+	and r.nome = '$nome'"; 
         $dadosRelatorio = $this->conector->getDadosSistema($sqlRelatorio);
-
         if (count($dadosRelatorio) == 0) {
             throw new Exception("Relatório $nome inexistente!");
         }
@@ -148,11 +156,7 @@ where true
         $estruturaRelatorio = $this->getEstruturaRelatorio($nomeTitulo);
         // /*
         echo "<pre>";
-        echo "\nprint_r:\n";
-        print_r($estruturaRelatorio);
-        echo "\nvar_dump\n";
-        var_dump($estruturaRelatorio);
-        echo "</pre>";
+
         die("concluido...");
 // */
         $sql = str_replace(":parametro", $parametro, $estruturaRelatorio["codigo_sql"]);
