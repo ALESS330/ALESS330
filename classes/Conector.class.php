@@ -56,14 +56,22 @@ class Conector {
     }
 
     function getDados($sql, $conex) {
-        try {
+        try { 
             $r = $conex->prepare($sql);
             $result = $r->execute();
             $linhas = $r->fetchAll(PDO::FETCH_ASSOC);
+            if(count($linhas)==0){
+                $vazio = array();
+                foreach(range(0, $r->columnCount() - 1) as $column_index ) 
+                {
+                  $vazio[0][$r->getColumnMeta($column_index)['name']] = null;
+                }
+                return $vazio;
+            }
         } catch (Exception $ex) {
-            $this->mensagemErro("Conexão não efetuada $conex");
+            $this->mensagemErro("Conexão não efetuada $conex. (". $ex->getMessage.")");
         }
-        return $linhas;
+        return $linhas; 
     }
 
     function getDadosSistema($sql) {
