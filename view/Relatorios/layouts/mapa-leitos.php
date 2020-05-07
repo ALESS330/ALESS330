@@ -18,21 +18,14 @@ date_default_timezone_set("America/Campo_Grande");
 $horaGerado = date('d-m-Y_H:i:s');
 $horaGeradoLegivel = date('d/m/Y à\s H:i:s');
 
-<<<<<<< .mine
-$pago_co_psa[20] = true;
-$pago_co_psa[27] = true;
-$pago_co_psa[32] = true;
-$total_pago_co_psa = 0;
+$pago_e_cia[20] = true; 
+$pago_e_cia[27] = true;
+$pago_e_cia[32] = true;
+$pago_e_cia[46] = true;
+
+$total_pago_e_cia = 0;
 $excedente_pago_co_psa = 0;
 
-||||||| .r117
-=======
-$pago_co_psa[20] = true;
-$pago_co_psa[27] = true;
-$pago_co_psa[32] = true;
-$total_pago_co_psa = 0;
-
->>>>>>> .r119
 $codigoUFAtual = $dados[0]['codigo_unidade_funcional'];
 
 $leitosObservadosBerco = ["0001A", "0001B", "0001C", "0001D", "0009A", "0009B", "0009C", "0009D", "0010A", "0010B", "0010C", "0010D"];
@@ -77,21 +70,16 @@ foreach ($dados as $i => $linha) {
         $j = 0;
         $codigoUFAtual = $linha['codigo_unidade_funcional'];
     }
-<<<<<<< .mine
-    if($pago_co_psa[$codigoUFAtual] ?? false){
-        $total_pago_co_psa += 1;
+    if($pago_e_cia[$codigoUFAtual] ?? false){
+        $total_pago_e_cia += 1;
         if($linha['tipo_leito'] == 'EXCEDENTE'){
             $excedente_pago_co_psa +=1;        
         }
     }
-||||||| .r117
-=======
-    if($pago_co_psa[$codigoUFAtual] ?? false){
-        $total_pago_co_psa += 1;
-    }
->>>>>>> .r119
+
     $resumo['tipo'][$linha['tipo_leito']] = isset($resumo['tipo'][$linha['tipo_leito']]) ? $resumo['tipo'][$linha['tipo_leito']] + 1 : 1;
     $resumo['situacao'][$linha['situacao_leito']] = isset($resumo['situacao'][$linha['situacao_leito']]) ? $resumo['situacao'][$linha['situacao_leito']] + 1 : 1;
+    
     foreach ($linha as $campo => $valor) {
         $tabela[$linha['codigo_unidade_funcional']][$j][$campo] = $valor;
     }//foreach linha
@@ -320,36 +308,30 @@ foreach ($dados as $i => $linha) {
             <fieldset>
                 <p class="center titulo-relatorio" style="text-align: center; font-size: 16pt; font-weight: bold">Mapa de Leitos - Hospital Universitário da UFGD</p>
                 <p>Relatório gerado em: <span id="hora-gerado"><?= $horaGeradoLegivel ?></span></p>
-                <div class="resumo">
+                <div class="resumo col s6" style="width: 48%; float: left">
                     <div>Total de pacientes: <span class="ocupado"><?= $resumo['situacao']['OCUPADO'] ?></span></div>
                     <p>Situação dos leitos: </p>
                     <ul class="resumo">
                         <?php
+                        $ocupados = $resumo['situacao']['OCUPADO'];
                         foreach ($resumo['situacao'] as $situacao => $total) {
                             $class = mb_strtolower(str_replace(" ", "_", $situacao));
                             $todasClassesSituacoes .= " $class";
+                            
                             if ((strpos($situacao, "OCUPADO") !== FALSE) && (strpos($situacao, "DESOCUPADO") === FALSE)) {
                                 $excedente = $resumo['tipo']['EXCEDENTE'];
                                 $normal = $total - $excedente;
-<<<<<<< .mine
-                                $total_sem_pagoecia = $total - $total_pago_co_psa;
+                                $total_sem_pagoecia = $total - $total_pago_e_cia;
                                 $ativos_sem_pagoecia = $total_sem_pagoecia - $excedente_pago_co_psa;
                                 $excedente_sem_pagoecia = $excedente - $excedente_pago_co_psa;
                                 echo "<li class='$class'>$situacao: <span>$total [Leitos Ativos: $normal | Excedente: $excedente]</span></li>";
-                                echo "<li class='$class'>OCUPADO (exceto PAGO, CO e PSA): <span>$total_sem_pagoecia  [Leitos Ativos: $ativos_sem_pagoecia| Excedente: $excedente_sem_pagoecia]</span></li>";
-||||||| .r117
-                                echo "<li class='$class'>$situacao: <span>$total [Normal: $normal | Excedente: $excedente]</span></li>";
-=======
-                                $total_sem_pagoecia = $total - $total_pago_co_psa;
-                                echo "<li class='$class'>$situacao: <span>$total [Leitos ativos: $normal | Excedente: $excedente]</span></li>";
-                                echo "<li class='$class'>OCUPADO (exceto PAGO, CO e PSA): <span>$total_sem_pagoecia</span></li>";
->>>>>>> .r119
+                                echo "<li class='$class'>OCUPADO <small>(exceto PAGO, PAGO COVID, CO e PSA): </small><span>$total_sem_pagoecia  [Leitos Ativos: $ativos_sem_pagoecia| Excedente: $excedente_sem_pagoecia]</span></li>";
                             } else {
                                 echo "<li class='$class'>$situacao: <span>$total</span></li>\n";
                             }
                         }
                         ?>
-                    </ul>                        
+                    </ul>   
                 </div>
             </fieldset>
             <fieldset>

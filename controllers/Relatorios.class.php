@@ -4,11 +4,12 @@ $_CONTROLE = 'Relatorios';
 $_ROTULO = 'Administração dos Relatórios';
 
 require_once dirname(dirname(dirname(__FILE__))) . "/formularios/models/Formulario.class.php";
+require_once dirname(dirname(dirname(__FILE__))) . "/formularios/models/RestricaoFormulario.class.php";
 require_once dirname(dirname(dirname(__FILE__))) . "/formularios/utils/GeradorFormulario.class.php";
 
 class Relatorios extends Controller {
 
-    private $relatorio;
+    private $relatorio;  
     private $construtor;
     private $composicao;
     
