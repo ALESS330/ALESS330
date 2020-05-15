@@ -118,7 +118,7 @@ FROM
     -- Desenvolvedores
 WHERE TRUE 
     AND r.ativo = TRUE
-    AND (
+    AND ( 
 	r.publico = TRUE 
 	OR (u.username = '$username')
 	OR (

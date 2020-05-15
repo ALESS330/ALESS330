@@ -24,7 +24,7 @@ $pago_e_cia[32] = true;
 $pago_e_cia[46] = true;
 
 $total_pago_e_cia = 0;
-$excedente_pago_co_psa = 0;
+$excedente_pago_e_cia = 0;
 
 $codigoUFAtual = $dados[0]['codigo_unidade_funcional'];
 
@@ -73,7 +73,7 @@ foreach ($dados as $i => $linha) {
     if($pago_e_cia[$codigoUFAtual] ?? false){
         $total_pago_e_cia += 1;
         if($linha['tipo_leito'] == 'EXCEDENTE'){
-            $excedente_pago_co_psa +=1;        
+            $excedente_pago_e_cia +=1;        
         }
     }
 
@@ -322,8 +322,8 @@ foreach ($dados as $i => $linha) {
                                 $excedente = $resumo['tipo']['EXCEDENTE'];
                                 $normal = $total - $excedente;
                                 $total_sem_pagoecia = $total - $total_pago_e_cia;
-                                $ativos_sem_pagoecia = $total_sem_pagoecia - $excedente_pago_co_psa;
-                                $excedente_sem_pagoecia = $excedente - $excedente_pago_co_psa;
+                                $ativos_sem_pagoecia = $total_sem_pagoecia - $excedente_pago_e_cia;
+                                $excedente_sem_pagoecia = $excedente - $excedente_pago_e_cia;
                                 echo "<li class='$class'>$situacao: <span>$total [Leitos Ativos: $normal | Excedente: $excedente]</span></li>";
                                 echo "<li class='$class'>OCUPADO <small>(exceto PAGO, PAGO COVID, CO e PSA): </small><span>$total_sem_pagoecia  [Leitos Ativos: $ativos_sem_pagoecia| Excedente: $excedente_sem_pagoecia]</span></li>";
                             } else {

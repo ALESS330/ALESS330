@@ -145,6 +145,10 @@ class Relatorios extends Controller {
         $this->go2("Relatorios->propriedades($relatorioId)");
     }
 
+    function novo(){
+        $this->cadastro();
+    }
+    
     function cadastro($id = NULL) {
         $dados = array();
         if ($id) {
@@ -191,11 +195,15 @@ class Relatorios extends Controller {
         global $_ROTULO;
         $_ROTULO = "Relatório";
         $relatorio = $this->relatorio->selectByEquals("nome", $nomeRelatorio);
-        if (count($relatorio) != 1) {
+        if (count($relatorio) !== 1) {
             throw new Exception("Esse relatório não existe!");
         } else {
             $relatorio = $relatorio[0];
         }
+        if (!$relatorio->ativo){
+            throw new Exception("Relatório desativado. Procure o responsável pelas informações.");
+        }
+        
         $_SESSION['relatorioId'] = $relatorio->id;        
         if (!$relatorio->publico) {
             if (!isset($_SESSION['login'])) {

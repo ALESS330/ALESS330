@@ -24,7 +24,8 @@ $pago_e_cia[32] = true;
 $pago_e_cia[46] = true;
 
 $total_pago_e_cia = 0;
-$excedente_pago_co_psa = 0;
+$normal_pago = 0;
+$excedente_pago_e_cia = 0;
 
 $codigoUFAtual = $dados[0]['codigo_unidade_funcional'];
 
@@ -73,29 +74,80 @@ $classesCovid['descartado'] = "green darken-3 white-text";
 $classesCovid['suspeito'] = "yellow darken-3 white-text";
 $classesCovid['confirmado'] = "red darken-3 white-text";
 
+const textaoSituacao = 'OCUPADO <small>(exceto PAGO, PAGO COVID, CO e PSA)</small>';
+
+$resumo['covid']['confirmado'] = 0;
+$resumo['covid']['suspeito'] = 0;
+$resumo['covid']['descartado'] = 0;
+
 foreach ($dados as $i => $linha) {
+    
+    //abaixo, verifico se esta linha é de unidade diferente da anterior
+    //nesse caso, reinicio o contador da unidade (j)
     if ($codigoUFAtual !== $linha['codigo_unidade_funcional']) {
         $j = 0;
         $codigoUFAtual = $linha['codigo_unidade_funcional'];
-    }
-
-    if($pago_e_cia[$codigoUFAtual] ?? false){
-        $total_pago_e_cia += 1;
-        if($linha['tipo_leito'] == 'EXCEDENTE'){
-            $excedente_pago_co_psa +=1;        
-        }
     }
 
     $resumo['tipo'][$linha['tipo_leito']] = isset($resumo['tipo'][$linha['tipo_leito']]) ? $resumo['tipo'][$linha['tipo_leito']] + 1 : 1;
     $resumo['situacao'][$linha['situacao_leito']] = isset($resumo['situacao'][$linha['situacao_leito']]) ? $resumo['situacao'][$linha['situacao_leito']] + 1 : 1;
     $resumo['covid'][$linha['situacao_covid']] = isset($resumo['covid'][$linha['situacao_covid']]) ? $resumo['covid'][$linha['situacao_covid']] + 1 : 1;
     
+    //abaixo, verifico se esta unidade está dentre aquelas que são 
+    //monitoradas para separação de contagem (pago_e_cia)
+    if($pago_e_cia[$codigoUFAtual] ?? false){
+        //abaixo, aumento o contador desse resumo
+        $total_pago_e_cia += 1;
+        if($linha['tipo_leito'] == 'EXCEDENTE'){
+            //aqui, incremento o excedente das unidades que estão sendo
+            //separadas das outras
+            $excedente_pago_e_cia +=1;        
+        }else{
+            $normal_pago++;
+        }
+        //aqui, estou criando e/ou atualizando a linha de resumo desta situação
+        $resumo['situacao'][textaoSituacao] = isset($resumo['situacao'][textaoSituacao]) ? $resumo['situacao'][textaoSituacao]+1 : 1;
+    }
+    
     foreach ($linha as $campo => $valor) {
         $tabela[$linha['codigo_unidade_funcional']][$j][$campo] = $valor;
     }//foreach linha
     $j++;
 }//foreach dados
+
+
+$total = $resumo['situacao']['OCUPADO'];
+$excedente = $resumo['tipo']['EXCEDENTE'];
+$normal = $total - $excedente; 
+$total_sem_pagoecia = $total - $total_pago_e_cia;
+$ativos_sem_pagoecia = $normal - $normal_pago;
+$excedente_sem_pagoecia = $excedente - $excedente_pago_e_cia;
+$totalAtivo = count($dados) - $excedente;
+
+/*
+if ((strpos($situacao, "OCUPADO") !== FALSE) && (strpos($situacao, "DESOCUPADO") === FALSE)) {
+    $excedente = $resumo['tipo']['EXCEDENTE'];
+       
+       echo "<li class='$class'>$situacao: <span>$total [Leitos Ativos: $normal | Excedente: $excedente]</span></li>";
+       echo "<li class='$class'>OCUPADO <small>(exceto PAGO, PAGO COVID, CO e PSA): </small><span>$total_sem_pagoecia  [Leitos Ativos: $ativos_sem_pagoecia| Excedente: $excedente_sem_pagoecia]</span></li>";
+   }}
+                       }
+ *   */ 
+
+$ocupados = $resumo['situacao']['OCUPADO'];
+$ocupadosExcetoPagoCia = $resumo['situacao'][textaoSituacao];
+$resumo['situacao']['OCUPADO'] = "<span>$ocupados [Leitos Ativos :$normal | Excedente: $excedente]</span>";
+$resumo['situacao'][textaoSituacao] = "<span>$total_sem_pagoecia [Leitos Ativos: $ativos_sem_pagoecia| Excedente: $excedente_sem_pagoecia]</span>";
+$excedentes = "";
 unset($resumo['covid']['']);
+$coluna = array();
+
+$coluna2[0] = "Confirmados: " . $resumo['covid']['confirmado'] ?? 0;
+$coluna2[1] = "Suspeitos: "   . $resumo['covid']['suspeito'] ?? 0;
+$coluna2[2] = "Descartados: " . $resumo['covid']['descartado'] ?? 0; 
+
+$vars = get_defined_vars();
+//echo "<pre>"; print_r($vars); exit(0); 
 ?>
 <div  id="conteudo-mapa">
 
@@ -107,7 +159,6 @@ unset($resumo['covid']['']);
             margin: 1%;
         }
         .fixed-action-btn{
-            /*        display: none;*/
             bottom: 64px !important;
         }
 
@@ -119,33 +170,30 @@ unset($resumo['covid']['']);
             width: 100%;
             padding: 0;
         }
-        table{
+        table:not(#tb-resumo){
             font-size: 9pt;
             width: 100%;
         }
-        table thead th {
+        table:not(#tb-resumo) thead th {
             padding: 1px  5px;
             border: solid 1px silver;
             text-align: center;
         }
 
-        table thead th.titulo-tabela{
+        table:not(#tb-resumo) thead th.titulo-tabela{
             font-family: Arial;
             font-size: 12pt !important;
             padding: 8px;
             text-align: left;
         }
 
-        table tbody tr td{
+        table:not(#tb-resumo) tbody tr td{
             border-right: solid 1px silver;
             border-left: solid 1px silver;
         }
-        table tbody tr:nth-child(2n-1){
+        table:not(#tb-resumo) tbody tr:nth-child(2n-1){
             background-color: #f0f0f0;
         }
-        /*    table > tbody > tr.par {
-                background-color: #f1f1f1 !important; 
-            }*/
 
         div.titulo{
             text-align: center;
@@ -161,15 +209,11 @@ unset($resumo['covid']['']);
         fieldset > legend{
             font-size: 16pt;
         }
-        table tbody tr td:not(.texto-esquerdo){
+        table:not(#tb-resumo) tbody tr td:not(.texto-esquerdo){
             text-align: center;
         }
 
-        table td:not(.quebravel){
-            /* white-space: nowrap /**/
-        }
-
-        table tbody td.truncate{
+        table:not(#tb-resumo) tbody td.truncate{
             width: 250px;
             white-space: nowrap;
             overflow: hidden;
@@ -182,30 +226,6 @@ unset($resumo['covid']['']);
         .container .row{
             margin-left: 0;
             margin-right: 0;
-        }
-
-        #alerta-need-update{
-            position: absolute;
-            display: block;
-            right: 20px;
-            top: 110px;
-            background-color: #d50000;
-            color: white;
-            padding: 6px;
-            border-radius: 4px;
-            font-weight: bold;
-            display: none;
-            overflow: hidden;
-            height: 32px;
-            width: 75px;
-            transition-delay: 0.0s;
-            transition-duration: 0.25s;
-            transition-property: width;
-            transition-timing-function: ease-in;
-        }
-
-        #alerta-need-update:hover{
-            width: 500px;
         }
 
         .remover-linha i, .desocupar-leito i{
@@ -254,7 +274,7 @@ unset($resumo['covid']['']);
             transition-duration: 0.5s;        
         }
 
-        table tbody tr:hover td div.acoes-pagina{
+        table:not(#tb-resumo) tbody tr:hover td div.acoes-pagina{
             opacity: 1;
         }
 
@@ -297,23 +317,28 @@ unset($resumo['covid']['']);
             .no-print{
                 display: none !important;
             }
-            table ul{
+            table ul{  
                 font-size: 8pt !important;
             }
             
             ul, li{
                 list-style: none !important;
             }
-            ul.resumo{
-                font-size: 9pt !important;
-            }
-            div.resumo{
-                margin-top: 5mm !important;
-                padding-top: 3mm !important;
-            }
             
             p.titulo-relatorio{
                 margin-bottom: 5mm !important;
+            }
+            
+            #tb-resumo tbody tr{
+                font-size: 8pt !important;
+            }
+            
+            #tb-resumo thead{
+                font-size: 10pt !important;
+            }
+            
+            #tb-resumo{
+                margin-top: 5mm !important;
             }
         }
     </style>
@@ -321,42 +346,43 @@ unset($resumo['covid']['']);
         <div class="corpo">
             <fieldset>
                 <p class="center titulo-relatorio" style="text-align: center; font-size: 16pt; font-weight: bold">Mapa de Leitos - Hospital Universitário da UFGD</p>
-                <p>Relatório gerado em: <span id="hora-gerado"><?= $horaGeradoLegivel ?></span></p>
-                <div class="resumo col s6" style="width: 48%; float: left">
-                    <div>Total de pacientes: <span class="ocupado"><?= $resumo['situacao']['OCUPADO'] ?></span></div>
-                    <p>Situação dos leitos: </p>
-                    <ul class="resumo">
+                <p style="font-size: 8pt; margin: 5px;">Relatório gerado em: <span id="hora-gerado"><?= $horaGeradoLegivel ?></span></p>
+                <table id="tb-resumo">
+                    <thead>
+                        <tr>
+                            <th colspan="2" style="text-align: left">Total de leitos ativos: <?=$totalAtivo?></th>
+                        </tr>
+                        <tr>
+                            <th colspan="2" style="text-align: left">Total de pacientes: <span class="ocupado"><?= $resumo['situacao']['OCUPADO'] ?></span></th>
+                        </tr>
+                        <tr>
+                            <th>Situação dos leitos:</th>
+                            <th>COVID 19:</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                         <?php
                         $ocupados = $resumo['situacao']['OCUPADO'];
+                        $i = 0;
                         foreach ($resumo['situacao'] as $situacao => $total) {
                             $class = mb_strtolower(str_replace(" ", "_", $situacao));
                             $todasClassesSituacoes .= " $class";
+                            $textoColuna1 = $situacao . ": <span>$total</span>";
+                            $textoColuna2 = isset($coluna2[$i]) ? $coluna2[$i] : "";
+                            $i++;
+                            ?>
+                        <tr class="linha-resumo">
+                            <td class="<?=$class?>" style="text-align: left"><?=$textoColuna1?></td>
+                            <td class=""><?=$textoColuna2?></td>
+                        </tr>
                             
-                            if ((strpos($situacao, "OCUPADO") !== FALSE) && (strpos($situacao, "DESOCUPADO") === FALSE)) {
-                                $excedente = $resumo['tipo']['EXCEDENTE'];
-                                $normal = $total - $excedente;
-                                $total_sem_pagoecia = $total - $total_pago_e_cia;
-                                $ativos_sem_pagoecia = $total_sem_pagoecia - $excedente_pago_co_psa;
-                                $excedente_sem_pagoecia = $excedente - $excedente_pago_co_psa;
-                                echo "<li class='$class'>$situacao: <span>$total [Leitos Ativos: $normal | Excedente: $excedente]</span></li>";
-                                echo "<li class='$class'>OCUPADO <small>(exceto PAGO, PAGO COVID, CO e PSA): </small><span>$total_sem_pagoecia  [Leitos Ativos: $ativos_sem_pagoecia| Excedente: $excedente_sem_pagoecia]</span></li>";
-                            } else {
-                                echo "<li class='$class'>$situacao: <span>$total</span></li>\n";
-                            }
-                        }
+                        <?php }
                         ?>
-                    </ul>   
-                </div>
-                <div class="resumo col s6" style="width: 48%; float: left">
-                    <p><strong>Covid 19</strong></p>
-                    <ul class="resumo">
-                        <li>Confirmados: <?=$resumo['covid']['confirmado'] ?? 0?></li>
-                        <li>Suspeitos: <?=$resumo['covid']['suspeito'] ?? 0?></li>
-                        <li>Descartados: <?=$resumo['covid']['descartado'] ?? 0?></li>
-                    </ul>
-                </div>
+                    </tbody>
+                </table>
             </fieldset>
-            <fieldset>
+
+            <fieldset style="margin-top: 8mm">
 <?php
 $listaSituacoes = array();
 $contadorLinhas = 0;
@@ -364,7 +390,7 @@ $listaTipos = array();
 $listaCovid = array();
 foreach ($tabela as $i => $t) {
     ?>
-                    <table cellspacing="0" cellpadding="0" class="bordered" style="margin-bottom: 25px;">
+                    <table cellspacing="0" cellpadding="0" class="bordered" style="margin-bottom: 25px;" id="mapa-tb-<?=$i?>">
                         <thead>
                             <tr>
                                 <th class="remover"></th>
@@ -400,7 +426,7 @@ foreach ($tabela as $i => $t) {
         foreach ($linha as $campo => $valor) {
             $$campo = $valor == NULL ? "" : $valor;
         }
-        $covid = "";
+        $covid = FALSE;
         $classCovid = "";
         if(isset($situacao_covid)){
             if($situacao_covid !== ''){
@@ -469,7 +495,11 @@ foreach ($tabela as $i => $t) {
                                     <td class="municipio"><?= $municipio ?></td>
                                     <td class="data-internacao"><?= $data_internacao ?></td>
                                     <td class="dias-internados"><?= $dias_internados ?></td>
-                                    <td class="covid"><span class="badge <?= $classCovid ?>"><?= $covid ?></span></td>
+                                    <td class="covid">
+                                        <?php if($covid) {?>
+                                        <span class="badge <?= $classCovid ?>"><?= $covid ?></span>
+                                        <?php } ?>
+                                    </td>
                                     <td class="remover">
                                         <div class="acoes-pagina">
                                             <a href="#" title="Remover linha" class="remover-linha"><i class="material-icons">delete_sweep</i></a>
@@ -648,6 +678,7 @@ foreach ($tabela as $i => $t) {
 
 
     $("#bt-pdf").on('click', function (e) {
+        $(".remover").remove();
         e.preventDefault();
         $interval = window.setInterval(function () {
             $i++;
@@ -675,7 +706,6 @@ foreach ($tabela as $i => $t) {
 //        );
         $(".content").fadeOut();
         $("#aguardar").fadeIn();
-        $(".remover").remove();
         $(".titulo-tabela").attr("colspan", "11");
         $html = $(".content").html();
         $("#hidden-html").val($html);

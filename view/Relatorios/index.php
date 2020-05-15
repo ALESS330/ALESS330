@@ -1,14 +1,18 @@
 #{botoes}
 <div class="fixed-action-btn">
-    <a  href="@{Relatorios->cadastro()}" class="btn-floating btn-large waves-effect waves-light red" id="btn-novo" title="Cadastrar novo Relatório">
+    <a  href="@{Relatorios->novo()}" class="btn-floating btn-large waves-effect waves-light red" id="btn-novo" title="Criar novo relatório">
         <i class="material-icons">add</i></a>
 </div>
 #{/botoes}
 
-#{/scriptPagina}
 <style type="text/css">
     table tbody tr td div .btn{
         padding: 0 10px !important;
+    }
+    
+    td.descricao-relatorio{
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 </style>
 
@@ -19,11 +23,12 @@
                 <span id="totalizador" style="display: none" class="badge blue white-text">%d registros de %d</span>
             </tr>
             <tr>
-                <th></th>
-                <th>Descrição</th>
-                <th>Nome</th>
-                <th>Datasource</th>
-                <th></th>
+                <th style="width: 5%"></th>
+                <th style="width: 60%">Descrição</th>
+                <th style="width: 15%">Nome</th>
+                <th style="width: 10%">Datasource</th>
+                <th style="width: 5%">Ativo</th>
+                <th style="width: 5%"></th>
             </tr>
         </thead>
         <tbody>
@@ -31,19 +36,17 @@
         </tbody>
     </table>
 
-    #{modal}
-    Deseja realmente excluir esse registro?
-    #{/modal}
 </div>
 <script type="text/x-jsrender" id="tabela-relatorios-tmpl">
 <tr>
  <td><i class="material-icons">{{:icone}}</i></td>
-    <td>{{:descricao}}</td>
+ <td class="descricao-relatorio">{{:descricao}}</td>
     <td title="{{:descricao}}">
         <a href="/relator/relatorio/{{:datasource}}/{{:nome}}">{{:nome}}</a>
     </td>    
     <td>{{:datasource}}</td>
-    <td>
+    <td>{{if ativo}}Sim{{else}}Não{{/if}}</td>
+    <td style="width: 100px">
         <div class="acoes right">        
             <a href="/relator/relatorio/{{:id}}/propriedades" title="Propriedades"><i class="material-icons">settings</i></a>
             <a href="/relator/relatorio/{{:id}}" title="Editar"><i class="material-icons">edit</i></a>
