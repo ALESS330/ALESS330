@@ -67,12 +67,25 @@ $observacoes[13]['isolamento-respiratorio'] = "** Leito de isolamento respirató
 $observacoes[16]['isolamento-respiratorio'] = "** Leito de isolamento respiratório</br>\n";
 
 $situacoesCovid['descartado'] = "Descartado";
+$situacoesCovid['descartado_tr'] = "Descartado TR";
+$situacoesCovid['descartado_pcr'] = "Descartado PCR";
+$situacoesCovid['descartado_tr_pcr'] = "Descartado TR e PCR";
+$situacoesCovid['descartado_clinico'] = "Descartado Clínico";
 $situacoesCovid['suspeito'] = "Suspeito";
+$situacoesCovid['confirmado_tr'] = "Confirmado TR";
 $situacoesCovid['confirmado'] = "Confirmado";
+$situacoesCovid['confirmado_pcr'] = "Confirmado PCR";
 
 $classesCovid['descartado'] = "green darken-3 white-text";
+$classesCovid['descartado_tr'] = "green darken-3 white-text";
+$classesCovid['descartado_pcr'] = "green darken-3 white-text";
+$classesCovid['descartado_tr_pcr'] = "green darken-3 white-text";
+$classesCovid['descartado_clinico'] = "green darken-3 white-text";
+
 $classesCovid['suspeito'] = "yellow darken-3 white-text";
 $classesCovid['confirmado'] = "red darken-3 white-text";
+$classesCovid['confirmado_tr'] = "red darken-3 white-text";
+$classesCovid['confirmado_pcr'] = "red darken-3 white-text";
 
 const textaoSituacao = 'OCUPADO <small>(exceto PAGO, PAGO COVID, CO e PSA)</small>';
 
@@ -91,7 +104,16 @@ foreach ($dados as $i => $linha) {
 
     $resumo['tipo'][$linha['tipo_leito']] = isset($resumo['tipo'][$linha['tipo_leito']]) ? $resumo['tipo'][$linha['tipo_leito']] + 1 : 1;
     $resumo['situacao'][$linha['situacao_leito']] = isset($resumo['situacao'][$linha['situacao_leito']]) ? $resumo['situacao'][$linha['situacao_leito']] + 1 : 1;
-    $resumo['covid'][$linha['situacao_covid']] = isset($resumo['covid'][$linha['situacao_covid']]) ? $resumo['covid'][$linha['situacao_covid']] + 1 : 1;
+    if(strpos($linha['situacao_covid'], 'confirmado') !== false){
+        $resumo['covid']['confirmado']++;
+    }
+    if(strpos($linha['situacao_covid'], 'descartado') !== false){
+        $resumo['covid']['descartado']++;
+    }    
+    if(strpos($linha['situacao_covid'], 'suspeito') !== false){
+        $resumo['covid']['suspeito']++;
+    } 
+    //$resumo['covid'][$linha['situacao_covid']] = isset($resumo['covid'][$linha['situacao_covid']]) ? $resumo['covid'][$linha['situacao_covid']] + 1 : 1;
     
     //abaixo, verifico se esta unidade está dentre aquelas que são 
     //monitoradas para separação de contagem (pago_e_cia)
