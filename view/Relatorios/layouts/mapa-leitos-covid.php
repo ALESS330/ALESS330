@@ -75,6 +75,8 @@ $situacoesCovid['suspeito'] = "Suspeito";
 $situacoesCovid['confirmado_tr'] = "Confirmado TR";
 $situacoesCovid['confirmado'] = "Confirmado";
 $situacoesCovid['confirmado_pcr'] = "Confirmado PCR";
+$situacoesCovid['exposto'] = "Exposto";
+$situacoesCovid['recuperado'] = "Recuperado COVID";
 
 $classesCovid['descartado'] = "green darken-3 white-text";
 $classesCovid['descartado_tr'] = "green darken-3 white-text";
@@ -87,10 +89,15 @@ $classesCovid['confirmado'] = "red darken-3 white-text";
 $classesCovid['confirmado_tr'] = "red darken-3 white-text";
 $classesCovid['confirmado_pcr'] = "red darken-3 white-text";
 
+$classesCovid['exposto'] = "grey darken-4 white-text";
+$classesCovid['recuperado'] = "light-blue lighten-3";
+
 const textaoSituacao = 'OCUPADO <small>(exceto PAGO, PAGO COVID, CO e PSA)</small>';
 
 $resumo['covid']['confirmado'] = 0;
 $resumo['covid']['suspeito'] = 0;
+$resumo['covid']['exposto'] = 0;
+$resumo['covid']['recuperado'] = 0;
 $resumo['covid']['descartado'] = 0;
 
 foreach ($dados as $i => $linha) {
@@ -112,6 +119,12 @@ foreach ($dados as $i => $linha) {
     }    
     if(strpos($linha['situacao_covid'], 'suspeito') !== false){
         $resumo['covid']['suspeito']++;
+    } 
+    if(strpos($linha['situacao_covid'], 'exposto') !== false){
+        $resumo['covid']['exposto']++;
+    } 
+    if(strpos($linha['situacao_covid'], 'recuperado') !== false){
+        $resumo['covid']['recuperado']++;
     } 
     //$resumo['covid'][$linha['situacao_covid']] = isset($resumo['covid'][$linha['situacao_covid']]) ? $resumo['covid'][$linha['situacao_covid']] + 1 : 1;
     
@@ -167,6 +180,8 @@ $coluna = array();
 $coluna2[0] = "Confirmados: " . $resumo['covid']['confirmado'] ?? 0;
 $coluna2[1] = "Suspeitos: "   . $resumo['covid']['suspeito'] ?? 0;
 $coluna2[2] = "Descartados: " . $resumo['covid']['descartado'] ?? 0; 
+$coluna2[3] = "Expostos: " . $resumo['covid']['exposto'] ?? 0; 
+$coluna2[4] = "Recuperados COVID: " . $resumo['covid']['recuperado'] ?? 0; 
 
 $vars = get_defined_vars();
 //echo "<pre>"; print_r($vars); exit(0); 
