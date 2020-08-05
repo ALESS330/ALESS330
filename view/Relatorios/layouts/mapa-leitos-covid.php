@@ -77,6 +77,8 @@ $situacoesCovid['confirmado'] = "Confirmado";
 $situacoesCovid['confirmado_pcr'] = "Confirmado PCR";
 $situacoesCovid['exposto'] = "Exposto";
 $situacoesCovid['recuperado'] = "Recuperado COVID";
+$situacoesCovid['fim_monitoramento'] = "Fim do Monitoramento";
+
 
 $classesCovid['descartado'] = "green darken-3 white-text";
 $classesCovid['descartado_tr'] = "green darken-3 white-text";
@@ -91,6 +93,7 @@ $classesCovid['confirmado_pcr'] = "red darken-3 white-text";
 
 $classesCovid['exposto'] = "grey darken-4 white-text";
 $classesCovid['recuperado'] = "light-blue lighten-3";
+$classesCovid['fim_monitoramento'] = "hide-me";
 
 const textaoSituacao = 'OCUPADO <small>(exceto PAGO, PAGO COVID, CO e PSA)</small>';
 
@@ -190,6 +193,10 @@ $vars = get_defined_vars();
 
     <style>
 
+        .hide-me{
+            display: none !important;
+        }
+        
         .container{
             width: 98%;
             max-width: 100%;
