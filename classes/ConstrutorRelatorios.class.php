@@ -184,7 +184,7 @@ where true
     public function processaParametros($parametros, $sql) {
         unset($parametros['__ANONIMOS__']);
         foreach ($parametros as $nome => $valor) {
-            $sql = str_replace('$' . $nome, $valor, $sql);
+            $sql = str_replace('$' . $nome, urldecode($valor), $sql);
         }
         return $sql;
     }
