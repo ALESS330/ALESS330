@@ -2,9 +2,8 @@
 
 $_CONTROLE = "Application";
 $_ROTULO = "Emissão de Relatórios";
-
+ 
 class Application extends Controller {
-
     function publico() {
         return FALSE;
     }
