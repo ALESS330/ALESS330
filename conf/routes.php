@@ -2,9 +2,9 @@
 
 $routes = array();
 
-$routes["/"] = "Application->index";
-$routes['/printer'] = "Application->printers";
-$routes['/pdf'] = "Application->pdf_me";
+$routes["/"] = "Appplication->index";
+$routes['/printer'] = "Appplication->printers";
+$routes['/pdf'] = "Appplication->pdf_me";
 
 $routes["/relatorios"] = "Relatorios->index";
 $routes["/relatorio/{\d+:idRelatorio}/tela-parametros/salvar"]  = "Relatorios->salvarTelaParametros";
@@ -45,7 +45,7 @@ $routes["/rotulo/{\d+:id}"] = "Rotulos->cadastro";
 $routes["/rotulo/salvar"] = "Rotulos->salvar";
 
 
-$routes["/espelho"] = "Application->espelha";
+$routes["/espelho"] = "Appplication->espelha";
 
 $routes["/login"] = "Acessos->login";
 $routes["/logout"] = "Acessos->logout";

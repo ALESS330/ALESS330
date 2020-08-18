@@ -25,6 +25,7 @@ class ConstrutorRelatorios {
         } else {
             $sql = $sqlBanco;
         }
+        $_SESSION['sql_relatorio'] = $sql;
         $dados = $this->conector->getDados($sql, $conexaoRelatorio);
         return $dados;
     }
@@ -37,6 +38,7 @@ class ConstrutorRelatorios {
         $colunaGrupo = $estruturaRelatorio["coluna_grupo"];
         $nomeFilho = $estruturaRelatorio["nome_filho"];
         $dadosDesteRelatorio = $this->getDados($nome, $datasource);
+        $_SESSION['relatorio']['principal'] = $dadosDesteRelatorio;
         if ($estruturaRelatorio['tipo_composicao_id']) {
             switch ($estruturaRelatorio['nome_composicao']) {
                 case 'anexacao':
@@ -82,6 +84,7 @@ class ConstrutorRelatorios {
         $identificadorPrincipal = $estruturaPrincipal['campo_identificador_principal'];
         $identificadorComponente = $estruturaPrincipal['campo_identificador_componente'];
         $dadosComponente = $this->getDados($nc, $ec['nome_datasource']);
+        $_SESSION['relatorio']['componente'] = $dadosComponente;
         $dadosIndexadosComponente = array();
         foreach ($dadosComponente as $indiceComponente => $linhaComponente) {
             $dadosIndexadosComponente[$linhaComponente[$identificadorComponente]] = $linhaComponente;

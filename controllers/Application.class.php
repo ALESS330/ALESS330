@@ -30,7 +30,7 @@ class Application extends Controller {
     
     function pdf_me(){
         $dados['usuario'] = "Nome do Usuário";
-        $this->renderPDF($dados);
+        $this->renderPDF($dados); 
     }
 
 }

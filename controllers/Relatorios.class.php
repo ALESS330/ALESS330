@@ -212,7 +212,7 @@ class Relatorios extends Controller {
                 $a->login($url);
             } else if ($this->relatorio->checarAcesso($relatorio->id, $_SESSION['login'] ?? NULL) !== TRUE) {
                 $this->mensagemInfo("Acesso não autorizado a este relatório.");
-                $this->go2("Application->index");
+                $this->go2("Appplication->index");
                 exit();
             }//else if
         }//if (public)
@@ -256,6 +256,8 @@ class Relatorios extends Controller {
         if (!$data['relatorio']) {
             $dados = array();
             $dados['mensagem'] = "Dados não encontrados. Verifique os parâmetros";
+            $dados['debug'] = $_SESSION['sql_relatorio']; 
+            unset($_SESSION['sql_relatorio']);
             $erro = new Erro();
             $erro->generico($dados);
             exit();
