@@ -221,14 +221,12 @@ class Relatorios extends Controller {
         if ($relatorio->parametrizado && !$parametros) {
             $_SESSION['action'] = $this->router->link("Relatorios->gerar($datasource,$nomeRelatorio)"); //$router
             $rt = new RelatorioTela();
-            $_tela = $rt->getBy(array("relatorio_id" => $relatorio->id));
-            if (!isset($_tela[0])) {
+            $tela = $rt->getBy(array("relatorio_id" => $relatorio->id));
+            if (!isset($tela)) {
                 throw new Exception("Impossível buscar tela de parâmetros.", 5);
             }
-            $tela = $_tela[0];
             $formulario = new Formulario();
-            $_f = $formulario->getBy(array("id" => $tela->formulario_id));
-            $f = $_f[0];
+            $f = $formulario->getBy(array("id" => $tela->formulario_id));
             global $corSistema;
             $_SESSION['corEmprestada'] = $corSistema;
             $_SESSION['tituloEmprestado'] = $_ROTULO;
