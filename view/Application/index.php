@@ -12,7 +12,7 @@ $escondeBusca = true;
         margin-top: 18px;
         /*        margin: 18px 25px 18px 43px !important;*/
     }
-
+ 
     .lista-relatorios .relatorio{
         display: inline-block;
         width: 300px;

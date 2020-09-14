@@ -63,8 +63,10 @@ class ConstrutorRelatorios {
 
         $oDecorador = new Decorador();
         $decoradores = $oDecorador->decoradores($estruturaRelatorio['relatorio_id']);
+        
         if ($decoradores) {
-            $dadosDecorados = $oDecorador->decorar($dados, $decoradores);
+        $parametros = $_SESSION['parametros'];
+            $dadosDecorados = $oDecorador->decorar($dados, $decoradores, $parametros);
         } else {
             $dadosDecorados = $dados;
         }
