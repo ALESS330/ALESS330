@@ -1,7 +1,7 @@
 #{scriptPagina}
 <script type="text/javascript">
     $(document).ready(function () {
-        $('select').material_select();
+        $('select').formSelect();
         //$("#data-relatorio").mask("99/99/9999");
     });
 

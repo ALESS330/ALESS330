@@ -11,7 +11,7 @@ $user = new Usuario($_SESSION['username'] ?? NULL);
 #{scriptPagina}
 <script type="text/javascript">
     $(document).ready(function () {
-        $("select").material_select();
+        $("select").formSelect();
         $('select[required]').css({
             display: 'inline',
             position: 'absolute',
