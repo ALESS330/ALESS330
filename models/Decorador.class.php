@@ -62,7 +62,7 @@ class Decorador extends Model {
             $novaLinha[$coluna] = $this->decoraValor($decorador, $valorCampo, $coluna, $novaLinha, $valoresParametros);
         }
         if (count($decoradores)) {
-            $novaLinha = $this->decoraLinha($novaLinha, $decoradores);
+            $novaLinha = $this->decoraLinha($novaLinha, $decoradores, $valoresParametros);
         }
         return $novaLinha;
     }
