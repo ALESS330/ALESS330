@@ -534,7 +534,7 @@
     ?>
     </div>
 
-    <pre>
+    <!-- pre>
     <?php //print_r($justificativas); ?>
     <?php //print_r($antimicrobianos); ?>
     <?php //print_r($pareceres); ?>
@@ -543,5 +543,5 @@
     <?php // print_r($pareceresProrrogacoes); ?>
     <?php //print_r($exclusoes); ?>
     <?php //print_r($dados); ?>
-    </pre>
+    </pre -->
 </div>
