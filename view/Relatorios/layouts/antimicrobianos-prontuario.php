@@ -8,6 +8,7 @@
     $classificacoes[5] = 'Infecção Neonatal - IRAS Precoce – diagnóstico nas primeiras 48h de vida, com fator de risco materno para infecção';
     $classificacoes[6] = 'Infecção Neonatal - IRAS tardia – diagnóstico após 48h de vida';
 
+    
 
     function resistenciasSelecionadas($valor){
         if($valor == '0,'){
@@ -38,7 +39,46 @@
             }
         }
         return $selecionados;
-    }
+    }//resistencias_selecionadas
+
+    $vias["TB"] = "BUCAL";
+    $vias["CA"] = "Caudal";
+    $vias["TC"] = "Dermatológica";
+    $vias["VD"] = "Dialisador";
+    $vias["EV"] = "ENDOVENOSA";
+    $vias["PD"] = "Epidural";
+    $vias["VG"] = "GASTROSTOMIA";
+    $vias["IN"] = "Inalatória";
+    $vias["IO"] = "Inalatória ora";
+    $vias["IA"] = "Intra-arterial";
+    $vias["AR"] = "Intra-articula";
+    $vias["ID"] = "Intra-dérmica";
+    $vias["IM"] = "Intra-muscular";
+    $vias["IP"] = "Intra-peritoni";
+    $vias["IT"] = "Intra-tecal";
+    $vias["TQ"] = "INTRATRAQUEAL";
+    $vias["VV"] = "Intra-vaginal";
+    $vias["IV"] = "INTRAVENOSA";
+    $vias["BX"] = "Intra-vesical";
+    $vias["VJ"] = "JEJUNOSTOMIA";
+    $vias["VN"] = "Nasal";
+    $vias["NE"] = "NASOENTERAL";
+    $vias["NG"] = "NASOGASTRICA";
+    $vias["OC"] = "Oftálmica";
+    $vias["VO"] = "Oral";
+    $vias["OT"] = "Otolóigica";
+    $vias["PB"] = "Peribulbar";
+    $vias["PN"] = "Perineural";
+    $vias["VS"] = "Por Sonda";
+    $vias["DD"] = "Pós-dialisador";
+    $vias["AD"] = "Pré-dialisador";
+    $vias["VR"] = "Retal";
+    $vias["SC"] = "Subcutânea";
+    $vias["SL"] = "Sublingual";
+    $vias["TP"] = "TOPICO";
+    $vias["TD"] = "Transdérmica";
+    $vias["TR"] = "Traqueostomia";
+    $vias["UR"] = "Uretral";
 
     $paciente = 
     $justificativas = 
@@ -78,6 +118,7 @@
             , 'resistencias'
             , 'peso'
             , 'insuficiencia_renal'
+            , 'clearence_creatina'            
         ];
         $j = new stdClass();
         $j->id = $l['justificativa_id'];
@@ -130,10 +171,16 @@
     ,$dados);
 
     foreach($pareceresDuplicados as $p){
+        if(!$p){
+            continue;
+        }
         $pareceres[$p->justificativa_id] = $p;
     }
 
-    $antimicrobianosPareceres = array_map(function($l){
+    $antimicrobianosPareceresDuplicados = array_map(function($l){
+        if(!$l['antimicrobiano_parecer_id']){
+            return false;
+        }
         $ap = new stdClass();
 
         $ap->id = $l['antimicrobiano_parecer_id'];
@@ -149,6 +196,13 @@
 
         return $ap; 
     }, $dados);
+
+    foreach($antimicrobianosPareceresDuplicados as $apd){
+        if(!$apd){
+            continue;
+        }
+        $antimicrobianosPareceres[$apd->antimicrobiano_prescrito_id] = $apd;
+    }
 
     $prorrogacoes = array_map(function($l){
 
@@ -226,13 +280,7 @@
     
     foreach($antimicrobianos as $justificativaId => $listaAtbs){
         foreach($listaAtbs as $a){
-            $appDuplicados = array_filter($antimicrobianosPareceres, function($app) use ($a){
-                if($app){
-                    return  $app->antimicrobiano_prescrito_id = $a->id;
-                }
-                return false;
-            });
-            $a->antimicrobianoParecer = array_shift($appDuplicados);
+            $a->antimicrobianoParecer = $antimicrobianosPareceres[$a->id] ?? false;
             $a->prorrogacoes = array_filter($prorrogacoes, function($p) use ($a){
                 if($p){
                     return $p->antimicrobiano_prescrito_id == $a->id; 
@@ -295,13 +343,19 @@
         margin-bottom: 2px;
     }
 
-    tr.parecer th{
+    tr.parecer td{ 
         font-weight: normal;
+        margin-top: 2px;
+        border-top: solid 5px white;
         background-color: #eeeeee;
     }
 
     span.alterado:before{
         content: '(';
+    }
+    
+    blockquote ul{
+        font-size: 14px;
     }
 
     span.alterado:after{
@@ -312,8 +366,17 @@
         text-decoration: line-through;
     }
 
-    table tbody tr td, table tbody thead tr.colunas th{
-        font-size: 14px;
+    table{
+        font-size: 12px;
+    }
+
+    table tbody tr, table tbody tr td{
+        height: 32px !important;
+        padding: 1px !important;
+    }
+
+    table tr.impar{
+        background-color: #eeeeee;
     }
 </style>
 
@@ -339,81 +402,71 @@
             $resistenciasCadastradas = resistenciasSelecionadas($j->resistencias);
             echo '<div class="justificativa">';
             if(count($justificativas) >= 1){
-                echo "<h6> " . ($i+1) ."ª justificativa <small>#($j->id)</small><h6>\n";
+                //echo "<h6> " . ($i+1) ."ª justificativa <small>#($j->id)</small><h6>\n";
+                echo "<p>Justificativa preenchida em $j->data_preenchimento, por $j->preenchido_por</p>";
             } ?>
-        <ul>
-            <li><strong>Unidade Funcional: </strong><?= $j->unidade_funcional?></li>
-            <li><strong>Leito: </strong><?= $j->leito?></li>
-            <li><strong>Idade do paciente <small>(no momento da justificativa)</small>: </strong><?= $j->idade?></li>
-            <li>&nbsp;</li>
-            <li><strong>Data de preenchimento: </strong><?= $j->data_preenchimento?></li>
-            <li><strong>Preenchida por: </strong><?= $j->preenchido_por?></li>
-        </ul>
 
-        <div class="grupo-info">
-            <h6>Indicação do antimicrobiano</h6>
+        <blockquote>
+            <ul>
+                <li><strong>Unidade Funcional: </strong><?= $j->unidade_funcional?></li>
+                <li><strong>Leito: </strong><?= $j->leito?></li>
+                <li><strong>Idade do paciente <small>(no momento da justificativa)</small>: </strong><?= $j->idade?></li>
+            </ul>
+        </blockquote>
+        
+        <h6>Indicação do antimicrobiano</h6>
+        <blockquote>
             <ul>
                 <li><?= $j->clinico_cirurgico == 'clinico' ? 'Clínico' : 'Cirúrgico'?></li>
                 <li><?= $j->profilatico_terapeutico == 'terapeutico' ? 'Terapeutico' : 'Profilático'?></li>
                 <li><?= $j->empirico_guiado == 'empirico' ? 'Empírico' : 'Guiado'?></li>
             </ul>
-        </div>
-
-        <ul>
-            <li><strong>Diagnóstico: </strong><?= $j->diagnostico?></li>
-            <li><strong>Classificação da infecção: </strong><?= $classificacoes[$j->classificacao_infeccao] ?></li>
-            <?php if($j->profilaxia_cirurgica){?>
-                <li><strong>Profilaxia cirúrgica: </strong><?= $j->profilaxia_cirurgica?></li>
-            <?php } ?>
-            <?php if($j->profilaxia_clinica){?>
-                <li><strong>Profilaxia clínica: </strong><?= $j->profilaxia_clinica?></li>
-            <?php } ?>            
-            <li><strong>Uso prévio de antibióticos: </strong><?= $j->uso_previo_antibioticos ?></li>
-            <li><strong>Culturas solicitadas: </strong> <?= $j->culturas_solicitadas?></li>
-            <?php 
-                if($j->cultura_positiva_atual){
-                    echo "<li><strong>Culturas positiva atual: </strong>Sim</li>";
-                    $bacteria = strlen(trim($j->bacteria_isolada)) > 0  ? $j->bacteria_isolada : ' (sem informação cadastrada)';
-                    echo "<li><strong>Bacteria isolada: </strong>$bacteria</li>";
-                }else{
-                    echo "<li><strong>Culturas positiva atual: </strong>Não</li>";
-                }
-            ?>
-            <li><strong>Amostra: </strong><?= strlen(trim($j->amostra)) > 0 ? $j->amostra : '(sem informação cadastrada)' ?></li>
-            <li><strong>Resistências: </strong><?php 
-                if(count($resistenciasCadastradas) == 0){
-                    echo "(sem informação cadastrada)";
-                }else{
-                    echo "<ul>\n";
-                    foreach($resistenciasCadastradas as $r){
-                        echo "<li>&nbsp;&nbsp;&nbsp;$r</li>\n";
-                    }
-                    echo "</ul>\n";
-                }
-            ?></li>
-            <li><strong>Peso: </strong><?= $j->peso ?></li>
-            <li><strong>Insuficiência Renal: </strong><?= $j->insuficiencia_renal?></li>
-            <?php if($j->insuficiencia_renal == 'Sim') {
-                echo "<li></strong> Clearence de creatina: </strong> $j->clearence_creatina</li>\n";
-            } ?>
-        </ul>
+        </blockquote>
         
-        <h6>Antimicrobianos prescritos nesta justificativa</h6>
+
+        <blockquote>
+            <ul>
+                <li><strong>Diagnóstico: </strong><?= $j->diagnostico?></li>
+                <li><strong>Classificação da infecção: </strong><?= $classificacoes[$j->classificacao_infeccao] ?></li>
+                <?php if($j->profilaxia_cirurgica){?>
+                    <li><strong>Profilaxia cirúrgica: </strong><?= $j->profilaxia_cirurgica?></li>
+                <?php } ?>
+                <?php if($j->profilaxia_clinica){?>
+                    <li><strong>Profilaxia clínica: </strong><?= $j->profilaxia_clinica?></li>
+                <?php } ?>            
+                <li><strong>Uso prévio de antibióticos: </strong><?= $j->uso_previo_antibioticos ?></li>
+                <li><strong>Culturas solicitadas: </strong> <?= $j->culturas_solicitadas?></li>
+                <?php 
+                    if($j->cultura_positiva_atual){
+                        echo "<li><strong>Culturas positiva atual: </strong>Sim</li>";
+                        $bacteria = strlen(trim($j->bacteria_isolada)) > 0  ? $j->bacteria_isolada : ' (sem informação cadastrada)';
+                        echo "<li><strong>Bacteria isolada: </strong>$bacteria</li>";
+                    }else{
+                        echo "<li><strong>Culturas positiva atual: </strong>Não</li>";
+                    }
+                ?>
+                <li><strong>Amostra: </strong><?= strlen(trim($j->amostra)) > 0 ? $j->amostra : '(sem informação cadastrada)' ?></li>
+                <li><strong>Resistências: </strong><?php 
+                    if(count($resistenciasCadastradas) == 0){
+                        echo "(sem informação cadastrada)";
+                    }else{
+                        echo "<ul>\n";
+                        foreach($resistenciasCadastradas as $r){
+                            echo "<li>&nbsp;&nbsp;&nbsp;$r</li>\n";
+                        }
+                        echo "</ul>\n";
+                    }
+                ?></li>
+                <li><strong>Peso: </strong><?= $j->peso ?></li>
+                <li><strong>Insuficiência Renal: </strong><?= $j->insuficiencia_renal?></li>
+                <?php if($j->insuficiencia_renal == 'Sim') {
+                    echo "<li></strong> Clearence de creatina: </strong> $j->clearence_creatina</li>\n";
+                } ?>
+            </ul>            
+        </blockquote>
+        
         <table>
             <thead>
-                <?php
-                    if($j->parecer){ ?>
-                    <tr class="parecer">
-                        <th colspan="8">
-                            <p>Parecer desta justificativa elaborado por : <strong><?= $j->parecer->responsavel_parecer?></strong> em <strong><?= $j->parecer->data_hora_parecer?></strong>
-                            <blockquote>
-                            <p>
-                                <?= $j->parecer->conteudo_parecer ?>
-                            </p>
-                            </blockquote>
-                        </th>
-                    </tr>
-                <?php } ?>
                 <tr class="colunas">
                     <th>Medicamento <small>(codigo)</small></th>
                     <th>Dose</th>
@@ -439,14 +492,17 @@
                     $prorrogacoes = array();
                     $suspenso = 
                     $exclusao = false;
+                    $imparPar = 0;
                     foreach($j->antimicrobianosPrescritos as $ap){
+                        $classeImparPar = $imparPar++ % 2 == 1 ? "impar" : "par";
+                        
                         $descricaoMedicamento = $ap->descricao_medicamento;
                         $codigoMedicamento = $ap->codigo_medicamento;
                         $dose = $ap->dose_prescrita;
                         $posologia = $ap->posologia_prescrita;
                         $intervalo = $ap->intervalo_prescrito;
-                        $via = $ap->via_prescrita;
-                        $suspenso = $ap->suspenso == 'Sim';
+                        $via = $vias[$ap->via_prescrita] ?? false;
+                        $suspenso = ($ap->suspenso == 'Sim');
                         if($ap->antimicrobianoParecer){
                             $app = $ap->antimicrobianoParecer;
                             if($app->autorizacao == 'Sim'){
@@ -463,7 +519,7 @@
                                     $intervalo = "<span class='alterado'>$ap->intervalo_prescrito</span> $app->intervalo_parecer";
                                 }
                                 if($app->via_parecer != $ap->via_prescrita){
-                                    $via = "<span class='alterado'>$ap->via_prescrita</span> $app->via_parecer";
+                                    $via = "<span class='alterado'>". $vias[$ap->via_prescrita]."</span>".$vias[$app->via_parecer];
                                 }                                
                                 if($app->duracao_parecer != $ap->dias_propostos_prescritos){
                                     $dose = "<span class='alterado'>$ap->dias_propostos_prescritos</span> $app->duracao_parecer";
@@ -471,8 +527,10 @@
                             } else {
                                 $alteracao = 'Não';
                             }//alteracao
+                        } else {
+                            $alteracao = $autorizacao = ' - '; 
                         }?>
-                    <tr>
+                    <tr class="<?= $classeImparPar ?>">
                         <td><?= $descricaoMedicamento?><small> (<?=$codigoMedicamento?>)</small></td>
                         <td><?= $dose ?></td>
                         <td><?= $posologia ?></td>
@@ -485,7 +543,7 @@
                     <?php 
                         if($suspenso){
                             $suspenso = false;
-                            echo "<tr><td colspan='8'><strong>$descricaoMedicamento foi suspenso no ato da justificativa</strong></td></tr>";
+                            echo "<tr class='$classeImparPar'><td colspan='8'><strong>$descricaoMedicamento foi suspenso no ato da justificativa</strong></td></tr>";
                         }
                     ?>
                 <?php 
@@ -494,7 +552,7 @@
                             //$textoTotalProrrogacoes = "Este medicamento foi prorrogado $nProrrogacoes vez" . ($nProrrogacoes == 1 ? 'es' :'');
                             foreach($ap->prorrogacoes as $i => $prorrogacao){
                                 ?>
-                                <tr>
+                                <tr class="<?= $classeImparPar ?>">
                                     <td colspan="8" class="texto-pequeno">
                                         <small>Solicitação de prorrogação por <?= $prorrogacao->dias_solicitados_prorrogacao ?> dias feita em
                                         <?= $prorrogacao->data_solicitacao_prorrogacao ?>, por <?=  $prorrogacao->usuario_prorrogacao?>.</small>
@@ -522,10 +580,29 @@
                         if($ap->exclusoes){
                             $e = $ap->exclusoes;
                             $motivoExclusao = $e->motivo_exclusao == 'outro' ? $e->conteudo_observacao_exclusao : $e->motivo_exclusao;
-                            echo "<tr><td colspan='8'><small>$descricaoMedicamento foi excluído em $e->data_hora_exclusao por $e->responsavel_exclusao, pelo motivo: $motivoExclusao</small></td></tr>";
+                            echo "<tr class='$classeImparPar'><td colspan='8'><small>$descricaoMedicamento foi excluído em $e->data_hora_exclusao por $e->responsavel_exclusao, pelo motivo: $motivoExclusao</small></td></tr>";
                         }
                     }//foreach antimicrobianosPrescritos
                 ?>
+                <?php
+                    if($j->parecer){ ?>
+                    <tr class="parecer">
+                        <td colspan="8">
+                            <p>Parecer desta justificativa elaborado por : <strong><?= $j->parecer->responsavel_parecer?></strong> em <strong><?= $j->parecer->data_hora_parecer?></strong>
+                            <blockquote>
+                            <p>
+                                <?= $j->parecer->conteudo_parecer ?>
+                            </p>
+                            </blockquote>
+                        </td>
+                    </tr>
+                <?php } else{ ?>
+                    <tr class="parecer">
+                        <td colspan="8">
+                            <p class="center">Não existe parecer para esta justificativa</p>
+                        </td>
+                    </tr>
+                <?php } //if parecer ?>
             </tbody>
         </table>
         <?php 
@@ -534,14 +611,17 @@
     ?>
     </div>
 
-    <!-- pre>
-    <?php //print_r($justificativas); ?>
-    <?php //print_r($antimicrobianos); ?>
-    <?php //print_r($pareceres); ?>
-    <?php //print_r($antimicrobianosPareceres); ?>
-    <?php //print_r($prorrogacoes); ?>
-    <?php // print_r($pareceresProrrogacoes); ?>
-    <?php //print_r($exclusoes); ?>
-    <?php //print_r($dados); ?>
-    </pre -->
+
+    <?php
+    //echo "<pre>";
+    //print_r($justificativas); 
+    //print_r($antimicrobianos); 
+    //print_r($pareceres); 
+    //print_r($antimicrobianosPareceres); 
+    //print_r($prorrogacoes); 
+    // print_r($pareceresProrrogacoes); 
+    //print_r($exclusoes); 
+    //print_r($dados); 
+    //echo "<pre>";
+    ?>
 </div>
