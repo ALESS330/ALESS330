@@ -487,6 +487,7 @@
                     = $intervalo 
                     = $via 
                     = $duracao
+                    = $dias
                     = $autorizacao
                     = $alteracao =  "";
                     $prorrogacoes = array();
@@ -501,6 +502,7 @@
                         $dose = $ap->dose_prescrita;
                         $posologia = $ap->posologia_prescrita;
                         $intervalo = $ap->intervalo_prescrito;
+                        $dias = $ap->dias_propostos_prescritos;
                         $via = $vias[$ap->via_prescrita] ?? false;
                         $suspenso = ($ap->suspenso == 'Sim');
                         if($ap->antimicrobianoParecer){
@@ -522,7 +524,7 @@
                                     $via = "<span class='alterado'>". $vias[$ap->via_prescrita]."</span>".$vias[$app->via_parecer];
                                 }                                
                                 if($app->duracao_parecer != $ap->dias_propostos_prescritos){
-                                    $dose = "<span class='alterado'>$ap->dias_propostos_prescritos</span> $app->duracao_parecer";
+                                    $dias = "<span class='alterado'>$ap->dias_propostos_prescritos</span> $app->duracao_parecer";
                                 }                                
                             } else {
                                 $alteracao = 'Não';
@@ -536,7 +538,7 @@
                         <td><?= $posologia ?></td>
                         <td><?= $intervalo ?></td>
                         <td><?= $via ?></td>
-                        <td><?= $duracao ?></td>
+                        <td><?= $dias ?></td>
                         <td><?= $autorizacao ?></td>
                         <td><?= $alteracao ?></td>
                     </tr>
