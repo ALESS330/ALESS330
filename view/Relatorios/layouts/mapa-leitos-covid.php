@@ -30,7 +30,8 @@ $excedente_pago_e_cia = 0;
 $codigoUFAtual = $dados[0]['codigo_unidade_funcional'];
 
 $leitosObservadosBerco = ["0001A", "0001B", "0001C", "0001D", "0009A", "0009B", "0009C", "0009D", "0010A", "0010B", "0010C", "0010D"];
-$leitosObservadosIsolamentoRespiratorio = ["0063C", "0063D", "0064G", "0065I", "0065J", "0050A", "0051A","0004A", "0005A", "0006A"];
+$leitosObservadosIsolamentoRespiratorio = ["0045A", "0048A", "0046A","0049A", "0063C", "0063D", "0064G", "0065I", "0065J", "0050A", "0051A","0004A", "0005A", "0006A"];
+$leitosObservadosIsolamentoRespiratorioCoorte = ["0047A", "0047B"];
 
 /*
   0 - DESOCUPADO
@@ -65,19 +66,22 @@ $observacoes[11]['isolamento-respiratorio'] = "** Leito de isolamento respirató
 $observacoes[12]['isolamento-respiratorio'] = "** Leito de isolamento respiratório</br>\n";
 $observacoes[13]['isolamento-respiratorio'] = "** Leito de isolamento respiratório</br>\n";
 $observacoes[16]['isolamento-respiratorio'] = "** Leito de isolamento respiratório</br>\n";
+$observacoes[16]['isolamento-respiratorio-coorte'] = "*** Leito de isolamento respiratório Coorte</br>\n";
 
-$situacoesCovid['descartado'] = "Descartado";
+
+$situacoesCovid['suspeito'] = "Suspeito";
+$situacoesCovid['suspeita-descartada'] = "Suspeita Descartada";
+$situacoesCovid['confirmado_tr'] = "Confirmado TR";
+$situacoesCovid['confirmado_pcr'] = "Confirmado PCR";
 $situacoesCovid['descartado_tr'] = "Descartado TR";
 $situacoesCovid['descartado_pcr'] = "Descartado PCR";
 $situacoesCovid['descartado_tr_pcr'] = "Descartado TR e PCR";
 $situacoesCovid['descartado_clinico'] = "Descartado Clínico";
-$situacoesCovid['suspeito'] = "Suspeito";
-$situacoesCovid['confirmado_tr'] = "Confirmado TR";
-$situacoesCovid['confirmado'] = "Confirmado";
-$situacoesCovid['confirmado_pcr'] = "Confirmado PCR";
 $situacoesCovid['exposto'] = "Exposto";
 $situacoesCovid['recuperado'] = "Recuperado COVID";
 $situacoesCovid['fim_monitoramento'] = "Fim do Monitoramento";
+//$situacoesCovid['confirmado'] = "Confirmado"; //obsoleto?
+//$situacoesCovid['descartado'] = "Descartado"; //obsoleto?
 
 
 $classesCovid['descartado'] = "green darken-3 white-text";
@@ -85,6 +89,7 @@ $classesCovid['descartado_tr'] = "green darken-3 white-text";
 $classesCovid['descartado_pcr'] = "green darken-3 white-text";
 $classesCovid['descartado_tr_pcr'] = "green darken-3 white-text";
 $classesCovid['descartado_clinico'] = "green darken-3 white-text";
+$classesCovid['suspeita-descartada'] = "green darken-3 white-text";
 
 $classesCovid['suspeito'] = "yellow darken-3 white-text";
 $classesCovid['confirmado'] = "red darken-3 white-text";
@@ -117,7 +122,7 @@ foreach ($dados as $i => $linha) {
     if(strpos($linha['situacao_covid'], 'confirmado') !== false){
         $resumo['covid']['confirmado']++;
     }
-    if(strpos($linha['situacao_covid'], 'descartado') !== false){
+    if(strpos($linha['situacao_covid'], 'descartad') !== false){
         $resumo['covid']['descartado']++;
     }    
     if(strpos($linha['situacao_covid'], 'suspeito') !== false){
@@ -517,6 +522,10 @@ foreach ($tabela as $i => $t) {
         }
         if (isset($observacoes[$i]['isolamento-respiratorio'])) {
             $leito = array_search(trim($leito), $leitosObservadosIsolamentoRespiratorio) !== FALSE ? "$leito **" : $leito;
+        }
+
+        if (isset($observacoes[$i]['isolamento-respiratorio-coorte'])) {
+            $leito = array_search(trim($leito), $leitosObservadosIsolamentoRespiratorioCoorte) !== FALSE ? "$leito ***" : $leito;
         }
          
         $cSituacao = mb_strtolower(str_replace(" ", "_", $situacao_leito));
