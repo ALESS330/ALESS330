@@ -3,6 +3,7 @@
         <option value="">Selecione e Impressora</option>
         <?php if ($user->isDeveloper()) { ?>
             <option value="HUGD_PULSEIRA_TESTE">TESTE SGPTI</option>
+            <option value="HUGD-PULS-TESTE">TESTE SGPTI 2</option>
         <?php } ?>
         <option value="HUGD-PULS-OBST01">Centro Obstétrico - Adulto</option>
         <option value="HUGD-PULS-OBST02">Centro Obstétrico - Neonato</option> 

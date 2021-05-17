@@ -30,8 +30,8 @@ $excedente_pago_e_cia = 0;
 $codigoUFAtual = $dados[0]['codigo_unidade_funcional'];
 
 $leitosObservadosBerco = ["0001A", "0001B", "0001C", "0001D", "0009A", "0009B", "0009C", "0009D", "0010A", "0010B", "0010C", "0010D"];
-$leitosObservadosIsolamentoRespiratorio = ["0045A", "0048A", "0046A","0049A", "0063C", "0063D", "0064G", "0065I", "0065J", "0050A", "0051A","0004A", "0005A", "0006A"];
-$leitosObservadosIsolamentoRespiratorioCoorte = ["0047A", "0047B"];
+$leitosObservadosIsolamentoRespiratorio = ["0045A", "0048A", "0046A","0049A", "0063C", "0063D", "0064G", "0065I", "0065J", "0050A", "0051A","0004A", "0005A", "0006A", "072015", "072001", "078001"];
+$leitosObservadosIsolamentoRespiratorioCoorte = ["0047A", "0047B", "072002", "072003", "072013", "072014", "075001", "075002", "076001", "076002"];
 
 /*
   0 - DESOCUPADO
@@ -62,11 +62,13 @@ $situacaoMostrarNome = [0, 22, 24, 50, 31, 35, 36, 37];
 
 $observacoes[3]['leito'] = "* O Leito é um berço";
 $observacoes[3]['isolamento-respiratorio'] = "** Leito de isolamento respiratório</br>\n";
+$observacoes[48]['isolamento-respiratorio'] = "** Leito de isolamento respiratório</br>\n";
 $observacoes[11]['isolamento-respiratorio'] = "** Leito de isolamento respiratório</br>\n";
 $observacoes[12]['isolamento-respiratorio'] = "** Leito de isolamento respiratório</br>\n";
 $observacoes[13]['isolamento-respiratorio'] = "** Leito de isolamento respiratório</br>\n";
 $observacoes[16]['isolamento-respiratorio'] = "** Leito de isolamento respiratório</br>\n";
 $observacoes[16]['isolamento-respiratorio-coorte'] = "*** Leito de isolamento respiratório Coorte</br>\n";
+$observacoes[48]['isolamento-respiratorio-coorte'] = "*** Leito de isolamento respiratório Coorte</br>\n";
 
 
 $situacoesCovid['suspeito'] = "Suspeito";
