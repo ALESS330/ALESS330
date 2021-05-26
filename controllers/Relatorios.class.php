@@ -443,6 +443,7 @@ DATA_NASC: $pulseira->data_nascimento
         require_once dirname("..") . "/view/Relatorios/layouts/$nomeRelatorio.prn.php";
 
         $ipp->setData($layout);
+        //echo "<pre>"; echo $layout; exit(0);
         $s = $ipp->printJob();
         if ($s == "successfull-ok") {
             return TRUE;
