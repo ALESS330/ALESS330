@@ -39,28 +39,30 @@ $user = new Usuario($_SESSION['username'] ?? NULL);
         box-shadow: none;
     }
     div.small{
-        font-size: 6pt;
+        font-size: 7px;
     }
     div.strong{
-        font-size: 6pt;
+        font-size: 7px;
         font-weight: bold;
     }
     div.nome-paciente{
-        font-size: 6pt;
+        font-size: 7px;
         font-weight: bold;
+        height: 13pt;
+        width: 48mm;
     }
     #prontuario{
         display: block;
-        width: 3cm;
+        width: 21mm;
         height: 2.3cm;
         float: left;
         text-align: center;
-        transform: rotate(270deg)
+        transform: rotate(270deg);
     }
 
     #prontuario .strong{
         display: block;
-        font-size: 8pt;
+        font-size: 16px;
         padding-top: 0.75cm;
     }
 
@@ -68,9 +70,16 @@ $user = new Usuario($_SESSION['username'] ?? NULL);
         width: 18cm;
         height: 2.3cm;
         float: left;
-        padding-top: 2px;
+        padding-top: 8px;
         line-height: 2px;
+        left: -38px;
+        position: relative;
     }
+
+    #dados div{
+        margin-top: 3px;
+    }
+
     .small, .strong{
         line-height: 1.15;
         display: block;
@@ -84,7 +93,7 @@ $user = new Usuario($_SESSION['username'] ?? NULL);
     }
     div.inline {
         float:left;
-        padding-right: 70px;
+        padding-right: 12px;
     }
 </style>
 
@@ -106,15 +115,14 @@ $user = new Usuario($_SESSION['username'] ?? NULL);
         </div>
         <div id="dados">
             <div>
-                <div class="small">Nome: </div>
-                <div class="strong nome-paciente"><?= $pulseira['nome'] ?> </div>
+                <div class="strong nome-paciente"><?= $pulseira['nome'] ?></div>
             </div>
             <div>
                 <div class="small">Nome da mãe: </div>
                 <div class="strong"><?= $pulseira['nome_mae'] ?> </div>
             </div>
-            <div>
-                <div class="small">Data/hora de nascimento: </div>
+            <div class="inline">
+                <div class="small">Nascimento: </div>
                 <div class="strong"><?= $pulseira['data_nascimento'] ?> </div>
             </div>
             <div class="inline">
