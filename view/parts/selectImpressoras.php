@@ -7,8 +7,9 @@
         <?php } ?>
         <option value="HUGD-PULS-OBST01">Centro Obstétrico - Adulto</option>
         <option value="HUGD-PULS-OBST02">Centro Obstétrico - Neonato</option> 
-        <option value="HUGD-PULS-RINT01">Recepção de Internação - Adulto</option>
+        <!-- option value="HUGD-PULS-RINT01">Recepção de Internação - Adulto</option -->
         <option value="HUGD-PULS-RINT02">Recepção de Internação - Pediátrico</option>
         <option value="HUGD-PULS-PAGO01">Recepção de Maternidade - Adulto/Neonato</option>
+        <option value="HUGD-PULS-RINT01">Recepção da UMC - Adulto</option>
         <!--option value="HUGD-PULS-PAGO01">Recepção de Maternidade - Neonato</option -->        
     </select>
