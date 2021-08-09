@@ -7,7 +7,7 @@
 #{/botoes}
 
 <?php
-$tabela = $unidades = array();
+$tabela = $unidades = $tabela_ocupacoes = array();
 $todasClassesSituacoes = "";
 $resumo = array();
 
@@ -60,15 +60,21 @@ $leitosObservadosIsolamentoRespiratorioCoorte = ["0047A", "0047B", "072002", "07
  */
 $situacaoMostrarNome = [0, 22, 24, 50, 31, 35, 36, 37];
 
+//  3 - Clínica Pediátrica
+// 11 - UTI A  
+// 12 - UTI B
+// 13 - UTI PEDIÁTRICA
+// 16 - Clinica Medica Infecto Vascular 
+// 48 - CLÍNICA MÉDICA COVIDocupacaoTabela
 $observacoes[3]['leito'] = "* O Leito é um berço";
 $observacoes[3]['isolamento-respiratorio'] = "** Leito de isolamento respiratório</br>\n";
-$observacoes[48]['isolamento-respiratorio'] = "** Leito de isolamento respiratório</br>\n";
-$observacoes[11]['isolamento-respiratorio'] = "** Leito de isolamento respiratório</br>\n";
-$observacoes[12]['isolamento-respiratorio'] = "** Leito de isolamento respiratório</br>\n";
+//$observacoes[48]['isolamento-respiratorio'] = "** Leito de isolamento respiratório</br>\n";
+//$observacoes[11]['isolamento-respiratorio'] = "** Leito de isolamento respiratório</br>\n";
+//$observacoes[12]['isolamento-respiratorio'] = "** Leito de isolamento respiratório</br>\n";
 $observacoes[13]['isolamento-respiratorio'] = "** Leito de isolamento respiratório</br>\n";
-$observacoes[16]['isolamento-respiratorio'] = "** Leito de isolamento respiratório</br>\n";
-$observacoes[16]['isolamento-respiratorio-coorte'] = "*** Leito de isolamento respiratório Coorte</br>\n";
-$observacoes[48]['isolamento-respiratorio-coorte'] = "*** Leito de isolamento respiratório Coorte</br>\n";
+//$observacoes[16]['isolamento-respiratorio'] = "** Leito de isolamento respiratório</br>\n";
+//$observacoes[16]['isolamento-respiratorio-coorte'] = "*** Leito de isolamento respiratório Coorte</br>\n";
+//$observacoes[48]['isolamento-respiratorio-coorte'] = "*** Leito de isolamento respiratório Coorte</br>\n";
 
 
 $situacoesCovid['suspeito'] = "Suspeito";
@@ -160,6 +166,33 @@ foreach ($dados as $i => $linha) {
     $j++;
 }//foreach dados
 
+foreach($tabela as $codigoUF => $tabelaUF){
+    $ativos = 0;
+    $ocupados = 0;
+    $total_ocupacao = 0;
+    foreach($tabelaUF as $linhaUF){
+        if($linhaUF['tipo_leito'] == 'ATIVO') {
+            $ativos++;
+        }
+        if($linhaUF['situacao_leito'] == 'OCUPADO'){
+            $ocupados++;
+        }
+    }
+    $tabela_ocupacoes[$codigoUF]['ativos'] = $ativos;
+    $tabela_ocupacoes[$codigoUF]['ocupados'] = $ocupados;
+    if ($ativos > 0){
+        $total_ocupacao = ($ocupados / $ativos) * 100;
+        $ocupacao = number_format($total_ocupacao, 2, '.', '') . "%";
+    }else{
+        $ocupacao = FALSE;
+    }
+    $tabela_ocupacoes[$codigoUF]['ocupacao'] = $ocupacao;
+    if($total_ocupacao > 100){
+        $tabela_ocupacoes[$codigoUF]['sobrecarga'] = TRUE;
+    }else{
+        $tabela_ocupacoes[$codigoUF]['sobrecarga'] = FALSE;
+    }
+}
 
 $total = $resumo['situacao']['OCUPADO'];
 $excedente = $resumo['tipo']['EXCEDENTE'];
@@ -311,6 +344,10 @@ $vars = get_defined_vars();
             background-color: #004d40;
         }
 
+        .ofuscar-dados{
+            background-color: #222222;
+        }
+
         td div.acoes-pagina a {
             padding-top: 6px;
             width: 32px !important;
@@ -322,7 +359,7 @@ $vars = get_defined_vars();
         div.acoes-pagina{
             opacity: 0.05;
             transition-property: opacity;
-            transition-duration: 0.5s;        
+            transition-duration: 0.5s;
         }
 
         table:not(#tb-resumo) tbody tr:hover td div.acoes-pagina{
@@ -357,7 +394,7 @@ $vars = get_defined_vars();
 
         #progresso{
            position: fixed;
-           top: 64px;
+           top: 64px;ocupacao
            left: 0px;
            height: 2px;
            width: 100%;
@@ -368,7 +405,7 @@ $vars = get_defined_vars();
             .no-print{
                 display: none !important;
             }
-            table ul{  
+            table ul{ocupacao  
                 font-size: 8pt !important;
             }
             
@@ -440,18 +477,28 @@ $contadorLinhas = 0;
 $listaTipos = array();
 $listaCovid = array();
 foreach ($tabela as $i => $t) {
+    $ocupacao_tabela = "";
+    $classe_tabela = "";
+    if($tabela_ocupacoes[$i]['ocupacao'] !== FALSE){
+        $ocupacao_tabela = " | Ocupação: " . $tabela_ocupacoes[$i]['ocupacao'];
+    }
+    if($tabela_ocupacoes[$i]['sobrecarga'] === TRUE ){
+        $classe_tabela = " red lighten-5";
+    }else{
+        $classe_tabela = " ";
+    }
     ?>
-                    <table cellspacing="0" cellpadding="0" class="bordered" style="margin-bottom: 25px;" id="mapa-tb-<?=$i?>">
+                    <table cellspacing="0" cellpadding="0" class="bordered <?= $classe_tabela?>" style="margin-bottom: 25px;" id="mapa-tb-<?=$i?>">
                         <thead>
                             <tr>
-                                <th class="remover"></th>
-                                <th class="titulo-tabela texto-esquerdo" colspan="11">Unidade Funcional: <?= $t[0]['unidade_funcional'] ?></th>
+                                <!-- <th class="remover"></th> 6 de agosto-->
+                                <th class="titulo-tabela texto-esquerdo" colspan="10">Unidade Funcional: <?= $t[0]['unidade_funcional'] . $ocupacao_tabela?> </th>
                                 <th class="remover"></th>
                             </tr>
                             <tr>
-                                <th rowspan="2" class="mesclada remover">Conferido</th>
+                                <!-- th rowspan="2" class="mesclada remover">Conferido</th 6 de agosto -->
                                 <th colspan="3">Leito</th>
-                                <th colspan="4" class="mesclada">Paciente<br></th>
+                                <th colspan="3" class="mesclada">Paciente<br></th>
                                 <th rowspan="2" class="mesclada">Município</th>
                                 <th rowspan="2" class="mesclada">Data Int.</th>
                                 <th rowspan="2" class="mesclada">Dias Int.</th>
@@ -461,7 +508,7 @@ foreach ($tabela as $i => $t) {
                             <tr>
                                 <th>Número</th>
                                 <th>Situação</th>
-                                <th>Tipo</th>
+                                <!-- <th>Tipo</th> 6 de agosto -->
                                 <th>Prontuário</th>
                                 <th class="texto-esquerdo">Nome</th>
                                 <th>Sexo</th>
@@ -534,17 +581,20 @@ foreach ($tabela as $i => $t) {
         $cTipo = mb_strtolower(str_replace(" ", "_", $tipo_leito));
         ?>
                                 <tr id="<?= "linha-$contadorLinhas" ?>" class="<?php echo "$cSituacao $cTipo"; ?>">
-                                    <td class="conferido remover">
+                                    <!-- td class="conferido remover">
                                         <label class="conferido">
                                             <input class="conferido" type="checkbox" id="conferido-<?= $contadorLinhas ?>" />
                                             <span></span>
                                         </label>
-                                    </td>
+                                    </td 6 de agosto -->
                                     <td class="leito"><?= $leito ?></td>
                                     <td class='situacao'><?= $situacao_leito ?></td>
-                                    <td class='tipo'><?= $tipo_leito ?></td>
+                                    <!-- td class='tipo'><_?= $tipo_leito ?> 6 de agosto </td -->
                                     <td class="prontuario"><?= $prontuario ?></td>
-                                    <td class="nome texto-esquerdo" style="text-align: left"><?= $nome ?><br><?= $dadosCartaoSUS?></strong></td>
+                                    <td class="nome texto-esquerdo" style="text-align: left">
+                                        <div class="conteudo_nome"><?= $nome ?></div>
+                                        <div class="cartao_sus"><?= $dadosCartaoSUS?></div>
+                                    </td>
                                     <td class="sexo"><?= $sexo ?></td>
                                     <td class="idade"><?= $textoIdade ?></td>
                                     <td class="municipio"><?= $municipio ?></td>
@@ -558,9 +608,9 @@ foreach ($tabela as $i => $t) {
                                     <td class="remover">
                                         <div class="acoes-pagina">
                                             <a href="#" title="Remover linha" class="remover-linha"><i class="material-icons">delete_sweep</i></a>
-                                            <a href="#" title="Desocupar leito" class="desocupar-leito"><i class="material-icons">highlight_off</i></a>                                        
+                                            <a href="#" title="Desocupar leito" class="desocupar-leito"><i class="material-icons">highlight_off</i></a>
                                         </div>
-                                        <div class="acoes-conferida"><small>Conferido</small></div>
+                                        <!-- div class="acoes-conferida"><small>Conferido</small></div 6 de agosto-->
                                     </td>
                                 </tr>
                                 <?php
@@ -594,10 +644,11 @@ foreach ($tabela as $i => $t) {
                                     <ul>
                                         <?php
                                         foreach ($listaTipos[$i] as $tipo => $totalTipo) {
+                                            $classTipo = "tipo-leito-resumo-" . strtolower($tipo);
                                             if($tipo == 'NORMAL'){
                                                 $tipo = 'Leitos Ativos';
                                             }
-                                            echo "<li>$tipo: $totalTipo</li>\n";
+                                            echo "<li class=\"$classTipo\">$tipo: $totalTipo</li>\n";
                                         }//foreach
                                         ?>
                                     </ul>
@@ -684,6 +735,7 @@ foreach ($tabela as $i => $t) {
         $rodape = $ul.empty().html($optionsSituacoes);
     }; //atualizarContagens
 
+    /*
     $("label.conferido").on('change', function (e) {
         let $minhaLinha = $(this).closest("tr");
         let $meuCheck = $(this).find(":checkbox");
@@ -693,7 +745,7 @@ foreach ($tabela as $i => $t) {
         } else {
             $minhaLinha.removeClass("linha-conferida");
         }
-    });
+    }); */
 
     $(".remover-linha").on('click', function (e) {
         e.preventDefault();
