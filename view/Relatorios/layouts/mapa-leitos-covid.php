@@ -320,6 +320,26 @@ $vars = get_defined_vars();
             color: white;
         }
 
+        .remover-uf i{
+            color: white;
+        }
+
+        .remover-uf{
+            width: 72px;
+            height: 28px;
+            display: inline-block;
+            background-color: #b71c1c;
+            padding: 2px;
+            opacity: 0.4;
+            border-radius: 3px;
+            transition-property: opacity;
+            transition-duration: 0.5s;
+        }
+        
+        .remover-uf:hover{
+            opacity: 1;
+        }
+
         div.splash-aguardar{
             width: 100%;
             height: 100%;
@@ -394,7 +414,7 @@ $vars = get_defined_vars();
 
         #progresso{
            position: fixed;
-           top: 64px;ocupacao
+           top: 64px;
            left: 0px;
            height: 2px;
            width: 100%;
@@ -483,17 +503,19 @@ foreach ($tabela as $i => $t) {
         $ocupacao_tabela = " | Ocupação: " . $tabela_ocupacoes[$i]['ocupacao'];
     }
     if($tabela_ocupacoes[$i]['sobrecarga'] === TRUE ){
-        $classe_tabela = " red lighten-5";
+        $classe_titulo_sobrecarga = " red darken-1 white-text";
     }else{
-        $classe_tabela = " ";
+        $classe_titulo_sobrecarga = " ";
     }
     ?>
-                    <table cellspacing="0" cellpadding="0" class="bordered <?= $classe_tabela?>" style="margin-bottom: 25px;" id="mapa-tb-<?=$i?>">
+                    <table cellspacing="0" cellpadding="0" class="bordered" style="margin-bottom: 25px;" id="mapa-tb-<?=$i?>">
                         <thead>
-                            <tr>
+                            <tr  class="<?= $classe_titulo_sobrecarga?>">
                                 <!-- <th class="remover"></th> 6 de agosto-->
                                 <th class="titulo-tabela texto-esquerdo" colspan="10">Unidade Funcional: <?= $t[0]['unidade_funcional'] . $ocupacao_tabela?> </th>
-                                <th class="remover"></th>
+                                <th class="remover">
+                                <a href="#" title="Remover esta Unidade Funcional deste mapa de leitos" class="remover-uf"><i class="material-icons">cancel</i></a>
+                                </th>
                             </tr>
                             <tr>
                                 <!-- th rowspan="2" class="mesclada remover">Conferido</th 6 de agosto -->
@@ -761,6 +783,19 @@ foreach ($tabela as $i => $t) {
             }
         });
     }); //.remover-linha on click
+
+    $(".remover-uf").on('click', function (e) {
+        e.preventDefault();
+        $tabela = $(this).closest("table");
+        if (!confirm("Deseja realmente remover esta Unidade Funcional da listagem?")) {
+            return false;
+        }
+        $tabela.fadeOut({
+            complete: function(){
+                $tabela.remove();
+            }
+        });
+    }); //.remover-tabela on click
 
     $(".desocupar-leito").on('click', function (e) {
         e.preventDefault();
