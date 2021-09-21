@@ -22,7 +22,17 @@ class Relatorios extends Controller {
     }
 
     function index() {
-        $this->render();
+        $dados['relatorios'] = array_map(function($relatorio){
+            return [
+                'id' => $relatorio->id 
+                , 'nome' => $relatorio->nome 
+                , 'descricao' => $relatorio->descricao
+                , 'datasource' => $relatorio->nome_datasource
+                , 'icone' => $relatorio->icone 
+                , 'ativo' => $relatorio->ativo
+            ];
+        }, $this->relatorio->listaTodos());
+        $this->render($dados);
     }
     
     function gerado($datasource, $nomeRelatorio){
