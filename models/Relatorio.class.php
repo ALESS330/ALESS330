@@ -71,13 +71,15 @@ where true
 
     public function listaTodos() {
         $sql = "
-SELECT 
+select 
     d.nome nome_datasource
     ,r.*
-FROM
+from
     relatorios.relatorios r
-    INNER JOIN relatorios.datasources d ON r.datasource_id = d.id
-ORDER BY
+    inner join relatorios.datasources d on r.datasource_id = d.id
+    left join relatorios.categorias_relatorios cr on r.id = cr.relatorio_id
+    left join relatorios.categorias c on c.id = cr.categoria_id
+order by
     d.nome,
     r.nome    
 ";
