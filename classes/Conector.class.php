@@ -60,16 +60,27 @@ class Conector {
             $r = $conex->prepare($sql);
             $result = $r->execute();
             $linhas = $r->fetchAll(PDO::FETCH_ASSOC);
+            echo "<pre>"; print_r($linhas); exit(0);
+            //se não veio nenhuma linha, é preciso extrair os nomes das colunas de outra maneira
             if(count($linhas)==0){
+                //descobrir quantas colunas
+                $nCols = $r->columnCount();
                 $vazio = array();
-                foreach(range(0, $r->columnCount() - 1) as $column_index ) 
-                {
-                  $vazio[0][$r->getColumnMeta($column_index)['name']] = null;
+                //se nenhum, é pq teve erro do banco de dados (falta campo, conexão etc)
+                if($nCols == 0){
+                    throw new Exception("Erro na busca dos campos");
+                }
+                //iterando pelas colunas existentes ...
+                foreach(range(0, $nCols -1 ) as $column_index ) 
+                { 
+                  $columnMeta = $r->getColumnMeta($column_index)['name'];
+                  //... e construindo um array para isso
+                  $vazio[0][$columnMeta] = null;
                 }
                 return $vazio;
             }
         } catch (Exception $ex) {
-            $this->mensagemErro("Conexão não efetuada $conex. (". $ex->getMessage.")");
+            die("Conexão não efetuada $conex. (". $ex->getMessage.")");
         }
         return $linhas; 
     }
