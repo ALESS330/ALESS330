@@ -7,6 +7,13 @@
 #{/botoes}
 <?php
 $termo = $dados[0];
+foreach ($termo as $variavel => $valor) {
+    $$variavel = $valor ?: ""; // $termo['$nome'] para $nome
+}
+
+if ($email_particular == "") {
+    mens("E-mail particular não cadastrado no cadastro de pessoa no AGHU.");
+}
 setlocale(LC_ALL, 'pt_BR.UTF-8');
 
 $meses['01'] = "janeiro";
@@ -29,16 +36,17 @@ $ano = strftime(' de %Y');
 $data = $dia . $mes . $ano;
 
 global $filename;
-$filename = "termo-responsabilidade-" . $termo['nome'];
+$filename = "termo-responsabilidade-" . $nome;
 
-$cpfInteiro = str_pad($termo['cpf'], 11, "0", STR_PAD_LEFT); // mantem os numeros de cpf com 11 digitos
+$cpfInteiro = str_pad($cpf, 11, "0", STR_PAD_LEFT); // mantem os numeros de cpf com 11 digitos
 $maskCPF = "/(\d{3})(\d{3})(\d{3})(\d{2})/";
 $arrayCPF = array();
 $matches = preg_match_all($maskCPF, $cpfInteiro, $arrayCPF); // insere os resultados obtidos com maskCPF e cpfInteiro e insere no array
 $cpfResultante = $arrayCPF[1][0] . "." . $arrayCPF[2][0] . "." . $arrayCPF[3][0] . "-" . $arrayCPF[4][0];
 
 // funcao que deixa preposicoes e conjuncoes com a primeira letra minuscula
-function titleCase($string, $delimiters = array(" ", "-", ".", "'", "O'", "Mc"), $exceptions = array("de", "da", "dos", "das", "do", "com")) {
+function titleCase($string, $delimiters = array(" ", "-", ".", "'", "O'", "Mc"), $exceptions = array("de", "da", "dos", "das", "do", "com"))
+{
     $string = mb_convert_case($string, MB_CASE_TITLE, "UTF-8");
     foreach ($delimiters as $dlnr => $delimiter) {
         $words = explode($delimiter, $string);
@@ -51,7 +59,7 @@ function titleCase($string, $delimiters = array(" ", "-", ".", "'", "O'", "Mc"),
             } elseif (!in_array($word, $exceptions)) {
                 $word = ucfirst($word);
             }
-            array_push($newwords, $word); 
+            array_push($newwords, $word);
         }
         $string = join($delimiter, $newwords);
     } // foreach
@@ -76,7 +84,8 @@ function titleCase($string, $delimiters = array(" ", "-", ".", "'", "O'", "Mc"),
         margin-top: 40px !important;
     }
 
-    .texto, h5 {
+    .texto,
+    h5 {
         margin: 0;
         padding: 0;
         border: 0;
@@ -89,7 +98,11 @@ function titleCase($string, $delimiters = array(" ", "-", ".", "'", "O'", "Mc"),
         /*            line-height: 1.1em;*/
     }
 
-    h1, h2, h3, h4, h5 {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5 {
         text-align: center;
     }
 
@@ -165,14 +178,16 @@ function titleCase($string, $delimiters = array(" ", "-", ".", "'", "O'", "Mc"),
     }
 
     @media print {
-        @page { 
+        @page {
             margin: 0 !important;
         }
+
         body {
             font-family: Roboto !important;
             /* margin-top: 1mm;
             margin-bottom: 5mm; */
         }
+
         fieldset.fieldset-cadastradores {
             border: solid 1px grey !important;
             box-shadow: none !important;
@@ -181,55 +196,68 @@ function titleCase($string, $delimiters = array(" ", "-", ".", "'", "O'", "Mc"),
             padding: 20px;
             padding-top: 1.8cm;
         }
+
         fieldset.fieldset-cadastradores legend {
             font-size: 11pt !important;
             margin-bottom: 20px !important;
             top: 0;
         }
+
         .conteudo {
             box-shadow: none;
             margin-top: 0px;
             padding-top: 2.5mm !important;
         }
-        h4, h5 {
+
+        h4,
+        h5 {
             margin: 0.5mm;
         }
+
         h4 {
             font-size: 24pt !important;
         }
+
         h5 {
             font-size: 12pt !important;
         }
+
         div.texto {
             margin-top: 10px;
         }
+
         .texto p {
             font-size: 12pt;
         }
+
         ol {
             padding-inline-start: 40px !important;
             font-size: 12pt !important;
         }
+
         .rodape-documento {
             display: block;
             margin-left: 10mm !important;
             font-size: 7pt !important;
         }
+
         .hospital-rodape {
             font-weight: bold !important;
         }
+
         .no-print {
             display: none;
         }
-    } 
-
+    }
 </style>
 
 <div class="conteudo">
     <h4 class="titulo-termo">TERMO DE RESPONSABILIDADE</h4>
     <h5 class="titulo-termo">USO DE RECURSOS DE TIC E CONFIDENCIALIDADE</h5>
-    <div class="texto">    
-        <p>Pelo presente instrumento, eu <strong><?= $termo['nome'] ?></strong>, CPF <strong><?= $cpfResultante ?></strong>, identidade <strong><?= $termo['nro_identidade'] ?> - <?= $termo['orgao_emissor'] ?>/<?= $termo['uf_orgao'] ?></strong>, <!-- lotado no(a) <strong><?= $termo['lotacao'] ?></strong>,--> com vínculo <strong><?= $termo['vinculo'] ?></strong> e ocupação <strong><?= $termo['ocupacao'] ?></strong> no Hospital Universitário da Universidade Federal da Grande Dourados, DECLARO, sob pena das sanções cabíveis nos termos da POSIC/Sede estendida para o Hospital Universitário da Universidade Federal da Grande Dourados, publicada por meio da Portaria n.0 35, de 6 de março de 2017 da Ebserh, e instituída no HU-UFGD por meio da Resolução n. 026, de 26 de abril de 2018, assumo a responsabilidade por:</p>            
+    <div class="texto">
+        <p>Pelo presente instrumento, eu <strong><?= $nome ?></strong>, CPF <strong><?= $cpfResultante ?></strong>, identidade <strong><?= $nro_identidade ?> - <?= $orgao_emissor ?>/<?= $uf_orgao ?></strong>,
+            <!-- lotado no(a) <strong><?= $lotacao ?></strong>,--> com vínculo <strong><?= $vinculo ?></strong> ocupação <strong><?= $ocupacao ?></strong> e matrícula <strong><?= $matricula ?></strong>, no Hospital Universitário da Universidade Federal da Grande Dourados, DECLARO, sob pena das sanções cabíveis nos termos da POSIC/Sede estendida para o Hospital Universitário da Universidade Federal da Grande Dourados, publicada por meio da Portaria n.0 35, de 6 de março de 2017 da Ebserh, e instituída no HU-UFGD por meio da Resolução n. 026, de 26 de abril de 2018, assumo a responsabilidade por:
+        </p>
     </div>
 
     <ol type="I">
@@ -244,9 +272,14 @@ function titleCase($string, $delimiters = array(" ", "-", ".", "'", "O'", "Mc"),
     <p align="right">Dourados, MS, <?= $data ?>.</p>
 
     <div class="assinaturas">
-        <div><strong><?= $termo['nome'] ?></strong></div>
+        <div>
+            <strong><?= $nome ?> </strong>
+            <br />
+            <small>(<?= strtolower($email_particular) ?>)</small>
+        </div>
+
         <div class="assinatura-chefia"><strong>Chefia imediata <small>(carimbo e assinatura)</small></strong></div>
-        <!-- <div class="assinatura-chefia"><strong><?= $termo['chefia_imediata'] ?></strong></div> -->
+        <!-- <div class="assinatura-chefia"><strong><?= $chefia_imediata ?></strong></div> -->
     </div>
     <fieldset class="fieldset-cadastradores">
         <legend>USO EXCLUSIVO DOS CADASTRADORES</legend>
