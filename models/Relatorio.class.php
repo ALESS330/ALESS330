@@ -77,8 +77,8 @@ select
 from
     relatorios.relatorios r
     inner join relatorios.datasources d on r.datasource_id = d.id
-    left join relatorios.categorias_relatorios cr on r.id = cr.relatorio_id
-    left join relatorios.categorias c on c.id = cr.categoria_id
+    left join relatorios.relatorio_categoria rc on r.id = rc.relatorio_id
+    left join relatorios.categorias c on c.id = rc.categoria_id 
 order by
     d.nome,
     r.nome    

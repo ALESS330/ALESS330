@@ -60,7 +60,6 @@ class Conector {
             $r = $conex->prepare($sql);
             $result = $r->execute();
             $linhas = $r->fetchAll(PDO::FETCH_ASSOC);
-            echo "<pre>"; print_r($linhas); exit(0);
             //se não veio nenhuma linha, é preciso extrair os nomes das colunas de outra maneira
             if(count($linhas)==0){
                 //descobrir quantas colunas
