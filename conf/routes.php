@@ -11,6 +11,8 @@ $routes["/relatorio/{\d+:idRelatorio}/tela-parametros/salvar"]  = "Relatorios->s
 $routes["/relatorio/{\d+:idRelatorio}/composicao/salvar"]  = "Relatorios->salvarComposicao";
 $routes["/relatorio/{\d+:idRelatorio}/composicao/{\d+:idComposicao}/excluir"]  = "Relatorios->excluirComposicao";
 $routes['/relatorio/{\d+:idRelatorio}/formatos/salvar'] = "Relatorios->salvarFormatos";
+$routes['/relatorio/{\d+:idRelatorio}/categoria/{\d+:idCategoria}/salvar'] = "Relatorios->salvarCategoria";
+$routes['/relatorio/{\d+:idRelatorio}/categoria/{\d+:idCategoria}/remover'] = "Relatorios->removerCategoria";
 $routes['/relatorio/{\d+:idRelatorio}/decoradores/salvar'] = "Relatorios->salvarDecoradores";
 $routes['/relatorio/{\d+:idRealtorio}/grupo/{\d+:idGrupo}/associa'] = "Relatorios->associaGrupo";
 $routes['/relatorio/{\d+:idRealtorio}/grupo/{\d+:idGrupo}/remove'] = "Relatorios->removeGrupo";
@@ -38,6 +40,11 @@ $routes["/datasources"] = "Datasources->index";
 $routes["/datasource"] = "Datasources->cadastro";
 $routes["/datasource/{\d+:id}"] = "Datasources->cadastro";
 $routes["/datasource/salvar"] = "Datasources->salvar";
+
+$routes["/categorias"] = "Categorias->index";
+$routes["/categoria"] = "Categorias->cadastro";
+$routes["/categoria/{\d+:id}"] = "Categorias->cadastro";
+$routes["/categoria/salvar"] = "Categorias->salvar";
 
 $routes["/rotulos"] = "Rotulos->index";
 $routes["/rotulo"] = "Rotulos->cadastro";

@@ -1,0 +1,17 @@
+{
+    "name": "hu-ufgd/relator"
+    , "description": "Sistema de Relatórios"
+    , "repositories": [
+        {
+            "type": "vcs"
+            , "url": "https://github.com/hu-ufgd/base-php"
+            , "name" : "hu-ufgd/sistema-base"
+        }
+    ]
+    , "config": {
+        "secure-http": false
+    }
+    , "require": {
+        "hu-ufgd/sistema-base":"@dev"
+    }   
+}

@@ -30,8 +30,9 @@
             <tr>
                 <th style="width: 5%"></th>
                 <th style="width: 5%"></th>
-                <th style="width: 55%">Descrição</th>
+                <th style="width: 40%">Descrição</th>
                 <th style="width: 15%">Nome</th>
+                <th style="width: 15%">Categoria</th>
                 <th style="width: 10%">Datasource</th>
                 <th style="width: 5%">Ativo</th>
                 <th style="width: 5%"></th>
@@ -41,7 +42,7 @@
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="7" style="text-align: right;">
+                <td colspan="8" style="text-align: right;">
                     <ul class="pagination" id="paginador"></ul>
                 </td>
             </tr>
@@ -52,7 +53,7 @@
 
 <script type="text/x-jsrender" id="linhas-vazias-tmpl">
 <tr class="linha-vazia">
-  <td colspan="7"></td>
+  <td colspan="8"></td>
 </tr>
 </script>
 
@@ -63,7 +64,8 @@
  <td class="descricao-relatorio">{{:descricao}}</td>
  <td title="{{:descricao}}">
         <a href="/relator/relatorio/{{:datasource}}/{{:nome}}">{{:nome}}</a>
- </td>    
+ </td>
+ <td>{{:categorias}}</td>
  <td>{{:datasource}}</td>
  <td>{{if ativo}}Sim{{else}}Não{{/if}}</td>
   <td style="width: 100px">

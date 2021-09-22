@@ -1,6 +1,8 @@
 #{botoes}
 <div class="fixed-action-btn">
-    <a  href="@{Datasources->cadastro()}" class="btn-floating btn-large waves-effect waves-light red" title="Cadastrar novo Datasource">
+    <a  href="@{Datasources->cadastro()}" 
+        class="btn-floating btn-large waves-effect waves-light red" 
+        title="Cadastrar novo Datasource">
         <i class="material-icons">add</i></a>
 </div>
 #{/botoes}

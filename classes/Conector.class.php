@@ -79,7 +79,7 @@ class Conector {
                 return $vazio;
             }
         } catch (Exception $ex) {
-            die("Conexão não efetuada $conex. (". $ex->getMessage.")");
+            die("Conexão não efetuada $conex. ($ex->getMessage)");
         }
         return $linhas; 
     }

@@ -12,12 +12,16 @@ class Relatorios extends Controller {
     private $relatorio;  
     private $construtor;
     private $composicao;
-    
+    private $categoria;
+    private $relatorioCategoria;
+
     public function __construct() {
         parent::__construct();
         $this->relatorio = new Relatorio();
         $this->construtor = new ConstrutorRelatorios();
         $this->composicao = new Composicao();
+        $this->categoria = new Categoria();
+        $this->relatorioCategoria = new RelatorioCategoria();
         $this->setObjeto($this->relatorio);
     }
 
@@ -30,6 +34,7 @@ class Relatorios extends Controller {
                 , 'datasource' => $relatorio->nome_datasource
                 , 'icone' => $relatorio->icone 
                 , 'ativo' => $relatorio->ativo
+                , 'categorias' => $relatorio->categorias
             ];
         }, $this->relatorio->listaTodos());
         $this->render($dados);
@@ -68,6 +73,7 @@ class Relatorios extends Controller {
         $dados['tipos_decoradores'] = $oTipoDecorador->lista();
         $dados['tipos_composicoes'] = $oTipoComposicao->lista();
         $dados['composicao'] = $this->relatorio->getComposicao($relatorio->id);
+        $dados['categorias'] = $this->categoria->listaTodas();
         if ($relatorio->parametrizado) {
             $tp = $this->relatorio->getTelaParametros($idRelatorio);
             $objFormulario = new Formulario();
@@ -130,6 +136,42 @@ class Relatorios extends Controller {
         $dadosComposicao['obrigatoria'] = isset($dadosComposicao['obrigadoria']) ? $dadosComposicao['obrigatoria'] : false;
         $this->composicao->salvar($dadosComposicao);
         $this->sucesso("Relatorios->propriedades(" . $dadosComposicao['relatorio_principal_id'] . ")", "Componente salvo com sucesso.");        
+    }
+    
+    function salvarCategoria($relatorioId, $categoriaId) {
+        $relatorioCategoria['relatorio_id'] = $relatorioId;
+        $relatorioCategoria['categoria_id'] = $categoriaId;
+        try {
+            $id = $this->relatorioCategoria->salvar($relatorioCategoria);
+            $relatorio = $this->relatorio->get($relatorioId);
+            $categoria = $this->categoria->get($categoriaId);
+            $resultado = [
+                            "sucesso" => "Relatório $relatorio->nome vinculado à categoria $categoria->nome com sucesso."
+                            , "id" => $id
+                         ];
+        } catch (Exception $e) {
+            $resultado = ["erro" => $e->getMessage()];
+        }
+        $this->json($resultado);
+    }
+
+    function removerCategoria($relatorioId, $categoriaId){
+        $relatorioCategoria['relatorio_id'] = $relatorioId;
+        $relatorioCategoria['categoria_id'] = $categoriaId;
+        try {
+            $rc = $this->relatorioCategoria->selectBy($relatorioCategoria);
+            if(count($rc)){
+                $this->relatorioCategoria->deleta($rc[0]->id);
+                $relatorio = $this->relatorio->get($relatorioId);
+                $categoria = $this->categoria->get($categoriaId);                
+                $resultado = [
+                    "sucesso" => "Relatório $relatorio->nome desvinculado com sucesso da categoria $categoria->nome."
+                ];
+            }
+        } catch (Exception $e) {
+            $resultado = ["erro" => $e->getMessage()];
+        }
+        $this->json($resultado);
     }
 
     function excluirComposicao($relatorioId, $composicaoId){

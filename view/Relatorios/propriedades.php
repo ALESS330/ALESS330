@@ -1,4 +1,5 @@
 <?php
+global $contexto;
 
 $checked = array();
 $checked['pdf'] = "";
@@ -56,6 +57,35 @@ if (isset($formatos)) {
 
 <ul class="collapsible">
 
+    <li> <!-- Categorias -->
+        <div class="collapsible-header">
+            <i class="material-icons">style</i>Categorias do relatório
+        </div>
+        <div class="collapsible-body">
+            <div class="col s12">
+                <form action="@{Relatorios->salvarCategoria(<?=$relatorio->id?>,<?=$categoria->id?>)}" role="form" method="POST" >
+                    <div class="row">
+                        <div class="input-field">
+                            <?php foreach($categorias as $categoria){
+                                $categorias = json_decode($relatorio->categorias);
+                                ?>
+                            <p>
+                                <label for="checkbox-categoria-<?=$categoria->id?>">
+                                    <input class="ck-categoria"
+                                        type="checkbox" name="formatos[printer]" 
+                                        value="<?=$categoria->id?>" 
+                                        <?= array_search($categoria->nome, $categorias) !== false? "checked" : "" ?>
+                                        id="checkbox-categoria-<?=$categoria->id?>" />
+                                    <span><?=$categoria->nome?></span>
+                                </label>
+                            </p>
+                            <?php } ?>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </li> <!-- Categorias -->
     <li> <!-- Formatos -->
         <div class="collapsible-header">
             <i class="material-icons">insert_drive_file</i>Formatos do relatório
@@ -405,3 +435,37 @@ if (isset($formatos)) {
         </div>
     </li> <!-- decoradores -->
 </ul>
+
+#{scriptPagina}
+<script>
+  $(document).ready(function(){
+    const urls = new Array(2);
+    urls[true] = "<?=$contexto?>/relatorio/<?=$relatorio->id?>/categoria/:id/salvar";
+    urls[false] = "<?=$contexto?>/relatorio/<?=$relatorio->id?>/categoria/:id/remover";
+    
+    $(".ck-categoria").on('click', function(e){
+      const $amIChecked = $(this).prop("checked");
+      const $myValue = $(this).val();
+      const $url = urls[$amIChecked].replace(":id", + $myValue);
+      alerta = "Erro na requisição! Atualize a página para verificar se esta foi bem sucedida.";      
+      fetch($url)
+        .then(function(resposta){
+          if(resposta.ok){
+            return resposta.json().then(retorno => {
+              if(retorno.sucesso){
+                M.toast({html: retorno.sucesso});
+              }else{
+                M.toast({html: retorno.erro});
+              }
+            });
+          }else{
+            alert(alerta);
+          }
+        })
+        .catch(function(){
+          alert(alerta);
+        })
+    });
+  });
+</script>
+#{/scriptPagina}

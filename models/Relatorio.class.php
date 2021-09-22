@@ -12,14 +12,28 @@ class Relatorio extends Model {
 
     function get($relatorioId) {
         $sql = "
-SELECT 
-    r.*
-    , d.nome datasource
-FROM 
-    relatorios.relatorios r 
-    JOIN relatorios.datasources d on r.datasource_id = d.id
-WHERE 
-    r.id = $relatorioId
+        with categorias as (
+            select
+                r.id id_relatorio
+                , array_remove(array_agg(c.nome),null) categorias_json 
+            from 
+                relatorios.relatorios r 
+                left join relatorios.relatorio_categoria rc on rc.relatorio_id = r.id
+                left join relatorios.categorias c on c.id = rc.categoria_id 
+            group by r.id 
+            )
+            select 
+                d.nome nome_datasource
+                , array_to_json(c.categorias_json) categorias
+                , r.*
+            from
+                relatorios.relatorios r
+                inner join relatorios.datasources d on r.datasource_id = d.id
+                left join categorias c on r.id = c.id_relatorio
+            where r.id = $relatorioId                
+            order by
+                d.nome,
+                r.nome
 ";
         $l = $this->db->consulta($sql);
         if (count($l) != 1) {
@@ -71,17 +85,27 @@ where true
 
     public function listaTodos() {
         $sql = "
-select 
-    d.nome nome_datasource
-    ,r.*
-from
-    relatorios.relatorios r
-    inner join relatorios.datasources d on r.datasource_id = d.id
-    left join relatorios.relatorio_categoria rc on r.id = rc.relatorio_id
-    left join relatorios.categorias c on c.id = rc.categoria_id 
-order by
-    d.nome,
-    r.nome    
+with categorias as (
+    select
+        r.id id_relatorio
+        , array_remove(array_agg(c.nome),null) categorias_json 
+    from 
+        relatorios.relatorios r 
+        left join relatorios.relatorio_categoria rc on rc.relatorio_id = r.id
+        left join relatorios.categorias c on c.id = rc.categoria_id 
+    group by r.id 
+    )
+    select 
+        d.nome nome_datasource
+        , array_to_json(c.categorias_json) categorias
+        , r.*
+    from
+        relatorios.relatorios r
+        inner join relatorios.datasources d on r.datasource_id = d.id
+        left join categorias c on r.id = c.id_relatorio
+    order by
+        d.nome,
+        r.nome
 ";
         return $this->db->consulta($sql);
     }
