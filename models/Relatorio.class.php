@@ -111,56 +111,85 @@ with categorias as (
     }
 
     public function listaInicial($usuario) {
+        $criterioIntersection = "";
+        $criterioUser = "";
+        $fromUsuarios ="";
+        $criterioPublico = "";
         $u = $usuario->getUsuario();
-        $username = false;
-        if ($u) {
-            $username = $u->username;
+        if($u->username ?? false){
+            if(!$usuario->isDeveloper()){
+                $criterioUser = "and u.username = 'cleber.toda@ebserh.gov.br'";
+                $criterioIntersection ="and (
+                    gr.grupos_relatorio_array && gu.grupos_usuario_array or (r.publico)
+                )";
+                $fromUsuarios = ", grupos_usuario gu ";
+            }
+        }else {
+            //sem usuários logados, aparecem relatórios públicos que estejam ativos
+            $criterioUser = "";
+            $criterioPublico = " and r.publico = true";
         }
-        if (!$username) {
-            $sql = "
-SELECT 
+        
+$sql = "
+with 
+  categorias as (
+	select distinct 
+	  r.id id_relatorio
+	  , array_remove(array_agg(c.nome),null) categorias_json 
+	from 
+	  relatorios.relatorios r 
+	  left join relatorios.relatorio_categoria rc on rc.relatorio_id = r.id
+	  left join relatorios.categorias c on c.id = rc.categoria_id 
+	group by r.id 
+  )
+  , grupos_relatorio as (
+    select distinct 
+      r.id id_relatorio
+      , array_remove(array_agg(g.nome),null) grupos_relatorio_array 
+    from 
+      relatorios.relatorios r 
+      left join relatorios.relatorio_grupo rg on rg.relatorio_id = r.id
+      left join public.grupos g on g.id = rg.grupo_id
+    where true
+    group by r.id
+  )
+  , grupos_usuario as (
+    select 
+      array_remove(array_agg(g.nome),null) grupos_usuario_array 
+      , u.username 
+    from 
+      public.grupos g 
+      join public.usuario_grupo ug on ug.grupo_id = g.id 
+      join public.usuarios u on u.id = ug.usuario_id 
+      left join public.sistemas s on s.id = g.sistema_id 
+    where true 
+      and (s.nome_unico = 'relator' or s.id is null)
+      $criterioUser -- aqui vão os critérios de usuário
+    group by u.username 
+  )
+  select
     d.nome nome_datasource
-    , 'publico' grupo
-    , r.* 
-FROM
+    , array_to_json(c.categorias_json) categorias
+    , r.id
+    , r.nome
+    , r.icone
+    , r.descricao
+    , array_to_json(gr.grupos_relatorio_array) grupos_relatorio
+from
     relatorios.relatorios r
-    INNER JOIN relatorios.datasources d ON r.datasource_id = d.id
-WHERE
-    r.publico = TRUE
+    inner join relatorios.datasources d on r.datasource_id = d.id
+    left join categorias c on c.id_relatorio = r.id 
+    left join grupos_relatorio gr on gr.id_relatorio = r.id
+    $fromUsuarios -- aqui vai o 'from' usuarios
+where true 
+    and r.ativo = true
+    $criterioPublico --aqui filtra os públicos
+    $criterioIntersection -- aqui vai a intersection
+order by
+    r.nome
 ";
-        } else {
-            $sql = "
-SELECT DISTINCT
-    d.nome nome_datasource
-    , g.nome grupo
-    ,r.*
-FROM
-    relatorios.relatorios r
-    INNER JOIN relatorios.datasources d ON r.datasource_id = d.id
-    LEFT JOIN relatorios.relatorio_grupo rg ON rg.relatorio_id = r.id
-    LEFT JOIN public.grupos g ON g.id = rg.grupo_id
-    LEFT JOIN public.usuario_grupo ug ON ug.grupo_id = rg.grupo_id
-    LEFT JOIN public.usuarios u ON u.id = ug.usuario_id
-    -- Desenvolvedores
-WHERE TRUE 
-    AND r.ativo = TRUE
-    AND ( 
-	r.publico = TRUE 
-	OR (u.username = '$username')
-	OR (
-		SELECT count(u.id) > 0
-		FROM public.usuarios u 
-		INNER JOIN public.usuario_grupo ug ON u.id = ug.usuario_id
-		INNER JOIN public.grupos g ON g.id = ug.grupo_id
-		WHERE g.nome = 'developer-relator' AND u.username = '$username'
-		) -- ids devs
-	) --devs
-ORDER BY
-    g.nome,
-    r.nome    
-        ";
-        }
-        return $this->db->consulta($sql);
+        $lista = $this->db->consulta($sql);
+        return $lista;
     }
 
     public function getTelaParametros($relatorioId) {
