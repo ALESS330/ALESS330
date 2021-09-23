@@ -271,7 +271,7 @@ class Relatorios extends Controller {
 
         $parametros = count($_GET);
         if ($relatorio->parametrizado && !$parametros) {
-            $_SESSION['action'] = $this->router->link("Relatorios->gerar($datasource,$nomeRelatorio)"); //$router
+            $_SESSION['relator']['action'] = $this->router->link("Relatorios->gerar($datasource,$nomeRelatorio)"); //$router
             $rt = new RelatorioTela();
             $tela = $rt->getBy(array("relatorio_id" => $relatorio->id));
             if (!isset($tela)) {
@@ -280,8 +280,9 @@ class Relatorios extends Controller {
             $formulario = new Formulario();
             $f = $formulario->getBy(array("id" => $tela->formulario_id));
             global $corSistema;
-            $_SESSION['corEmprestada'] = $corSistema;
-            $_SESSION['tituloEmprestado'] = $_ROTULO;
+            $_SESSION['relator']['corEmprestada'] = $corSistema;
+            $_SESSION['relator']['tituloEmprestado'] = $_ROTULO;
+            
             $this->go2("/formularios/tela-relatorio/$f->nome");
         }//if
         $objRelatorio = new Relatorio();
