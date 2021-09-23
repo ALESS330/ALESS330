@@ -62,7 +62,23 @@ $escondeBusca = true;
     .titulo-relatorio {
         font-weight: bold;
     }
+    .tabs .tab a{
+        color: <?=$corSistemaRGB?> !important;
+    }
 
+    .tabs .tab a:hover {
+        background-color:#eee;
+        color:#000;
+    } /*Text color on hover*/
+
+    .tabs .tab a.active {
+        background-color: white !important;
+        color: <?=$corSistemaRGB?> !important;
+    } /*Background and text color when a tab is active*/
+
+    .tabs .indicator {
+        background-color:#000;
+    } /*Color of underline*/
 </style>
 
 <h5 class="titulo-relatorio">Lista de Relatórios</h5>
