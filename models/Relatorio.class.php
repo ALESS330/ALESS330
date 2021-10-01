@@ -10,36 +10,77 @@ class Relatorio extends Model {
         $this->nomeTabela = "relatorios.relatorios";
     }
 
-    function get($relatorioId) {
+    function getRelatorio($campo, $valor){
         $sql = "
-        with categorias as (
-            select
-                r.id id_relatorio
-                , array_remove(array_agg(c.nome),null) categorias_json 
-            from 
-                relatorios.relatorios r 
-                left join relatorios.relatorio_categoria rc on rc.relatorio_id = r.id
-                left join relatorios.categorias c on c.id = rc.categoria_id 
-            group by r.id 
-            )
-            select 
-                d.nome nome_datasource
-                , array_to_json(c.categorias_json) categorias
-                , r.*
-            from
-                relatorios.relatorios r
-                inner join relatorios.datasources d on r.datasource_id = d.id
-                left join categorias c on r.id = c.id_relatorio
-            where r.id = $relatorioId                
-            order by
-                d.nome,
-                r.nome
+with
+categorias as (
+    select
+        r.id id_relatorio
+        , array_remove(array_agg(c.nome),null) categorias_json 
+    from 
+        relatorios.relatorios r 
+        left join relatorios.relatorio_categoria rc on rc.relatorio_id = r.id
+        left join relatorios.categorias c on c.id = rc.categoria_id 
+    group by r.id 
+)
+, parametros as (
+	select
+		r.id relatorio_id
+		, array_remove(array_agg(p.*), null) parametros
+		, array_remove(array_agg(tp.*), null) tipos_parametros 
+		, array_remove(array_agg(rp.*), null) regras 
+	from 
+		relatorios.relatorios r 
+		left join relatorios.relatorio_parametros rp on rp.relatorio_id = r.id 
+		left join relatorios.parametros p on p.id = rp.parametro_id
+		left join relatorios.tipos_parametros tp on p.tipo_parametro_id = tp.id 
+		left join relatorios.regras_parametros regras on regras.id = rp.regra_id 
+	group by r.id 
+)
+select 
+   	r.*
+   	, d.nome nome_datasource
+    , array_to_json(c.categorias_json) categorias
+    , array_to_json(p.regras) regras 
+    , array_to_json(p.parametros) parametros 
+    , array_to_json(p.tipos_parametros) tipos_parametros
+from
+    relatorios.relatorios r
+    inner join relatorios.datasources d on r.datasource_id = d.id
+	left join parametros p on p.relatorio_id = r.id 
+    left join categorias c on r.id = c.id_relatorio
+        where true 
+        and $campo = $valor
 ";
         $l = $this->db->consulta($sql);
         if (count($l) != 1) {
             return false;
         }
-        return $l[0];
+        $relatorio = $l[0];
+        $parametros = json_decode($relatorio->parametros);
+        $regras = json_decode($relatorio->regras);
+        $tipos_parametros = json_decode($relatorio->tipos_parametros);
+        unset($relatorio->tipos_parametros);
+        unset($relatorio->regras);
+        foreach($parametros as $p){
+            $p->tipo_parametro = array_filter($tipos_parametros, function($tp) use($p){
+                return $tp->id == $p->tipo_parametro_id;
+            })[0];
+            $p->regra = array_filter($regras, function($r) use($p){
+                return $r->parametro_id = $p->id;
+            })[0];
+        }
+        $relatorio->parametros = $parametros;
+        return $relatorio;
+    }
+
+    function get($relatorioId) {
+        return $this->getRelatorio("r.id", $relatorioId);
+    }
+
+    function getBy($array){
+        ['nome' => $nome, ] = $array; //'datasource' => $datasource] = $array;
+        return $this->getRelatorio("lower(r.nome)", "lower('$nome')");
     }
 
     public function getGrupos($relatorioId) {
@@ -213,6 +254,7 @@ order by
         
     }
 
+    /*
     public function pagina($pagina, $busca) {
         $busca = str_replace(" ", "%", urldecode($busca));
         $start = ($pagina - 1) * $this->NUMERO_LINHAS;
@@ -240,7 +282,7 @@ LIMIT $this->NUMERO_LINHAS";
         $dados['totalTabela'] = $this->totalTabela();
         $dados['totalFiltro'] = $this->totalFiltro($busca);
         return $dados;
-    }
+    } 
 
     function totalFiltro($busca) {
         if (!$busca || $busca == "undefined") {
@@ -261,26 +303,31 @@ WHERE
 ";
         $lista = $this->db->consulta($sql);
         return $lista[0]->count;
-    }
+    } */
 
     public function checarAcesso($relatorioId, $login) {
+        $r = $this->get($relatorioId);
+
+        if ($r->publico) {
+            return true;
+        }
+
+        if(!$login){
+            $_SESSION['PAGINA'] = $_SERVER['REQUEST_URI'];
+            throw new Exception("Checando acesso para usuário não informado.", 3);
+        }
+
         $rg = new RelatorioGrupo();
         $g = new Grupo();
         $u = new Usuario();
-        $r = $this->get($relatorioId);
-        if (isset($_SESSION['login'])) {
-            $usuario = $u->buscaPorLogin($login);
-            if ($g->isUserInGroup($login, "developer-relator", 'relator')) {
-                return true;
-            }
+
+        if ($g->isUserInGroup($login, "developer-relator", 'relator')) {
+            return true;
         }
 
         $relatorioGrupo = $rg->selectByEquals("relatorio_id", $relatorioId);
-        if ($r->publico) {
-            return TRUE;
-        }
 
-        if ($relatorioGrupo === NULL && $r->publico == FALSE) {
+        if ($relatorioGrupo === NULL) {
             throw new Exception("Relatório restrito sem grupos definidos");
         }
 

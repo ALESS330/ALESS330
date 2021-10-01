@@ -17,7 +17,7 @@ class ConstrutorRelatorios {
 
     public function getDados($nome, $datasource) {
         $dadosRelatorio = $this->getEstruturaRelatorio($nome);
-        $parametros = $_SESSION['parametros'];
+        $parametros = $_SESSION['parametros'] ?? false;
         $sqlBanco = $dadosRelatorio["codigo_sql"];
         $conexaoRelatorio = $this->conector->getConexao($datasource);
         if ($dadosRelatorio['parametrizado'] == true) {
@@ -65,7 +65,7 @@ class ConstrutorRelatorios {
         $decoradores = $oDecorador->decoradores($estruturaRelatorio['relatorio_id']);
         
         if ($decoradores) {
-        $parametros = $_SESSION['parametros'];
+            $parametros = $_SESSION['parametros'] ?? false;
             $dadosDecorados = $oDecorador->decorar($dados, $decoradores, $parametros);
         } else {
             $dadosDecorados = $dados;
