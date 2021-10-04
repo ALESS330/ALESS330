@@ -56,8 +56,26 @@ class Relatorios extends Controller {
 
     function propriedades($idRelatorio) {
         $relatorio = $this->buscaOuNulo($idRelatorio);
+        $lista = $this->relatorio->listaTodos();
+
+        $anterior = $proximo = $indiceAtual = false;
+        foreach($lista as $index => $r){
+            if($relatorio->id == $r->id){
+                $indiceAtual = $index;
+                break;
+            }
+        }
+        if($indiceAtual > 0){
+            $anterior = $lista[$indiceAtual - 1];
+        }        
+        if($indiceAtual < count($lista)){
+            $proximo = $lista[$indiceAtual + 1];
+        }
+
+        $dados['anterior'] = $anterior;
         $dados['relatorio'] = $relatorio;
-        $dados['listaRelatorios'] = $this->relatorio->listaAtivos();
+        $dados['proximo'] = $proximo;
+        $dados['listaRelatorios'] = $lista;
         $dados['datasource'] = $this->relatorio->getDatasource($idRelatorio);
         $dados['gruposRelatorio'] = $this->relatorio->getGrupos($idRelatorio);
         $dados['grupos'] = $this->relatorio->listaGruposPossiveis($relatorio->id);
@@ -243,35 +261,28 @@ class Relatorios extends Controller {
         }
     }
 
+    function prepararParametros($relatorio){
+        $this->render([
+            'relatorio' => $relatorio
+        ]);
+    }
+
     function gerar($datasource, $nomeRelatorio) {
-        global $_ROTULO;
-        $_ROTULO = "Relatório";
-        $relatorio = $this->relatorio->selectByEquals("nome", $nomeRelatorio);
-        if (count($relatorio) !== 1) {
-            throw new Exception("Esse relatório não existe!");
-        } else {
-            $relatorio = $relatorio[0];
-        }
-        if (!$relatorio->ativo){
-            throw new Exception("Relatório desativado. Procure o responsável pelas informações.");
-        }
+        $relatorio = $this->relatorio->getBy(["nome" => $nomeRelatorio]);
+        $this->notFoundIfNull($relatorio);
+        $this->throwif(!$relatorio->ativo, "Relatório desativado. Procure o responsável pelas informações.");
         
-        $_SESSION['relatorioId'] = $relatorio->id;        
+        //$_SESSION['relatorioId'] = $relatorio->id;        
+        $_SESSION['PAGINA'] = $_SERVER['REQUEST_URI'];
         if (!$relatorio->publico) {
-            if (!isset($_SESSION['login'])) {
-                $url = $_SESSION['PAGINA'] = $_SERVER['REQUEST_URI'];
-                $a = new Acessos();
-                $a->login($url);
-            } else if ($this->relatorio->checarAcesso($relatorio->id, $_SESSION['login'] ?? NULL) !== TRUE) {
-                $this->mensagemInfo("Acesso não autorizado a este relatório.");
-                $this->go2("Appplication->index");
-                exit();
-            }//else if
+            $this->throwif(!$this->relatorio->checarAcesso($relatorio->id, $_SESSION['login'] ?? NULL),
+                            "Acesso não autorizado a este relatório.");
         }//if (public)
 
         $parametros = count($_GET);
         if ($relatorio->parametrizado && !$parametros) {
-            $_SESSION['action'] = $this->router->link("Relatorios->gerar($datasource,$nomeRelatorio)"); //$router
+            $this->prepararParametros($relatorio);
+            $_SESSION['relator']['action'] = $this->router->link("Relatorios->gerar($datasource,$nomeRelatorio)"); //$router
             $rt = new RelatorioTela();
             $tela = $rt->getBy(array("relatorio_id" => $relatorio->id));
             if (!isset($tela)) {
@@ -280,9 +291,7 @@ class Relatorios extends Controller {
             $formulario = new Formulario();
             $f = $formulario->getBy(array("id" => $tela->formulario_id));
             global $corSistema;
-            $_SESSION['corEmprestada'] = $corSistema;
-            $_SESSION['tituloEmprestado'] = $_ROTULO;
-            $this->go2("/formularios/tela-relatorio/$f->nome");
+            $formulario->gerarTelaRelatorio($corSistema, $titulo);
         }//if
         $objRelatorio = new Relatorio();
         $lFormatos = $objRelatorio->getFormatos($relatorio->id);

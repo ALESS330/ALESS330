@@ -43,7 +43,34 @@ if (isset($formatos)) {
         <li><a href="@{Relatorios->index()}" class="btn-floating blue"><i class="material-icons">arrow_back</i></a></li>
     </ul>
 </div>
+<?php if($proximo){?>
+<a  class="btn-floating btn-large middle-screen-right"
+    href="@{Relatorios->propriedades(<?=$proximo->id?>)}"
+    title="Ir para o próximo relatório (<?=$proximo->nome?>)">
+    <i class="large material-icons">arrow_forward</i>
+</a>
+<?php } ?>
+<?php if($anterior){?>
+<a  class="btn-floating btn-large middle-screen-left" 
+    href="@{Relatorios->propriedades(<?=$anterior->id?>)}"
+    title="Ir para o relatório anterior (<?=$anterior->nome?>)">
+    <i class="large material-icons">arrow_back</i>
+</a>
+<?php } ?>
 #{/botoes}
+
+<style>
+    .middle-screen-right{
+        position: absolute;
+        top: calc(50% - 28px);
+        right: 3px !important;
+    }
+    .middle-screen-left{
+        position: absolute;
+        top: calc(50% - 28px);
+        left: 3px !important;
+    }    
+</style>
 
 <fieldset>
     <legend>Propriedades do Relatório</legend>
