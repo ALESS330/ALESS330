@@ -1,5 +1,7 @@
 <?php
 
+use function PHPSTORM_META\elementType;
+
 $_CONTROLE = 'Relatorios';
 $_ROTULO = 'Administração dos Relatórios';
 
@@ -275,23 +277,23 @@ class Relatorios extends Controller {
         //$_SESSION['relatorioId'] = $relatorio->id;        
         $_SESSION['PAGINA'] = $_SERVER['REQUEST_URI'];
         if (!$relatorio->publico) {
-            $this->throwif(!$this->relatorio->checarAcesso($relatorio->id, $_SESSION['login'] ?? NULL),
-                            "Acesso não autorizado a este relatório.");
+            $this->throwif(!$this->relatorio->checarAcesso($relatorio->id, $_SESSION['login'] ?? NULL), "Acesso não autorizado a este relatório.");
         }//if (public)
 
         $parametros = count($_GET);
         if ($relatorio->parametrizado && !$parametros) {
-            $this->prepararParametros($relatorio);
+            //$this->prepararParametros($relatorio);
             $_SESSION['relator']['action'] = $this->router->link("Relatorios->gerar($datasource,$nomeRelatorio)"); //$router
             $rt = new RelatorioTela();
             $tela = $rt->getBy(array("relatorio_id" => $relatorio->id));
+            
+
             if (!isset($tela)) {
                 throw new Exception("Impossível buscar tela de parâmetros.", 5);
             }
             $formulario = new Formulario();
             $f = $formulario->getBy(array("id" => $tela->formulario_id));
-            global $corSistema;
-            $formulario->gerarTelaRelatorio($corSistema, $titulo);
+            $this->go2("/formularios/tela-relatorio/$f->nome");
         }//if
         $objRelatorio = new Relatorio();
         $lFormatos = $objRelatorio->getFormatos($relatorio->id);

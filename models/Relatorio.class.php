@@ -80,7 +80,8 @@ from
 
     function getBy($array){
         ['nome' => $nome, ] = $array; //'datasource' => $datasource] = $array;
-        return $this->getRelatorio("lower(r.nome)", "lower('$nome')");
+        $r =  $this->getRelatorio("lower(r.nome)", "lower('$nome')");
+        return $r;
     }
 
     public function getGrupos($relatorioId) {
