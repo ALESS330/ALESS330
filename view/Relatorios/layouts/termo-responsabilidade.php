@@ -12,7 +12,6 @@ foreach ($termo as $variavel => $valor) {
 }
 
 if ($email_particular == "") {
-    ("E-mail particular não cadastrado no cadastro de pessoa no AGHU.");
 }
 setlocale(LC_ALL, 'pt_BR.UTF-8');
 
