@@ -21,6 +21,13 @@ class ConstrutorRelatorios {
         $sqlBanco = $dadosRelatorio["codigo_sql"];
         $conexaoRelatorio = $this->conector->getConexao($datasource);
         if ($dadosRelatorio['parametrizado'] == true) {
+            if(!$parametros){
+                if(count($_GET)){
+                    $parametros = $_GET;
+                }else{
+                    throw new Exception("Faltam parâmetros");
+                }
+            }
             $sql = $this->processaParametros($parametros, $sqlBanco);
         } else {
             $sql = $sqlBanco;
@@ -33,7 +40,7 @@ class ConstrutorRelatorios {
     function getRelatorio($nome, $datasource) {
         global $sisbase;
         $estruturaRelatorio = $this->getEstruturaRelatorio($nome);
-        //var_dump($dadosRelatorio); exit(0);
+        
         $layout = $sisbase . "/view/Relatorios/layouts/$nome.php";
         $colunaGrupo = $estruturaRelatorio["coluna_grupo"];
         $nomeFilho = $estruturaRelatorio["nome_filho"];
