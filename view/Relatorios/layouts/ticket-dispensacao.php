@@ -26,10 +26,54 @@
 ?>
 
 <style>
+    @media print {
+            @page { 
+                margin: 0; 
+                size: 297mm 210mm;
+            }
+            body {
+                margin-top: 10mm;
+                margin-bottom: 10mm;
+                font-size: 10pt;
+            }
+
+            div#pagina{
+                padding: 4mm !important;
+            }
+
+            .no-print {
+                display: none;
+            }
+
+            div#pagina>div.periodo{
+                text-align: left;
+                font-size: 8pt;
+                border: solid 1px black !important;
+                margin-left: 3px;
+                margin-right: 3px;
+                border-radius: 3px;
+            }
+            div#pagina>div.periodo table tbody tr td{
+                padding: 1mm !important;
+            }
+            
+            table tr:not(:last-child){
+                border-bottom: solid 1px black !important;
+            }
+        }/* @media */ 
+
     div#pagina{
         display: grid;
         grid-template-columns: auto auto auto;
         padding: 10px;
+    }
+
+    div.texto-dispensar{
+        font-size: 8pt;
+    }
+
+    div.texto-dispensar span{
+        font-size: 9pt;
     }
 
     div#pagina>div.periodo{
@@ -40,18 +84,26 @@
         margin-right: 3px;
         border-radius: 3px;
     }
+
+    .concluido{
+        background-color: #c8e6c9 ;
+    }
+
+    .pendente{
+        background-color: #ffcdd2;
+    }
 </style>
 
-<table id="tabela-medicamentos" class="striped highlight">
+<table id="tabela-medicamentos">
     <thead>
         <tr>
             <th>Medicamento</th>
             <th>Quantidade para 24h</th>
             <th>Frequencia</th>
             <th>Dose</th>
-            <th title="Manhã">🌅</th>
-            <th title="Tarde">🌤</th>
-            <th title="Noite">🌛</th>
+            <th title="Manhã" style="width: 75px;">🌅</th>
+            <th title="Tarde" style="width: 75px;">🌤</th>
+            <th title="Noite" style="width: 75px;">🌛</th>
         </tr>
     </thead>
     <tbody>
@@ -125,33 +177,37 @@
 
 
 <script type="text/x-jsrender" id="tabela-medicamentos-tmpl">
-<tr>
+<tr class="pendente">
     <td>{{:medicamento}}
         <input type="hidden" value="{{:codigo_medicamento}}" />
     </td>
-    <td>{{:qtde_24h}}</td>
+    <td>
+        <div class="quantidade">{{:qtde_24h}}</div> 
+        <div class="texto-dispensar">A dispensar: <span class='qtde-restante'>{{:qtde_24h}}</span>
+        </div>
+    </td>
     <td>{{:frequencia}} {{:tipo_frequencia}}</td>
     <td>{{:dose}} {{:unidade_medida}}</td>
     <td>
-        <p title="Exibir {{:medicamento}} no ticket da Manhã">
+        <p title="Quantidade de {{:medicamento}} no ticket da Manhã">
         <label>
-            <input type="checkbox" class="ck-manha"/>
+            <input type="number" min="0" max="{{:qtde_24h}}" class="qtde-manha quantidade"/>
             <span></span>
         </label>
         </p>
     </td>
     <td>    
-        <p title="Exibir {{:medicamento}} no ticket da Tarde">
+        <p title="Quantidade de {{:medicamento}} no ticket da Tarde">
         <label>
-            <input type="checkbox" class="ck-tarde"/>
+            <input type="number" min="0" max="{{:qtde_24h}}" class="qtde-tarde quantidade"/>
             <span></span>
         </label>
         </p>        
     </td>
     <td>            
-        <p title="Exibir {{:medicamento}} no ticket da Noite">
+        <p title="Quantidade de {{:medicamento}} no ticket da Noite">
         <label>
-            <input type="checkbox" class="ck-noite"/>
+            <input type="number" min="0" max="{{:qtde_24h}}" class="qtde-noite quantidade"/>
             <span></span>
         </label>
         </p>        
@@ -204,26 +260,47 @@
 
         $("#bt-imprimir").on('click', function(){
             makeTickets();
+            $("#tabela-medicamentos").hide();
+            window.print();
         });
 
-        $("table").on("click", ":checkbox", function(){
+        $("table").on("input", "input.quantidade", function(e){
             const estaLinha = $(this).closest("tr");
             const esteCodigoMedicamento = estaLinha.find(":hidden").val();
             const esteMedicamento = estaLinha.find("td").eq(0).text().trim();
-            const estaQuantidade = estaLinha.find("td").eq(1).text().trim();
+            const estaQuantidade = estaLinha.find("td").eq(1).find(".quantidade").text().trim();
+            const spanDisponivel = estaLinha.find("td").eq(1).find(".qtde-restante")
+
+            const estaManha = estaLinha.find(".qtde-manha")
+            const estaTarde = estaLinha.find(".qtde-tarde")
+            const estaNoite = estaLinha.find(".qtde-noite")
+
             const estaFrequencia = estaLinha.find("td").eq(2).text().trim();
             const estaDose = estaLinha.find("td").eq(3).text().trim();
-            const manha = $(this).hasClass("ck-manha");
-            const tarde = $(this).hasClass("ck-tarde");
-            const noite = $(this).hasClass("ck-noite");
+
+            let totalJaUsado = +estaManha.val() + +estaTarde.val() + +estaNoite.val()
+            let estaQuantidadeDisponivel = estaQuantidade - totalJaUsado
+            
+            if(totalJaUsado == estaQuantidade){
+                estaLinha.addClass("concluido").removeClass("pendente")
+            }else{
+                estaLinha.addClass("pendente").removeClass("concluido")
+            }
+
+            const manha = $(this).hasClass("qtde-manha");
+            const tarde = $(this).hasClass("qtde-tarde");
+            const noite = $(this).hasClass("qtde-noite");
+
+            estaQuantidadeSelecionada = $(this).val();
+            spanDisponivel.text(estaQuantidadeDisponivel)
 
             const medicamentoSelecionado = {
                 medicamento : esteMedicamento
-                , quantidade : estaQuantidade
+                , quantidade : estaQuantidadeSelecionada
                 , frequencia : estaFrequencia
                 , dose : estaDose
             }
-            const removendo = !$(this).prop("checked");
+            const removendo = estaQuantidadeSelecionada == 0;
             var alvo = {}; 
 
             if(manha){
@@ -241,10 +318,16 @@
             }else{
                 alvo[esteCodigoMedicamento] = medicamentoSelecionado;
             }
-            makeTickets();
-        });//evento clique das checkboxes
+            if (estaQuantidadeDisponivel <= 0){
+                e.preventDefault();
+                makeTickets();
+            }else{
+                makeTickets();
+            }
+            
+        });//evento input dos elementos de numero
 
-
+        $(":checkbox").click()
 
     });
 </script>

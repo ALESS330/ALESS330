@@ -260,10 +260,7 @@ if (isset($formatos)) {
             </div>
         </li><!-- Tela de parâmetros-->
     <?php } //if parametrizado  ?>
-        <li> <!-- Decoradores -->
-        <div class="collapsible-header">
-            <i class="material-icons">compare_arrows</i>Decoradores
-        </div>
+        <li> <!-- Decoradores -->categoria
         <div class="collapsible-body">
             <div class="col s12">
                 <form action="@{Relatorios->salvarDecoradores(<?=$relatorio->id?>)}" role="form" method="POST" >
@@ -467,8 +464,8 @@ if (isset($formatos)) {
 <script>
   $(document).ready(function(){
     const urls = new Array(2);
-    urls[true] = "<?=$contexto?>/relatorio/<?=$relatorio->id?>/categoria/:id/salvar";
-    urls[false] = "<?=$contexto?>/relatorio/<?=$relatorio->id?>/categoria/:id/remover";
+    urls[true] = "<?=$contexto?>/relatorio-categoria-salvar-<?=$relatorio->id?>-:id";
+    urls[false] = "<?=$contexto?>/relatorio-categoria-remover-<?=$relatorio->id?>-:id";
     
     $(".ck-categoria").on('click', function(e){
       const $amIChecked = $(this).prop("checked");
