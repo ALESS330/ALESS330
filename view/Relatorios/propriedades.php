@@ -260,7 +260,7 @@ if (isset($formatos)) {
             </div>
         </li><!-- Tela de parâmetros-->
     <?php } //if parametrizado  ?>
-        <li> <!-- Decoradores -->categoria
+        <li> <!-- Decoradores -->
         <div class="collapsible-body">
             <div class="col s12">
                 <form action="@{Relatorios->salvarDecoradores(<?=$relatorio->id?>)}" role="form" method="POST" >
