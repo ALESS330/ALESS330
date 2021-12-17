@@ -1,12 +1,30 @@
-#{botoes}
-<div class="fixed-action-btn no-print">
-    <button class="btn-floating btn-large red" id="bt-imprimir" title="Imprimir" onclick="window.print();">
-        <i class="material-icons">local_printshop</i>
-    </button>
-</div>
-#{/botoes}
 <?php
-$termo = $dados[0];
+$termo = false;
+// $termo = $dados[1];
+
+$url = $_SERVER["REQUEST_URI"];
+// echo "<pre>";
+// print_r($dados);
+// print_r($url);
+// echo "</pre>";
+
+function cpf($cpf)
+{
+    $cpfInteiro = str_pad($cpf, 11, "0", STR_PAD_LEFT); // mantem os numeros de cpf com 11 digitos, adicionando 0 para a esquerda
+    $maskCPF = "/(\d{3})(\d{3})(\d{3})(\d{2})/";
+    $arrayCPF = array();
+    $matches = preg_match_all($maskCPF, $cpfInteiro, $arrayCPF); // insere os resultados obtidos com maskCPF e cpfInteiro no array
+    $cpfResultante = $arrayCPF[1][0] . "." . $arrayCPF[2][0] . "." . $arrayCPF[3][0] . "-" . $arrayCPF[4][0];
+    return $cpfResultante;
+}
+
+if (isset($_GET["termo"])) {
+    $termo = $dados[$_GET["termo"]];
+
+    global $filename;
+    $filename = "termo-responsabilidade-" . $termo['nome'];
+}
+
 setlocale(LC_ALL, 'pt_BR.UTF-8');
 
 $meses['01'] = "janeiro";
@@ -27,15 +45,6 @@ $mes = $meses[strftime('%m')];
 $ano = strftime(' de %Y');
 
 $data = $dia . $mes . $ano;
-
-global $filename;
-$filename = "termo-responsabilidade-" . $termo['nome'];
-
-$cpfInteiro = str_pad($termo['cpf'], 11, "0", STR_PAD_LEFT); // mantem os numeros de cpf com 11 digitos
-$maskCPF = "/(\d{3})(\d{3})(\d{3})(\d{2})/";
-$arrayCPF = array();
-$matches = preg_match_all($maskCPF, $cpfInteiro, $arrayCPF); // insere os resultados obtidos com maskCPF e cpfInteiro e insere no array
-$cpfResultante = $arrayCPF[1][0] . "." . $arrayCPF[2][0] . "." . $arrayCPF[3][0] . "-" . $arrayCPF[4][0];
 
 // funcao que deixa preposicoes e conjuncoes com a primeira letra minuscula
 function titleCase($string, $delimiters = array(" ", "-", ".", "'", "O'", "Mc"), $exceptions = array("de", "da", "dos", "das", "do", "com"))
@@ -58,7 +67,29 @@ function titleCase($string, $delimiters = array(" ", "-", ".", "'", "O'", "Mc"),
     } // foreach
     return $string;
 }
+
+if ($termo) {
 ?>
+
+    #{botoes}
+    <div class="fixed-action-btn no-print">
+        <button class="btn-floating btn-large red" id="bt-imprimir" title="Imprimir" onclick="window.print();">
+            <i class="material-icons">local_printshop</i>
+        </button>
+    </div>
+    #{/botoes}
+
+<?php } else { // if ($termo) 
+?>
+
+    #{botoes}
+    <div class="fixed-action-btn no-print">
+        <a class="btn-floating btn-large" title="Voltar à pesquisa por CPF" href="/relator/relatorio/aghu/termo-responsabilidade" style="background-color: #37474f;">
+            <i class="material-icons">arrow_back</i></a>
+    </div>
+    #{/botoes}
+
+<?php } ?>
 
 <style>
     body {
@@ -97,6 +128,10 @@ function titleCase($string, $delimiters = array(" ", "-", ".", "'", "O'", "Mc"),
     h4,
     h5 {
         text-align: center;
+    }
+
+    thead {
+        font-weight: bold;
     }
 
     .titulo-termo {
@@ -142,7 +177,7 @@ function titleCase($string, $delimiters = array(" ", "-", ".", "'", "O'", "Mc"),
         text-align: center;
     }
 
-    ol {
+    .itens-termo {
         text-align: justify !important;
         padding-inline-start: 40px !important;
     }
@@ -168,6 +203,10 @@ function titleCase($string, $delimiters = array(" ", "-", ".", "'", "O'", "Mc"),
 
     .rodape-documento {
         display: none;
+    }
+
+    .blockquote-instrucoes {
+        padding-left: 0 !important;
     }
 
     @media print {
@@ -223,7 +262,7 @@ function titleCase($string, $delimiters = array(" ", "-", ".", "'", "O'", "Mc"),
             font-size: 12pt;
         }
 
-        ol {
+        .itens-termo {
             padding-inline-start: 40px !important;
             font-size: 12pt !important;
         }
@@ -244,45 +283,110 @@ function titleCase($string, $delimiters = array(" ", "-", ".", "'", "O'", "Mc"),
     }
 </style>
 
-<div class="conteudo">
-    <h4 class="titulo-termo">TERMO DE RESPONSABILIDADE</h4>
-    <h5 class="titulo-termo">USO DE RECURSOS DE TIC E CONFIDENCIALIDADE</h5>
-    <div class="texto">
-        <p>Pelo presente instrumento, eu <strong><?= $termo['nome'] ?></strong>, CPF <strong><?= $cpfResultante ?></strong>, identidade <strong><?= $termo['nro_identidade'] ?> - <?= $termo['orgao_emissor'] ?>/<?= $termo['uf_orgao'] ?></strong>, com vínculo <strong><?= $termo['vinculo'] ?></strong>, ocupação <strong><?= $termo['ocupacao'] ?></strong> e matrícula <strong><?= $termo['matricula'] ?></strong> no Hospital Universitário da Universidade Federal da Grande Dourados, DECLARO, sob pena das sanções cabíveis nos termos da POSIC/Sede estendida para o Hospital Universitário da Universidade Federal da Grande Dourados, publicada por meio da Portaria N. 035, de 6 de março de 2017 da Ebserh, e instituída no HU-UFGD por meio da Resolução N. 026, de 26 de abril de 2018, assumo a responsabilidade por:
-        </p>
-    </div>
-
-    <ol type="I">
-        <li>Tratar o(s) ativo(s) de informação como patrimônio do HU-UFGD;</li>
-        <li>Utilizar as informações em qualquer suporte sob minha custódia, exclusivamente, no interesse do serviço do HU-UFGD;</li>
-        <li>Contribuir para assegurar a disponibilidade, a integridade, a confidencialidade e a autenticidade das informações, conforme descrito na Instrução Normativa N. 01, do Gabinete de Segurança Institucional da Presidência da República, de 13 de junho de 2008, que Disciplina a Gestão de Segurança da Informação e Comunicações na Administração Pública Federal, direta e indireta;</li>
-        <li>Utilizar as credenciais, as contas de acesso e os ativos de informação em conformidade com a legislação vigente e normas específicas da HU-UFGD;</li>
-        <li>Responder, perante o HU-UFGD, pelo uso indevido das minhas credenciais ou contas de acesso e dos ativos de informação;</li>
-        <li>A não observância deste termo, Política e/ou de seus documentos complementares, bem como a quebra de controles de segurança da informação e comunicações, poderá acarretar, isolada ou cumulativamente, nos termos da legislação aplicável, sanções administrativas, civis e penais, assegurados aos envolvidos o contraditório e a ampla defesa.</li>
-    </ol>
-
-    <p align="right">Dourados, MS, <?= $data ?>.</p>
-
-    <div class="assinaturas">
+<?php
+// if (!$termo) {
+if (!$termo) { // se nao e um termo
+    if (!cpf($dados[0]['cpf']) || cpf($dados[0]['cpf']) == '000.000.000-00') {
+?>
         <div>
-            <strong><?= $termo['nome'] ?></strong>
-            <br />
-            <small><?= 'E-mail particular: ' . strtolower('<strong>' . $termo['email_particular'] . '<strong>') ?? '<em style="color: red"><strong>(E-mail particular não cadastrado! Favor cadastrá-lo antes de imprimir o termo.)</strong></em>' ?></small>
-        </div>
-        <!-- div class="assinatura-chefia"><strong>Chefia imediata <small>(carimbo e assinatura)</small></strong></div -->
-        <div class="assinatura-chefia"><strong><?= $termo['lotacao'] ?></strong></div>
-    </div>
-    <fieldset class="fieldset-cadastradores">
-        <legend>USO EXCLUSIVO DOS CADASTRADORES</legend>
-        <div class="assinatura-rede"><small>Assinatura do responsável pela criação da conta</small></div>
-        <div class="assinatura-perfil"><small>Assinatura do responsável pela atribuição de perfil</small></div>
-    </fieldset>
-</div>
+            <h4 style="text-align: justify;"><strong>CPF não encontrado!</strong></h4>
 
-<!-- <footer class="rodape-documento">
-    <strong class="hospital-rodape">Hospital Universitário da Universidade Federal da Grande Dourados – HU-UFGD</strong>
-    <br />CNPJ: 07.775.847/0002-78
-    <br />Rua Ivo Alves da Rocha, 558 – Altos do Indaiá
-    <br />CEP 79.823-501 – Dourados/MS, Brasil
-        <br />67 3410-3000
-</footer> -->
+            <div class="row">
+                <div class="col s6">
+                    <p>Número de CPF <em><strong><?= $_GET['cpf'] ?></strong></em> não cadastrado no AGHU. Refaça a pesquisa clicando <a href="/relator/relatorio/aghu/termo-responsabilidade">aqui</a>.</p>
+                </div>
+            </div>
+        </div>
+
+    <?php } else { // if cpf nulo 
+    ?>
+        <h4 class="header" style="text-align: justify;"><strong>Dados do Colaborador</strong></h4>
+        <blockquote>
+            <div><strong>Nome: </strong><?= $dados[0]["nome"] ? $dados[0]["nome"] : '<em>Colaborador não cadastrado</em>' ?></div>
+            <div><strong>CPF: </strong><?= cpf($dados[0]['cpf']) ? cpf($dados[0]['cpf']) : '<em>CPF não cadastrado</em>' ?></div>
+        </blockquote>
+
+        <table class="highlight">
+            <thead>
+                <tr>
+                    <!-- <td>Nome</td>
+                <td>CPF</td> -->
+                    <td>Matrícula</td>
+                    <td>Vínculo</td>
+                    <td>Lotação</td>
+                    <td>Cadastro atualizado no AGHU em</td>
+                    <td>Termo de Responsabilidade</td>
+                </tr>
+            </thead>
+            <?php
+            foreach ($dados as $i => $linha) { // $linha = valor como linha da tabela
+            ?>
+                <tr>
+                    <!-- <td><?= $linha["nome"] ?></td>
+                <td><?= cpf($linha['cpf']) ?></td> -->
+                    <td><?= $linha["matricula"] ?></td>
+                    <td><?= $linha["vinculo"] ?></td>
+                    <td><?= $linha["lotacao"] ?></td>
+                    <td><?= $linha["cadastro_atualizado_em"] ?></td>
+                    <td><a href="<?= $url . "&termo=$i" ?>" target="_blank">Gerar</a></td>
+                </tr>
+            <?php } // foreach
+            ?>
+        </table>
+    <?php } // else cpf nulo
+    ?>
+
+<?php
+} else { // if (!$termo)
+    $emailParticular = strtolower($termo['email_particular']) ? strtolower($termo['email_particular']) : '<em style="color: red"><strong>E-mail particular não cadastrado! Favor cadastrá-lo no AGHU antes de imprimir o termo.</strong></em>';
+?>
+
+    <div class="no-print">
+        <h4 class="header" style="text-align: justify;"><strong>Instruções</strong></h4>
+        <blockquote class="blockquote-instrucoes">
+            <ol>
+                <li>Imprimir esse termo, através do botão "Imprimir", localizado no canto inferior direito dessa página;</li>
+                <li>Coletar as assinaturas do colaborador e de sua chefia imediata;</li>
+                <li>Enviar o termo escaneado (devidamento assinado) para o SGPTI, por meio de novo chamado pelo Help Desk, solicitando criação de usuário de rede e adequação do acesso ao AGHU.</li>
+            </ol>
+        </blockquote>
+        <p>Última atualização feita no cadastro do AGHU: <strong> <?= $termo['cadastro_atualizado_em'] ?></strong>.</p>
+    </div>
+
+    <div class="conteudo">
+        <h4 class="titulo-termo">TERMO DE RESPONSABILIDADE</h4>
+        <h5 class="titulo-termo">USO DE RECURSOS DE TIC E CONFIDENCIALIDADE</h5>
+        <div class="texto">
+            <p>Pelo presente instrumento, eu <strong><?= $termo['nome'] ?></strong>, CPF <strong><?= cpf($termo['cpf']) ?></strong>, identidade <strong><?= $termo['nro_identidade'] ?> - <?= $termo['orgao_emissor'] ?>/<?= $termo['uf_orgao'] ?></strong>, com vínculo <strong><?= $termo['vinculo'] ?></strong>, ocupação <strong><?= $termo['ocupacao'] ?></strong> e matrícula <strong><?= $termo['matricula'] ?></strong>, no Hospital Universitário da Universidade Federal da Grande Dourados, DECLARO, sob pena das sanções cabíveis nos termos da POSIC/Sede estendida para o Hospital Universitário da Universidade Federal da Grande Dourados, publicada por meio da Portaria N. 035, de 6 de março de 2017 da Ebserh, e instituída no HU-UFGD por meio da Resolução N. 026, de 26 de abril de 2018, assumo a responsabilidade por:
+            </p>
+        </div>
+
+        <ol class="itens-termo" type="I">
+            <li>Tratar o(s) ativo(s) de informação como patrimônio do HU-UFGD;</li>
+            <li>Utilizar as informações em qualquer suporte sob minha custódia, exclusivamente, no interesse do serviço do HU-UFGD;</li>
+            <li>Contribuir para assegurar a disponibilidade, a integridade, a confidencialidade e a autenticidade das informações, conforme descrito na Instrução Normativa N. 01, do Gabinete de Segurança Institucional da Presidência da República, de 13 de junho de 2008, que Disciplina a Gestão de Segurança da Informação e Comunicações na Administração Pública Federal, direta e indireta;</li>
+            <li>Utilizar as credenciais, as contas de acesso e os ativos de informação em conformidade com a legislação vigente e normas específicas da HU-UFGD;</li>
+            <li>Responder, perante o HU-UFGD, pelo uso indevido das minhas credenciais ou contas de acesso e dos ativos de informação;</li>
+            <li>A não observância deste termo, Política e/ou de seus documentos complementares, bem como a quebra de controles de segurança da informação e comunicações, poderá acarretar, isolada ou cumulativamente, nos termos da legislação aplicável, sanções administrativas, civis e penais, assegurados aos envolvidos o contraditório e a ampla defesa.</li>
+        </ol>
+
+        <br />
+        <p align="right">Dourados, MS, <?= $data ?>.</p>
+
+        <div class="assinaturas">
+            <div>
+                <strong><?= $termo['nome'] ?></strong>
+                <br />
+                <small>E-mail particular: <strong><?= $emailParticular ?></strong></small>
+            </div>
+            <!-- div class="assinatura-chefia"><strong>Chefia imediata <small>(carimbo e assinatura)</small></strong></div -->
+            <div class="assinatura-chefia"><strong><?= $termo['lotacao'] ?></strong></div>
+        </div>
+        <fieldset class="fieldset-cadastradores">
+            <legend>USO EXCLUSIVO DOS CADASTRADORES</legend>
+            <div class="assinatura-rede"><small>Assinatura do responsável pela criação da conta</small></div>
+            <div class="assinatura-perfil"><small>Assinatura do responsável pela atribuição de perfil</small></div>
+        </fieldset>
+    </div>
+<?php }  // else if (!$termo) 
+?>
