@@ -338,7 +338,7 @@ if (!$termo) { // se nao e um termo
 
 <?php
 } else { // if (!$termo)
-    $emailParticular = strtolower($termo['email_particular']) ? strtolower($termo['email_particular']) : '<em style="color: red"><strong>E-mail particular não cadastrado! Favor cadastrá-lo no AGHU antes de imprimir o termo.</strong></em>';
+    $emailParticular = strtolower($termo['email_particular']) ? strtolower($termo['email_particular']) : '<em style="color: red"><strong>Não cadastrado no AGHU! Favor cadastrá-lo e atualizar essa página para que apareça aqui (essa informação é  necessária para facilitar o cadastro do usuário de rede, por parte da equipe de TI).</strong></em>';
 ?>
 
     <div class="no-print">
@@ -347,10 +347,10 @@ if (!$termo) { // se nao e um termo
             <ol>
                 <li>Imprimir esse termo, através do botão "Imprimir", localizado no canto inferior direito dessa página;</li>
                 <li>Coletar as assinaturas do colaborador e de sua chefia imediata;</li>
-                <li>Enviar o termo escaneado (devidamento assinado) para o SGPTI, por meio de novo chamado pelo Help Desk, solicitando criação de usuário de rede e adequação do acesso ao AGHU.</li>
+                <li>Encaminhar o termo escaneado (devidamento assinado) para o SGPTI, por meio de novo chamado pelo Help Desk, solicitando criação de usuário de rede e adequação do acesso ao AGHU.</li>
             </ol>
         </blockquote>
-        <p>Última atualização feita no cadastro do AGHU: <strong> <?= $termo['cadastro_atualizado_em'] ?></strong>.</p>
+        <p>Última alteração feita no cadastro, no AGHU: <strong> <?= $termo['cadastro_atualizado_em'] ?></strong>.</p>
     </div>
 
     <div class="conteudo">
