@@ -8,6 +8,8 @@ $url = $_SERVER["REQUEST_URI"];
 // print_r($url);
 // echo "</pre>";
 
+$valid = true; // validador
+
 function cpf($cpf)
 {
     $cpfInteiro = str_pad($cpf, 11, "0", STR_PAD_LEFT); // mantem os numeros de cpf com 11 digitos, adicionando 0 para a esquerda
@@ -21,8 +23,24 @@ function cpf($cpf)
 if (isset($_GET["termo"])) {
     $termo = $dados[$_GET["termo"]];
 
+    foreach ($termo as $nomeVar => $valorVar) { // para cada variavel do termo / [nome] => ALESSANDRO TEIXEIRA DE ANDRADE
+        if ($valorVar) { // se existe um valor para a variavel
+            $$nomeVar = $valorVar; // valor da variavel recebe $nomeDaVariavel = $nome, $cpf
+        } else {
+            $$nomeVar = '<em style="color: red;"><strong>dado não cadastrado no AGHU</strong></em>';
+            $valid = false;
+        }
+
+        // $emailParticular = strtolower($email_particular']) ? strtolower($email_particular']) : '<em style="color: red"><strong>Não cadastrado no AGHU! Por gentileza, cadastre-o e atualize essa página para que apareça aqui (esse dado é utilizado para criação do usuário de rede).</strong></em>';
+    }
+
+    // echo "<pre>";
+    // print_r($termo);
+    // echo "</pre>";
+    // exit(0);
+
     global $filename;
-    $filename = "termo-responsabilidade-" . $termo['nome'];
+    $filename = "termo-responsabilidade-" . $nome;
 }
 
 setlocale(LC_ALL, 'pt_BR.UTF-8');
@@ -66,30 +84,7 @@ function titleCase($string, $delimiters = array(" ", "-", ".", "'", "O'", "Mc"),
         $string = join($delimiter, $newwords);
     } // foreach
     return $string;
-}
-
-if ($termo) {
-?>
-
-    #{botoes}
-    <div class="fixed-action-btn no-print">
-        <button class="btn-floating btn-large red" id="bt-imprimir" title="Imprimir" onclick="window.print();">
-            <i class="material-icons">local_printshop</i>
-        </button>
-    </div>
-    #{/botoes}
-
-<?php } else { // if ($termo) 
-?>
-
-    #{botoes}
-    <div class="fixed-action-btn no-print">
-        <a class="btn-floating btn-large" title="Voltar à pesquisa por CPF" href="/relator/relatorio/aghu/termo-responsabilidade" style="background-color: #37474f;">
-            <i class="material-icons">arrow_back</i></a>
-    </div>
-    #{/botoes}
-
-<?php } ?>
+} ?>
 
 <style>
     body {
@@ -119,7 +114,6 @@ if ($termo) {
         text-align: justify;
         text-indent: 1cm !important;
         font-size: 11pt;
-        /*            line-height: 1.1em;*/
     }
 
     h1,
@@ -290,7 +284,6 @@ if (!$termo) { // se nao e um termo
 ?>
         <div>
             <h4 style="text-align: justify;"><strong>CPF não encontrado!</strong></h4>
-
             <div class="row">
                 <div class="col s6">
                     <p>Número de CPF <em><strong><?= $_GET['cpf'] ?></strong></em> não cadastrado no AGHU. Refaça a pesquisa clicando <a href="/relator/relatorio/aghu/termo-responsabilidade">aqui</a>.</p>
@@ -309,8 +302,6 @@ if (!$termo) { // se nao e um termo
         <table class="highlight">
             <thead>
                 <tr>
-                    <!-- <td>Nome</td>
-                <td>CPF</td> -->
                     <td>Matrícula</td>
                     <td>Vínculo</td>
                     <td>Lotação</td>
@@ -322,12 +313,10 @@ if (!$termo) { // se nao e um termo
             foreach ($dados as $i => $linha) { // $linha = valor como linha da tabela
             ?>
                 <tr>
-                    <!-- <td><?= $linha["nome"] ?></td>
-                <td><?= cpf($linha['cpf']) ?></td> -->
-                    <td><?= $linha["matricula"] ?></td>
-                    <td><?= $linha["vinculo"] ?></td>
-                    <td><?= $linha["lotacao"] ?></td>
-                    <td><?= $linha["cadastro_atualizado_em"] ?></td>
+                    <td><?= $linha['matricula'] ?></td>
+                    <td><?= $linha['vinculo'] ?></td>
+                    <td><?= $linha['lotacao'] ?></td>
+                    <td><?= $linha['cadastro_atualizado_em'] ?></td>
                     <td><a href="<?= $url . "&termo=$i" ?>" target="_blank">Gerar</a></td>
                 </tr>
             <?php } // foreach
@@ -338,7 +327,6 @@ if (!$termo) { // se nao e um termo
 
 <?php
 } else { // if (!$termo)
-    $emailParticular = strtolower($termo['email_particular']) ? strtolower($termo['email_particular']) : '<em style="color: red"><strong>Não cadastrado no AGHU! Favor cadastrá-lo e atualizar essa página para que apareça aqui (essa informação é  necessária para facilitar o cadastro do usuário de rede, por parte da equipe de TI).</strong></em>';
 ?>
 
     <div class="no-print">
@@ -350,14 +338,14 @@ if (!$termo) { // se nao e um termo
                 <li>Encaminhar o termo escaneado (devidamento assinado) para o SGPTI, por meio de novo chamado pelo Help Desk, solicitando criação de usuário de rede e adequação do acesso ao AGHU.</li>
             </ol>
         </blockquote>
-        <p>Última alteração feita no cadastro, no AGHU: <strong> <?= $termo['cadastro_atualizado_em'] ?></strong>.</p>
+        <p>Última alteração feita no cadastro, no AGHU: <strong> <?= $cadastro_atualizado_em ?></strong>.</p>
     </div>
 
     <div class="conteudo">
         <h4 class="titulo-termo">TERMO DE RESPONSABILIDADE</h4>
         <h5 class="titulo-termo">USO DE RECURSOS DE TIC E CONFIDENCIALIDADE</h5>
         <div class="texto">
-            <p>Pelo presente instrumento, eu <strong><?= $termo['nome'] ?></strong>, CPF <strong><?= cpf($termo['cpf']) ?></strong>, identidade <strong><?= $termo['nro_identidade'] ?> - <?= $termo['orgao_emissor'] ?>/<?= $termo['uf_orgao'] ?></strong>, com vínculo <strong><?= $termo['vinculo'] ?></strong>, ocupação <strong><?= $termo['ocupacao'] ?></strong> e matrícula <strong><?= $termo['matricula'] ?></strong>, no Hospital Universitário da Universidade Federal da Grande Dourados, DECLARO, sob pena das sanções cabíveis nos termos da POSIC/Sede estendida para o Hospital Universitário da Universidade Federal da Grande Dourados, publicada por meio da Portaria N. 035, de 6 de março de 2017 da Ebserh, e instituída no HU-UFGD por meio da Resolução N. 026, de 26 de abril de 2018, assumo a responsabilidade por:
+            <p>Pelo presente instrumento, eu <strong><?= $nome ?></strong>, CPF <strong><?= cpf($cpf) ?></strong>, identidade <strong><?= $nro_identidade ?> - <?= $orgao_emissor ?>/<?= $uf_orgao ?></strong>, com vínculo <strong><?= $vinculo ?></strong>, ocupação <strong><?= $ocupacao ?></strong> e matrícula <strong><?= $matricula ?></strong>, no Hospital Universitário da Universidade Federal da Grande Dourados, DECLARO, sob pena das sanções cabíveis nos termos da POSIC/Sede estendida para o Hospital Universitário da Universidade Federal da Grande Dourados, publicada por meio da Portaria N. 035, de 6 de março de 2017 da Ebserh, e instituída no HU-UFGD por meio da Resolução N. 026, de 26 de abril de 2018, assumo a responsabilidade por:
             </p>
         </div>
 
@@ -375,12 +363,12 @@ if (!$termo) { // se nao e um termo
 
         <div class="assinaturas">
             <div>
-                <strong><?= $termo['nome'] ?></strong>
+                <strong><?= $nome ?></strong>
                 <br />
-                <small>E-mail particular: <strong><?= $emailParticular ?></strong></small>
+                <small>E-mail particular: <strong><?= strtolower($email_particular) ?></strong></small>
             </div>
             <!-- div class="assinatura-chefia"><strong>Chefia imediata <small>(carimbo e assinatura)</small></strong></div -->
-            <div class="assinatura-chefia"><strong><?= $termo['lotacao'] ?></strong></div>
+            <div class="assinatura-chefia"><strong><?= $lotacao ?></strong></div>
         </div>
         <fieldset class="fieldset-cadastradores">
             <legend>USO EXCLUSIVO DOS CADASTRADORES</legend>
@@ -388,5 +376,25 @@ if (!$termo) { // se nao e um termo
             <div class="assinatura-perfil"><small>Assinatura do responsável pela atribuição de perfil</small></div>
         </fieldset>
     </div>
-<?php }  // else if (!$termo) 
+<?php }  // else if (!$termo)
+
+if ($termo) {
+    $disabled = $valid ? "" : " disabled ";
 ?>
+    #{botoes}
+    <div class="fixed-action-btn no-print">
+        <button class="btn-floating btn-large red" id="bt-imprimir" <?= $disabled ?> title="Imprimir" onclick="window.print();">
+            <i class="material-icons">local_printshop</i>
+        </button>
+    </div>
+    #{/botoes}
+
+<?php } else { // if ($termo) 
+?>
+    #{botoes}
+    <div class="fixed-action-btn no-print">
+        <a class="btn-floating btn-large" title="Voltar à pesquisa por CPF" href="/relator/relatorio/aghu/termo-responsabilidade" style="background-color: #37474f;">
+            <i class="material-icons">arrow_back</i></a>
+    </div>
+    #{/botoes}
+<?php } ?>
