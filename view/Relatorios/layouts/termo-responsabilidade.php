@@ -13,25 +13,36 @@ $valid = true; // validador
 function cpf($cpf)
 {
     $cpfInteiro = str_pad($cpf, 11, "0", STR_PAD_LEFT); // mantem os numeros de cpf com 11 digitos, adicionando 0 para a esquerda
-    $maskCPF = "/(\d{3})(\d{3})(\d{3})(\d{2})/";
+    $marcaraCPF = "/(\d{3})(\d{3})(\d{3})(\d{2})/";
     $arrayCPF = array();
-    $matches = preg_match_all($maskCPF, $cpfInteiro, $arrayCPF); // insere os resultados obtidos com maskCPF e cpfInteiro no array
+    $matches = preg_match_all($marcaraCPF, $cpfInteiro, $arrayCPF); // insere os resultados obtidos com marcaraCPF e cpfInteiro no array
     $cpfResultante = $arrayCPF[1][0] . "." . $arrayCPF[2][0] . "." . $arrayCPF[3][0] . "-" . $arrayCPF[4][0];
     return $cpfResultante;
 }
 
+$rotuloVar['nome'] = "nome";
+$rotuloVar['cpf'] = "CPF";
+$rotuloVar['nro_identidade'] = "RG";
+$rotuloVar['orgao_emissor'] = "órgão emissor";
+$rotuloVar['uf_orgao'] = "UF do órgão emissor";
+$rotuloVar['vinculo'] = "tipo de vínculo";
+$rotuloVar['ocupacao'] = "ocupação";
+$rotuloVar['matricula'] = "matrícula";
+$rotuloVar['uf_orgao'] = "UF do órgão emissor";
+$rotuloVar['email_particular'] = "e-mail";
+$rotuloVar['chefia_imediata'] = "chefia imediata";
+
+// verificar dados cadastrados
 if (isset($_GET["termo"])) {
     $termo = $dados[$_GET["termo"]];
 
-    foreach ($termo as $nomeVar => $valorVar) { // para cada variavel do termo / [nome] => ALESSANDRO TEIXEIRA DE ANDRADE
+    foreach ($termo as $nomeVar => $valorVar) { // para cada valor de uma variavel do termo / [nome] => ALESSANDRO TEIXEIRA DE ANDRADE
         if ($valorVar) { // se existe um valor para a variavel
             $$nomeVar = $valorVar; // valor da variavel recebe $nomeDaVariavel = $nome, $cpf
         } else {
-            $$nomeVar = '<em style="color: red;"><strong>dado não cadastrado no AGHU</strong></em>';
+            $$nomeVar = '<em style="color: red;"><strong>' . $rotuloVar[$nomeVar] . ' não cadastrado</strong></em>';
             $valid = false;
         }
-
-        // $emailParticular = strtolower($email_particular']) ? strtolower($email_particular']) : '<em style="color: red"><strong>Não cadastrado no AGHU! Por gentileza, cadastre-o e atualize essa página para que apareça aqui (esse dado é utilizado para criação do usuário de rede).</strong></em>';
     }
 
     // echo "<pre>";
@@ -65,23 +76,23 @@ $ano = strftime(' de %Y');
 $data = $dia . $mes . $ano;
 
 // funcao que deixa preposicoes e conjuncoes com a primeira letra minuscula
-function titleCase($string, $delimiters = array(" ", "-", ".", "'", "O'", "Mc"), $exceptions = array("de", "da", "dos", "das", "do", "com"))
+function titleCase($string, $delimitadores = array(" ", "-", ".", "'", "O'", "Mc"), $excecoes = array("de", "da", "dos", "das", "do", "com"))
 {
     $string = mb_convert_case($string, MB_CASE_TITLE, "UTF-8");
-    foreach ($delimiters as $dlnr => $delimiter) {
-        $words = explode($delimiter, $string);
-        $newwords = array();
-        foreach ($words as $wordnr => $word) {
-            if (in_array(mb_strtoupper($word, "UTF-8"), $exceptions)) {
-                $word = mb_strtoupper($word, "UTF-8");
-            } elseif (in_array(mb_strtolower($word, "UTF-8"), $exceptions)) {
-                $word = mb_strtolower($word, "UTF-8");
-            } elseif (!in_array($word, $exceptions)) {
-                $word = ucfirst($word);
+    foreach ($delimitadores as $dlnr => $delimitador) {
+        $palavras = explode($delimitador, $string);
+        $novasPalavras = array();
+        foreach ($palavras as $palavranr => $palavra) {
+            if (in_array(mb_strtoupper($palavra, "UTF-8"), $excecoes)) {
+                $palavra = mb_strtoupper($palavra, "UTF-8");
+            } elseif (in_array(mb_strtolower($palavra, "UTF-8"), $excecoes)) {
+                $palavra = mb_strtolower($palavra, "UTF-8");
+            } elseif (!in_array($palavra, $excecoes)) {
+                $palavra = ucfirst($palavra);
             }
-            array_push($newwords, $word);
+            array_push($novasPalavras, $palavra);
         }
-        $string = join($delimiter, $newwords);
+        $string = join($delimitador, $novasPalavras);
     } // foreach
     return $string;
 } ?>
@@ -160,14 +171,14 @@ function titleCase($string, $delimiters = array(" ", "-", ".", "'", "O'", "Mc"),
         float: left;
         padding-right: 10px;
         border-top: solid 1px black !important;
-        width: 45%;
+        width: 46%;
         text-align: center;
     }
 
     .assinatura-perfil {
         float: right;
         border-top: solid 1px black !important;
-        width: 45%;
+        width: 46%;
         text-align: center;
     }
 
@@ -334,6 +345,9 @@ if (!$termo) { // se nao e um termo
         <blockquote class="blockquote-instrucoes">
             <ol>
                 <li>Imprimir esse termo, através do botão "Imprimir", localizado no canto inferior direito dessa página;</li>
+                <ul>
+                    <li><em>Obs.: Caso apareçam dados <span style="color: red;"><strong>não cadastrados</strong></span>, cadastrá-los no <a href="https://aghu.hugd.ebserh.gov.br/" target="_blank"><strong>AGHU</strong></a> e atualizar essa página, utilizando a tecla <strong>F5</strong> ou o botão <i class="material-icons" style="font-size: 16px; font-weight: bold;">refresh</i> no navegador, para gerar esse termo novamente.</em></li>
+                </ul>
                 <li>Coletar as assinaturas do colaborador e de sua chefia imediata;</li>
                 <li>Encaminhar o termo escaneado (devidamento assinado) para o SGPTI, por meio de novo chamado pelo Help Desk, solicitando criação de usuário de rede e adequação do acesso ao AGHU.</li>
             </ol>
@@ -372,8 +386,8 @@ if (!$termo) { // se nao e um termo
         </div>
         <fieldset class="fieldset-cadastradores">
             <legend>USO EXCLUSIVO DOS CADASTRADORES</legend>
-            <div class="assinatura-rede"><small>Assinatura do responsável pela criação da conta</small></div>
-            <div class="assinatura-perfil"><small>Assinatura do responsável pela atribuição de perfil</small></div>
+            <div class="assinatura-rede"><small>Responsável pelo cadastro no AGHU</small></div>
+            <div class="assinatura-perfil"><small>Responsável pelo usuário de rede/perfil de acesso</small></div>
         </fieldset>
     </div>
 <?php }  // else if (!$termo)
