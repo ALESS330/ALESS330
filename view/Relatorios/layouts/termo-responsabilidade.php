@@ -1,4 +1,5 @@
 <?php
+
 $termo = false;
 // $termo = $dados[1];
 
@@ -341,21 +342,32 @@ if (!$termo) { // se nao e um termo
 ?>
 
     <div class="no-print">
-        <h4 class="header" style="text-align: justify;"><strong>Instruções</strong></h4>
-        <blockquote class="blockquote-instrucoes">
-            <ol>
-                <li>Imprimir esse termo, através do botão "Imprimir", localizado no canto inferior direito dessa página;</li>
-                <ul>
-                    <li><em>Obs.: Caso apareçam dados <span style="color: red;"><strong>não cadastrados</strong></span>, cadastrá-los no <a href="https://aghu.hugd.ebserh.gov.br/" target="_blank"><strong>AGHU</strong></a> e atualizar essa página, utilizando a tecla <strong>F5</strong> ou o botão <i class="material-icons" style="font-size: 16px; font-weight: bold;">refresh</i> no navegador, para gerar esse termo novamente.</em></li>
-                </ul>
-                <li>Coletar as assinaturas do colaborador e de sua chefia imediata;</li>
-                <li>Encaminhar o termo escaneado (devidamento assinado) para o SGPTI, por meio de novo chamado pelo Help Desk, solicitando criação de usuário de rede e adequação do acesso ao AGHU.</li>
-            </ol>
-        </blockquote>
+        <?php if ($valid) { ?>
+            <h4 class="header" style="text-align: justify;"><strong>Instruções</strong></h4>
+            <blockquote class="blockquote-instrucoes">
+                <ol>
+                    <li>Imprimir esse termo, através do botão "Imprimir", localizado no canto inferior direito dessa página;</li>
+                    <li>Coletar as assinaturas do colaborador e de sua chefia imediata;</li>
+                    <li>Encaminhar o termo escaneado (devidamento assinado) para o SGPTI, por meio de novo chamado pelo Help Desk, solicitando criação de usuário de rede e adequação do acesso ao AGHU.</li>
+                </ol>
+            </blockquote>
+        <?php } else { ?>
+            <h4 class="header" style="text-align: justify;"><strong>Existem dados <span style="color: red;"><strong>não cadastrados</strong></span>!</strong></h4>
+            <blockquote>
+                <div>Por gentileza, cadastre-os no <a href="https://aghu.hugd.ebserh.gov.br/" target="_blank"><strong>AGHU</strong></a> e, posteriormente, atualize essa página, utilizando a tecla <strong>F5</strong> ou o botão <span><i class="material-icons" style="font-size: 16px; font-weight: bold;">refresh</i></span> no navegador, para gerar esse termo novamente.
+                </div>
+            </blockquote>
+        <?php } ?>
         <p>Última alteração feita no cadastro, no AGHU: <strong> <?= $cadastro_atualizado_em ?></strong>.</p>
     </div>
 
-    <div class="conteudo">
+    <?php
+    if (!$valid) {
+        $print = "no-print";
+    }
+    ?>
+
+    <div class="conteudo <?= $print ?>">
         <h4 class="titulo-termo">TERMO DE RESPONSABILIDADE</h4>
         <h5 class="titulo-termo">USO DE RECURSOS DE TIC E CONFIDENCIALIDADE</h5>
         <div class="texto">
@@ -381,8 +393,11 @@ if (!$termo) { // se nao e um termo
                 <br />
                 <small>E-mail particular: <strong><?= strtolower($email_particular) ?></strong></small>
             </div>
-            <!-- div class="assinatura-chefia"><strong>Chefia imediata <small>(carimbo e assinatura)</small></strong></div -->
-            <div class="assinatura-chefia"><strong><?= $lotacao ?></strong></div>
+            <div class="assinatura-chefia">
+                <strong><?= $lotacao ?></strong>
+                <br />
+                <small>Chefia imediata (assinatura e carimbo)</small>
+            </div>
         </div>
         <fieldset class="fieldset-cadastradores">
             <legend>USO EXCLUSIVO DOS CADASTRADORES</legend>
@@ -395,6 +410,12 @@ if (!$termo) { // se nao e um termo
 if ($termo) {
     $disabled = $valid ? "" : " disabled ";
 ?>
+    #{scriptPagina}
+    <script type="text/javascript">
+        document.title = "Termo de Responsabilidade - <?= $nome ?>";
+    </script>
+    #{/scriptPagina}
+
     #{botoes}
     <div class="fixed-action-btn no-print">
         <button class="btn-floating btn-large red" id="bt-imprimir" <?= $disabled ?> title="Imprimir" onclick="window.print();">
